@@ -1,3 +1,23 @@
+PREVIAMENTE
+---------------------------------------------------------------------------------------------------
+INSTALAR JAVA
+JAVA 17: https://www.oracle.com/java/technologies/javase/jdk17-archive-downloads.html
+En cmd java -version  Deberia de entregar java version "17.x"
+---------------------------------------------------------------------------------------------------
+INSTALAR MAVEN LOCAL
+Elegir versión .zip (binaria)
+https://maven.apache.org/download.cgi
+Extrae el ZIP en: C:\Program Files\Apache\Maven      Crear carpetas de ser necesario
+Configura variables de entorno:        Googleen si no saben
+    MAVEN_HOME: C:\Program Files\Apache\Maven\apache-maven-x.x.x
+    Agrega a Path: C:\Program Files\Apache\Maven\apache-maven-x.x.x\bin
+Verifiquen en cmd: mvn -v
+---------------------------------------------------------------------------------------------------
+INSTALAR DOCKER
+https://www.docker.com/products/docker-desktop/
+Reiniciar PC
+Verificar en cmd:     docker --version
+---------------------------------------------------------------------------------------------------
 1. Crear el springboot
 #URL https://start.spring.io
 -Maven
@@ -9,19 +29,19 @@
 -Spring Data MongoDB
 -Spring Boot DevTools
 -Lombok
-
-2. Crear archivos
+---------------------------------------------------------------------------------------------------
+2. Crear archivos // usar de ejemplo Usuario
 - Model
 - Repository (interface)
 - Controller
-
+---------------------------------------------------------------------------------------------------
 3. Crear Dockerfile (archivo sin extensión)
 - Contenido: (Se debe editar el nombre del microservicio)
 FROM openjdk:17
 WORKDIR /app
 COPY target/usuarios-service-0.0.1-SNAPSHOT.jar app.jar
 ENTRYPOINT ["java", "-jar", "app.jar"]
-
+---------------------------------------------------------------------------------------------------
 4. Crear docker-compose.yml (no es necesario, se crea en carpeta raiz)
 services:
   mongo:
@@ -42,16 +62,16 @@ services:
 
 volumes:
   mongo_data:
-
+---------------------------------------------------------------------------------------------------
 5. Compilar en powershell 
 
 Desde usuario-service
 mvn clean package -DskipTests
-
+---------------------------------------------------------------------------------------------------
 6. Levantar servicios desde MasterBikes
 cd ..  # si estás en usuario-service
 docker-compose up --build
-
+---------------------------------------------------------------------------------------------------
 7. Postman 
 GET http://localhost:8081/usuarios
 POST http://localhost:8081/usuarios
@@ -60,4 +80,13 @@ POST http://localhost:8081/usuarios
   "correo": "pedro@mail.com",
   "contraseña": "123456"
 }
+---------------------------------------------------------------------------------------------------
+Si quieren editar el model deben:
+Detener los docker:
+En consola:    docker-compose down
+Editar modelo
+Recompilar:    mvn clean package -DskipTests
+Reconstruir docker:     docker-compose up --build
+Probar nuevamente en Postman
+
 
