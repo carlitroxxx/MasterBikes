@@ -1,0 +1,63 @@
+1. Crear el springboot
+#URL https://start.spring.io
+-Maven
+-3.5
+-Group: com.masterbikes
+-Artifact: MICROSERVICIO-service
+#Dependencies:
+-Spring Web
+-Spring Data MongoDB
+-Spring Boot DevTools
+-Lombok
+
+2. Crear archivos
+- Model
+- Repository (interface)
+- Controller
+
+3. Crear Dockerfile (archivo sin extensión)
+- Contenido: (Se debe editar el nombre del microservicio)
+FROM openjdk:17
+WORKDIR /app
+COPY target/usuarios-service-0.0.1-SNAPSHOT.jar app.jar
+ENTRYPOINT ["java", "-jar", "app.jar"]
+
+4. Crear docker-compose.yml (no es necesario, se crea en carpeta raiz)
+services:
+  mongo:
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+
+  usuario-service:
+    build: ./usuario-service
+    ports:
+      - "8081:8080"
+    depends_on:
+      - mongo
+    environment:
+      SPRING_DATA_MONGODB_URI: mongodb://mongo:27017/usuariosdb
+
+volumes:
+  mongo_data:
+
+5. Compilar en powershell 
+
+Desde usuario-service
+mvn clean package -DskipTests
+
+6. Levantar servicios desde MasterBikes
+cd ..  # si estás en usuario-service
+docker-compose up --build
+
+7. Postman 
+GET http://localhost:8081/usuarios
+POST http://localhost:8081/usuarios
+{
+  "nombre": "Pedro",
+  "correo": "pedro@mail.com",
+  "contraseña": "123456"
+}
+

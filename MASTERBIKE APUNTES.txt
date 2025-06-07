@@ -1,0 +1,53 @@
+-Docker (distribución)
+		-web
+		-app
+		-lógica negocio
+		-lógica datos
+		-BD
+MaterialUI
+PMV:
+
+Los clientes puedan registrarse y solicitar servicios.
+La empresa pueda gestionar arriendos, reparaciones y ventas.
+Se mantenga control básico del stock.
+
+Funciones mínimas para el PMV:
+- Cliente:
+	Registro e inicio de sesión.
+	Solicitar arriendo de bicicleta (con fechas y tipo).
+	Solicitar reparación (con fecha, hora y descripción).
+	Ver estado de reparación.
+	
+- Técnico:
+	Ver solicitudes de reparación.
+	Cambiar estado de la reparación (en proceso, finalizada).
+- Vendedor:
+	Controlar stock de bicicletas y productos.
+	Registrar venta (productos y/o bicicletas).
+- Sistema:
+	Validación de stock para arriendos y ventas.
+	Gestión de usuarios.
+- Supervisor:
+	Consultar reporte diario simple (ventas y reparaciones).
+
+Funcionalidades que quedan fuera del PMV:
+	- Recibir confirmación por correo.
+	- Seguimiento del despacho.
+	- Aplicación de descuentos o promociones.
+	- Reportes avanzados.
+	- Integración real con pasarelas de pago (agregar api con métodos de pagos).
+	- Gestión de pagos (puede ser simulado).
+	- Notificación automática por correo (mínimo: confirmaciones).
+
+-------------------------------------------------------------------------------------------
+SpringBoot Config
+- Maven	
+- Java	
+- 3.5.0	
+- Group: com.masterbikes	
+- Dependencias
+	Spring Web	
+	Spring Data MongoDB 	
+	Spring Boot DevTools	
+	Lombok
+
