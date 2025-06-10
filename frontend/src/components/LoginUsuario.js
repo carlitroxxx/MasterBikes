@@ -25,7 +25,23 @@ function LoginUsuario() {
 
             if (usuario) {
                 localStorage.setItem('loggedUser', JSON.stringify(usuario));
-                navigate('/dashboard');
+
+                switch (usuario.rol) {
+                    case 'cliente':
+                        navigate('/cliente/catalogo');
+                        break;
+                    case 'vendedor':
+                        navigate('/vendedor/ventas');
+                        break;
+                    case 'tecnico':
+                        navigate('/tecnico/reparaciones');
+                        break;
+                    case 'admin':
+                        navigate('/reportes/dashboard');
+                        break;
+                    default:
+                        navigate('/login'); // o página de error
+                }
             } else {
                 setMensaje("Correo o contraseña incorrectos ❌");
             }

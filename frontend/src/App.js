@@ -6,6 +6,7 @@ import Dashboard from './components/Dashboard';
 import ProtectedRoute from './components/ProtectedRoute';
 import { AppBar, Toolbar, Button, Box } from '@mui/material';
 import { isAuthenticated } from './utils/auth';
+import ClienteRoutes from './routes/ClienteRoutes';
 
 function Navbar() {
     const navigate = useNavigate();
@@ -44,6 +45,9 @@ function App() {
         <Router>
             <Navbar />
             <Routes>
+                <Route path="/cliente/*" element={
+                    <ProtectedRoute> <ClienteRoutes /> </ProtectedRoute>
+                } />
                 <Route path="/login" element={
                     isAuthenticated() ? <Navigate to="/dashboard" replace /> : <LoginUsuario />
                 } />
@@ -60,4 +64,3 @@ function App() {
 }
 
 export default App;
-a

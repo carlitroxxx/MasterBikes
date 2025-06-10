@@ -16,4 +16,5 @@ public class Usuario {
     private String nombre;
     private String correo;
     private String password;
+    private String rol;
 }
