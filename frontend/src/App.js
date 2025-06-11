@@ -1,8 +1,9 @@
 // src/App.js
 import React, { useState } from 'react';
 import { Container, Typography } from '@mui/material';
-import VentaForm from './components/VentaForm';
-import VentaList from './components/VentaList';
+import VentaForm from './ventas-service/VentaForm';
+import VentaList from './ventas-service/VentaList';
+import ReporteVentas from './reportes-service/ReporteVentas';
 
 function App() {
     const [actualizar, setActualizar] = useState(false);
