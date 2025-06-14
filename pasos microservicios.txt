@@ -1,3 +1,8 @@
+- CLOUDINARY para guardar imágenes en la nube
+	-cloud_name: 'dz7qcfzta'
+	-api_key: '387231429127813' 
+	-api_secret: '8_8Bepa33GE4srkvNtbdd2Fqly0'
+
 1. Crear el springboot
 #URL https://start.spring.io
 -Maven

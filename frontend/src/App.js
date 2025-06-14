@@ -1,61 +1,34 @@
+// src/App.js
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route, Link, Navigate, useNavigate } from 'react-router-dom';
-import RegistroUsuario from './components/RegistroUsuario';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import LoginUsuario from './components/LoginUsuario';
+import RegistroUsuario from './components/RegistroUsuario';
 import Dashboard from './components/Dashboard';
-import ProtectedRoute from './components/ProtectedRoute';
-import { AppBar, Toolbar, Button, Box } from '@mui/material';
-import { isAuthenticated } from './utils/auth';
 import ClienteRoutes from './routes/ClienteRoutes';
-
-function Navbar() {
-    const navigate = useNavigate();
-
-    const handleLogout = () => {
-        localStorage.removeItem('loggedUser');
-        navigate('/login');
-    };
-
-    const loggedIn = isAuthenticated();
-
-    return (
-        <AppBar position="static">
-            <Toolbar>
-                <Box sx={{ flexGrow: 1 }}>
-                    {loggedIn && (
-                        <Button color="inherit" component={Link} to="/dashboard">Dashboard</Button>
-                    )}
-                    {!loggedIn && (
-                        <>
-                            <Button color="inherit" component={Link} to="/login">Login</Button>
-                            <Button color="inherit" component={Link} to="/registro">Registro</Button>
-                        </>
-                    )}
-                </Box>
-                {loggedIn && (
-                    <Button color="inherit" onClick={handleLogout}>Cerrar sesión</Button>
-                )}
-            </Toolbar>
-        </AppBar>
-    );
-}
+import ProtectedRoute from './components/ProtectedRoute';
+import Navbar from './components/Navbar'; // ✅ Asegurate de importar esto
+import { isAuthenticated } from './utils/auth';
+import InventarioRoutes from "./routes/InventarioRoutes";
 
 function App() {
     return (
         <Router>
-            <Navbar />
+            <Navbar /> {/* ✅ Navbar arriba de todo */}
             <Routes>
                 <Route path="/cliente/*" element={
-                    <ProtectedRoute> <ClienteRoutes /> </ProtectedRoute>
+                    <ClienteRoutes />
+                } />
+                <Route path="/inventario/*" element={
+                <InventarioRoutes />
                 } />
                 <Route path="/login" element={
-                    isAuthenticated() ? <Navigate to="/dashboard" replace /> : <LoginUsuario />
+                    isAuthenticated() ? <Navigate to="/cliente/catalogo" replace /> : <LoginUsuario />
                 } />
                 <Route path="/registro" element={
-                    isAuthenticated() ? <Navigate to="/dashboard" replace /> : <RegistroUsuario />
+                    isAuthenticated() ? <Navigate to="/cliente/catalogo" replace /> : <RegistroUsuario />
                 } />
                 <Route path="/dashboard" element={
-                    <ProtectedRoute><Dashboard /></ProtectedRoute>
+                    <Dashboard />
                 } />
                 <Route path="*" element={<Navigate to="/login" replace />} />
             </Routes>
