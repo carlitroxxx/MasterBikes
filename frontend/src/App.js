@@ -6,7 +6,7 @@ import RegistroUsuario from './components/RegistroUsuario';
 import Dashboard from './components/Dashboard';
 import ClienteRoutes from './routes/ClienteRoutes';
 import ProtectedRoute from './components/ProtectedRoute';
-import Navbar from './components/Navbar'; // ✅ Asegurate de importar esto
+import Navbar from './components/Navbar';
 import { isAuthenticated } from './utils/auth';
 import InventarioRoutes from "./routes/InventarioRoutes";
 
