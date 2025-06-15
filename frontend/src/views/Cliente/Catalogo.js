@@ -97,7 +97,7 @@ export default function Catalogo() {
         setProductoSeleccionado(null);
         setShowZoom(false);
     };
-    //
+
     const handleChangePagina = (event, newPage) => {
         setPaginaActual(newPage);
     };
@@ -142,7 +142,12 @@ export default function Catalogo() {
                     <ToggleButtonGroup
                         value={categoriaSeleccionada}
                         exclusive
-                        onChange={(_, nuevaCategoria) => nuevaCategoria && setCategoriaSeleccionada(nuevaCategoria)}
+                        onChange={(_, nuevaCategoria) => {
+                            if (nuevaCategoria) {
+                                setCategoriaSeleccionada(nuevaCategoria);
+                                setPaginaActual(1); // Resetear página al cambiar categoría
+                            }
+                        }}
                         sx={{ mr: 2 }}
                     >
                         {categorias.map(categoria => (
@@ -319,7 +324,6 @@ export default function Catalogo() {
             </Container>
 
             {/* Diálogo con Carrusel */}
-            {/* Diálogo con diseño limpio pero con todas las funcionalidades */}
             <Dialog
                 open={Boolean(productoSeleccionado)}
                 onClose={handleCloseDialog}
@@ -328,9 +332,8 @@ export default function Catalogo() {
                 PaperProps={{ sx: { borderRadius: 2, p: 3 } }}
             >
                 <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
-                    {/* Sección de Imagen (con todas las funcionalidades) */}
+                    {/* Sección de Imagen */}
                     <Box sx={{ width: { md: '50%' }, position: 'relative' }}>
-                        {/* Contenedor principal de la imagen con zoom */}
                         <Box
                             sx={{
                                 aspectRatio: '1/1',
@@ -369,7 +372,6 @@ export default function Catalogo() {
                                 </Box>
                             )}
 
-                            {/* Flechas de navegación del carrusel */}
                             {productoSeleccionado?.imagenesUrls?.length > 1 && (
                                 <>
                                     <IconButton
@@ -404,7 +406,6 @@ export default function Catalogo() {
                             )}
                         </Box>
 
-                        {/* Miniaturas del carrusel */}
                         {productoSeleccionado?.imagenesUrls?.length > 1 && (
                             <Box
                                 ref={thumbnailsRef}
@@ -446,14 +447,12 @@ export default function Catalogo() {
                         )}
                     </Box>
 
-                    {/* Sección de Información (diseño limpio como en la imagen) */}
+                    {/* Sección de Información */}
                     <Box sx={{ width: { md: '50%' }, display: 'flex', flexDirection: 'column', gap: 2 }}>
-                        {/* Título */}
                         <Typography variant="h5" fontWeight="bold" gutterBottom>
                             {productoSeleccionado?.nombre}
                         </Typography>
 
-                        {/* Categoría y Precio */}
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                             <Chip
                                 label={productoSeleccionado?.tipo === 'bicicleta' ? 'Bicicleta' : 'Componente'}
@@ -466,23 +465,19 @@ export default function Catalogo() {
                             </Typography>
                         </Box>
 
-                        {/* Stock */}
                         <Typography variant="body2" color="text.secondary">
                             Stock disponible: {productoSeleccionado?.stock} unidades
                         </Typography>
 
-                        {/* Descripción */}
                         <Typography variant="body1" sx={{ my: 2, color: 'text.primary' }}>
                             {productoSeleccionado?.descripcion}
                         </Typography>
 
-                        {/* Cantidad y Botón */}
                         <Box sx={{ mt: 'auto', pt: 2 }}>
                             <Typography variant="subtitle2" gutterBottom>
                                 Cantidad:
                             </Typography>
                             <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-                                {/* Selector de cantidad */}
                                 <Box sx={{
                                     display: 'flex',
                                     alignItems: 'center',
@@ -511,7 +506,6 @@ export default function Catalogo() {
                                     </IconButton>
                                 </Box>
 
-                                {/* Botón principal */}
                                 <Button
                                     variant="contained"
                                     fullWidth
