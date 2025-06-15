@@ -1,0 +1,36 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+
+  backend:
+    build: ./inventario-service
+    container_name: inventario-service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mongo
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: react-frontend
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app               # Montaje de código para desarrollo
+      - /app/node_modules             # Evita sobrescritura
+    environment:
+      - CHOKIDAR_USEPOLLING=true      # Para detectar cambios (Windows/WSL2)
+      - WATCHPACK_POLLING=true        # Soporte para Webpack
+      - NODE_ENV=development          # Habilita HMR
+    command: npm start
+    depends_on:
+      - backend

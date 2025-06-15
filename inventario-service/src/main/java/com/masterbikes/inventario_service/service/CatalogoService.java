@@ -23,6 +23,9 @@ public class CatalogoService {
         this.bicicletaArriendoRepo = bicicletaArriendoRepo;
     }
 
+    public ProductoVenta guardarProductoVenta(ProductoVenta producto) {
+        return productoVentaRepo.save(producto);
+    }
     public List<ProductoVenta> getProductosVenta() {
         return productoVentaRepo.findAll();
     }

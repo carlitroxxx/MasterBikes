@@ -4,14 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82e22629-e534-4dbc-985e-d8386e8db997" name="Changes" comment="Springboot Usuario e Inventario agregado">
-      <change afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/repository/ProductoVentaRepository.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/service/CloudinaryService.java" afterDir="false" />
+    <list default="true" id="82e22629-e534-4dbc-985e-d8386e8db997" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/config/CorsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/.gitignore" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/controller/CatalogoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/controller/CatalogoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/service/CatalogoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/service/CatalogoService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usuario-service/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/usuario-service/pom.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -22,7 +25,9 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
+        <option value="Dockerfile" />
         <option value="Class" />
+        <option value="JavaScript File" />
       </list>
     </option>
   </component>
@@ -53,8 +58,13 @@
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
     &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RequestMappingsPanelOrder0&quot;: &quot;0&quot;,
+    &quot;RequestMappingsPanelOrder1&quot;: &quot;1&quot;,
+    &quot;RequestMappingsPanelWidth0&quot;: &quot;75&quot;,
+    &quot;RequestMappingsPanelWidth1&quot;: &quot;75&quot;,
     &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;Spring Boot.InventarioServiceApplication.executor&quot;: &quot;Run&quot;,
     &quot;git-widget-placeholder&quot;: &quot;carlos-moil&quot;,
     &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
     &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
@@ -98,7 +108,8 @@
       <option name="presentableId" value="Default" />
       <updated>1749935280187</updated>
       <workItem from="1749935281913" duration="1524000" />
-      <workItem from="1749937459836" duration="4762000" />
+      <workItem from="1749937459836" duration="19872000" />
+      <workItem from="1749965016201" duration="4880000" />
     </task>
     <task id="LOCAL-00001" summary="Springboot Usuario e Inventario agregado">
       <option name="closed" value="true" />
@@ -108,7 +119,15 @@
       <option name="project" value="LOCAL" />
       <updated>1749935471250</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Cloudinary implementado">
+      <option name="closed" value="true" />
+      <created>1749942288063</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1749942288063</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -139,6 +158,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="Springboot Usuario e Inventario agregado" />
-    <option name="LAST_COMMIT_MESSAGE" value="Springboot Usuario e Inventario agregado" />
+    <MESSAGE value="Cloudinary implementado" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cloudinary implementado" />
   </component>
 </project>
