@@ -4,21 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82e22629-e534-4dbc-985e-d8386e8db997" name="Changes" comment="Ux paginador arreglado">
+    <list default="true" id="82e22629-e534-4dbc-985e-d8386e8db997" name="Changes" comment="Ux buscador,drawer mejorado">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/MASTERBIKE APUNTES.txt" beforeDir="false" afterPath="$PROJECT_DIR$/MASTERBIKE APUNTES.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package-lock.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/routes/InventarioRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/InventarioRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarProductos.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/IngresarProductos.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/config/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/config/CorsConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/controller/CatalogoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/controller/CatalogoController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/model/BicicletaArriendo.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/model/BicicletaArriendo.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/model/ProductoVenta.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/model/ProductoVenta.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/repository/BicicletaArriendoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/repository/BicicletaArriendoRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/repository/ProductoVentaRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/repository/ProductoVentaRepository.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/service/CatalogoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/service/CatalogoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -118,7 +107,7 @@
       <workItem from="1749965016201" duration="5130000" />
       <workItem from="1750010333937" duration="2494000" />
       <workItem from="1750019338333" duration="5729000" />
-      <workItem from="1750164152633" duration="3372000" />
+      <workItem from="1750164152633" duration="6125000" />
     </task>
     <task id="LOCAL-00001" summary="Springboot Usuario e Inventario agregado">
       <option name="closed" value="true" />
@@ -152,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750019369384</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Ux buscador,drawer mejorado">
+      <option name="closed" value="true" />
+      <created>1750167590959</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1750167590959</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -186,6 +183,7 @@
     <MESSAGE value="Cloudinary implementado" />
     <MESSAGE value="Catalogo conectado al backend" />
     <MESSAGE value="Ux paginador arreglado" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ux paginador arreglado" />
+    <MESSAGE value="Ux buscador,drawer mejorado" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ux buscador,drawer mejorado" />
   </component>
 </project>

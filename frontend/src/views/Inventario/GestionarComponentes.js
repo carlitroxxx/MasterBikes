@@ -1,37 +1,54 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Container, Typography, Table, TableHead, TableRow, TableCell,
     TableBody, IconButton, Dialog, DialogTitle, DialogContent,
     DialogActions, TextField, Button, TableContainer, Paper,
-    Box, Tooltip, Alert, Snackbar, Grid, Divider
+    Box, Tooltip, Alert, Snackbar, Grid, Divider, Drawer,
+    FormControl, InputLabel, Select, MenuItem, Chip, Avatar,
+    Stack, InputAdornment
 } from '@mui/material';
 import {
     Edit as EditIcon,
     Delete as DeleteIcon,
     Search as SearchIcon,
     Add as AddIcon,
-    Inventory as InventoryIcon
+    Inventory as InventoryIcon,
+    Close as CloseIcon,
+    CloudUpload as UploadIcon
 } from '@mui/icons-material';
+import axios from 'axios';
 
-const productosIniciales = [
-    { id: 1, nombre: 'Cadena', stock: 20, precio: 1500, categoria: 'Partes' },
-    { id: 2, nombre: 'Neumático', stock: 10, precio: 5000, categoria: 'Ruedas' },
-    { id: 3, nombre: 'Pedal', stock: 15, precio: 2500, categoria: 'Partes' },
-];
-
-const categorias = ['Partes', 'Ruedas', 'Accesorios', 'Herramientas'];
+const API_URL = 'http://localhost:8080/api/inventario';
 
 export default function GestionarComponentes() {
-    const [productos, setProductos] = useState(productosIniciales);
+    const [productos, setProductos] = useState([]);
     const [productoEditar, setProductoEditar] = useState(null);
     const [productoEliminar, setProductoEliminar] = useState(null);
     const [busqueda, setBusqueda] = useState('');
     const [nuevoProducto, setNuevoProducto] = useState(false);
     const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
     const [formErrors, setFormErrors] = useState({});
+    const [openDrawer, setOpenDrawer] = useState(false);
+    const [imagenesPreview, setImagenesPreview] = useState([]);
+    const [imagenesSubir, setImagenesSubir] = useState([]);
 
-    // Funciones de manejo (igual que en la versión anterior)
-    const handleGuardarEdicion = () => {
+
+    // Cargar productos al montar el componente
+    useEffect(() => {
+        cargarProductos();
+    }, []);
+
+    const cargarProductos = async () => {
+        try {
+            const response = await axios.get(`${API_URL}/venta/componente`);
+            setProductos(response.data);
+        } catch (error) {
+            showSnackbar('Error al cargar los componentes', 'error');
+            console.error('Error fetching data:', error);
+        }
+    };
+
+    const handleGuardarEdicion = async () => {
         const errors = {};
         if (!productoEditar.nombre) errors.nombre = 'Requerido';
         if (productoEditar.stock < 0) errors.stock = 'No puede ser negativo';
@@ -42,50 +59,116 @@ export default function GestionarComponentes() {
             return;
         }
 
-        setProductos(productos.map(p => p.id === productoEditar.id ? productoEditar : p));
-        setProductoEditar(null);
-        setFormErrors({});
-        showSnackbar('Producto actualizado', 'success');
+        try {
+            if (nuevoProducto) {
+                // Crear nuevo producto
+                const formData = new FormData();
+                const productoData = {
+                    ...productoEditar,
+                    tipo: 'componente'
+                };
+                formData.append('producto', JSON.stringify(productoData));
+
+                if (imagenesSubir.length > 0) {
+                    imagenesSubir.forEach((file) => {
+                        formData.append('imagenes', file);
+                    });
+                    const response = await axios.post(`${API_URL}/venta/con-imagenes`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                    setProductos([...productos, response.data]);
+                } else {
+                    const response = await axios.post(`${API_URL}/venta`, productoData);
+                    setProductos([...productos, response.data]);
+                }
+            } else {
+                // Actualizar producto existente
+                const response = await axios.put(`${API_URL}/venta/${productoEditar.id}`, productoEditar);
+                setProductos(productos.map(p => p.id === productoEditar.id ? response.data : p));
+            }
+
+            setOpenDrawer(false);
+            setProductoEditar(null);
+            setNuevoProducto(false);
+            setFormErrors({});
+            setImagenesPreview([]);
+            setImagenesSubir([]);
+            showSnackbar(nuevoProducto ? 'Componente creado' : 'Componente actualizado', 'success');
+        } catch (error) {
+            console.error('Error al guardar:', error);
+            showSnackbar(`Error al ${nuevoProducto ? 'crear' : 'actualizar'} el componente`, 'error');
+        }
     };
 
     const handleNuevoProducto = () => {
-        const nuevoId = Math.max(...productos.map(p => p.id), 0) + 1;
         setProductoEditar({
-            id: nuevoId,
+            id: '',
             nombre: '',
-            stock: 0,
+            descripcion: '',
             precio: 0,
-            categoria: 'Partes'
+            stock: 0,
+            imagenesUrls: []
         });
         setNuevoProducto(true);
+        setOpenDrawer(true);
     };
 
-    const handleCrearProducto = () => {
-        const errors = {};
-        if (!productoEditar.nombre) errors.nombre = 'Requerido';
-        if (productoEditar.stock < 0) errors.stock = 'No puede ser negativo';
-        if (productoEditar.precio <= 0) errors.precio = 'Debe ser mayor a 0';
-
-        if (Object.keys(errors).length > 0) {
-            setFormErrors(errors);
-            return;
+    const handleEliminar = async () => {
+        try {
+            await axios.delete(`${API_URL}/venta/${productoEliminar.id}`);
+            setProductos(productos.filter(p => p.id !== productoEliminar.id));
+            setProductoEliminar(null);
+            showSnackbar('Componente eliminado', 'info');
+        } catch (error) {
+            console.error('Error al eliminar:', error);
+            showSnackbar('Error al eliminar el componente', 'error');
         }
-
-        setProductos([...productos, productoEditar]);
-        setProductoEditar(null);
-        setNuevoProducto(false);
-        setFormErrors({});
-        showSnackbar('Producto creado', 'success');
     };
 
-    const handleEliminar = () => {
-        setProductos(productos.filter(p => p.id !== productoEliminar.id));
-        setProductoEliminar(null);
-        showSnackbar('Producto eliminado', 'info');
+    const handleEditarProducto = (producto) => {
+        setProductoEditar({ ...producto });
+        setNuevoProducto(false);
+        setOpenDrawer(true);
+        setImagenesPreview(producto.imagenesUrls || []);
+    };
+
+    const handleImagenChange = (e) => {
+        const files = Array.from(e.target.files);
+        const previews = files.map(file => URL.createObjectURL(file));
+        setImagenesPreview([...imagenesPreview, ...previews]);
+        setImagenesSubir([...imagenesSubir, ...files]);
+    };
+
+    const eliminarImagenPreview = async (index) => {
+        try {
+            const url = imagenesPreview[index];
+
+            // Si es una URL existente (no una preview local)
+            if (url.startsWith('http')) {
+                await axios.delete(`${API_URL}/venta/${productoEditar.id}/imagenes`, {
+                    params: { urlImagen: url }
+                });
+            }
+
+            const nuevasPreviews = [...imagenesPreview];
+            nuevasPreviews.splice(index, 1);
+            setImagenesPreview(nuevasPreviews);
+
+            const nuevasImagenesSubir = [...imagenesSubir];
+            nuevasImagenesSubir.splice(index, 1);
+            setImagenesSubir(nuevasImagenesSubir);
+        } catch (error) {
+            console.error('Error al eliminar imagen:', error);
+            showSnackbar('Error al eliminar la imagen', 'error');
+        }
     };
 
     const productosFiltrados = productos.filter(p =>
-        p.nombre.toLowerCase().includes(busqueda.toLowerCase())
+        p.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
+        p.descripcion?.toLowerCase().includes(busqueda.toLowerCase()) ||
+        p.id.toString().toLowerCase().includes(busqueda.toLowerCase())
     );
 
     const showSnackbar = (message, severity) => {
@@ -96,9 +179,17 @@ export default function GestionarComponentes() {
         setSnackbar({ ...snackbar, open: false });
     };
 
+    const formatCurrency = (value) => {
+        return new Intl.NumberFormat('es-CL', {
+            style: 'currency',
+            currency: 'CLP',
+            minimumFractionDigits: 0
+        }).format(value);
+    };
+
     return (
         <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-            {/* Header estructurado */}
+            {/* Header */}
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
@@ -106,11 +197,11 @@ export default function GestionarComponentes() {
                 mb: 3
             }}>
                 <Box>
-                    <Typography variant="h5" fontWeight="bold">
-                        Gestión de Productos
+                    <Typography variant="h5" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center' }}>
+                        <InventoryIcon sx={{ mr: 1 }} /> Gestión de Componentes
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Total: {productos.length} productos | Mostrando: {productosFiltrados.length}
+                        Total: {productos.length} componentes | Mostrando: {productosFiltrados.length}
                     </Typography>
                 </Box>
 
@@ -120,7 +211,7 @@ export default function GestionarComponentes() {
                     onClick={handleNuevoProducto}
                     sx={{ height: '40px' }}
                 >
-                    Nuevo Producto
+                    Nuevo Componente
                 </Button>
             </Box>
 
@@ -129,7 +220,7 @@ export default function GestionarComponentes() {
                 <TextField
                     fullWidth
                     variant="outlined"
-                    placeholder="Buscar productos..."
+                    placeholder="Buscar componentes..."
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                     InputProps={{
@@ -147,7 +238,6 @@ export default function GestionarComponentes() {
                             <TableRow sx={{ bgcolor: '#f5f5f5' }}>
                                 <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Categoría</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right">Stock</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="right">Precio</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }} align="center">Acciones</TableCell>
@@ -159,7 +249,6 @@ export default function GestionarComponentes() {
                                     <TableRow key={producto.id} hover>
                                         <TableCell>{producto.id}</TableCell>
                                         <TableCell>{producto.nombre}</TableCell>
-                                        <TableCell>{producto.categoria}</TableCell>
                                         <TableCell align="right">
                                             <Box
                                                 component="span"
@@ -175,19 +264,13 @@ export default function GestionarComponentes() {
                                             </Box>
                                         </TableCell>
                                         <TableCell align="right">
-                                            {new Intl.NumberFormat('es-AR', {
-                                                style: 'currency',
-                                                currency: 'ARS'
-                                            }).format(producto.precio)}
+                                            {formatCurrency(producto.precio)}
                                         </TableCell>
                                         <TableCell align="center">
                                             <Tooltip title="Editar">
                                                 <IconButton
                                                     size="small"
-                                                    onClick={() => {
-                                                        setProductoEditar({ ...producto });
-                                                        setNuevoProducto(false);
-                                                    }}
+                                                    onClick={() => handleEditarProducto(producto)}
                                                 >
                                                     <EditIcon fontSize="small" />
                                                 </IconButton>
@@ -208,7 +291,7 @@ export default function GestionarComponentes() {
                                 <TableRow>
                                     <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
                                         <Typography variant="body1" color="text.secondary">
-                                            No se encontraron productos
+                                            No se encontraron componentes
                                         </Typography>
                                     </TableCell>
                                 </TableRow>
@@ -218,99 +301,246 @@ export default function GestionarComponentes() {
                 </TableContainer>
             </Paper>
 
-            {/* Modal Edición/Creación */}
-            <Dialog
-                open={!!productoEditar}
+            {/* Drawer para Edición/Creación */}
+            <Drawer
+                anchor="right"
+                open={openDrawer}
                 onClose={() => {
+                    setOpenDrawer(false);
                     setProductoEditar(null);
-                    setNuevoProducto(false);
-                    setFormErrors({});
+                    setImagenesPreview([]);
+                    setImagenesSubir([]);
                 }}
-                fullWidth
-                maxWidth="sm"
+                PaperProps={{
+                    sx: {
+                        width: '600px',
+                        p: 3,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        height: '100vh',
+                        overflow: 'hidden'
+                    }
+                }}
             >
-                <DialogTitle sx={{ borderBottom: '1px solid #e0e0e0' }}>
-                    {nuevoProducto ? 'Nuevo Producto' : 'Editar Producto'}
-                </DialogTitle>
-                <DialogContent sx={{ pt: 3 }}>
-                    <Grid container spacing={2}>
-                        <Grid item xs={12}>
-                            <TextField
-                                label="Nombre"
-                                fullWidth
-                                size="small"
-                                value={productoEditar?.nombre || ''}
-                                onChange={e => setProductoEditar({ ...productoEditar, nombre: e.target.value })}
-                                error={!!formErrors.nombre}
-                                helperText={formErrors.nombre}
+                {/* Header */}
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    mb: 3,
+                    flexShrink: 0
+                }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                        {nuevoProducto ? 'Nuevo Componente' : 'Editar Componente'}
+                    </Typography>
+                    <IconButton onClick={() => setOpenDrawer(false)}>
+                        <CloseIcon />
+                    </IconButton>
+                </Box>
+
+                {/* Contenido principal con scroll */}
+                <Box sx={{
+                    flexGrow: 1,
+                    overflowY: 'auto',
+                    mb: 4,
+                    '& > div:not(:last-child)': {
+                        borderBottom: '1px solid #e0e0e0',
+                        pb: 3,
+                        mb: 3
+                    }
+                }}>
+                    {/* Sección 1: ID y Nombre */}
+                    <Box>
+                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                            Información básica
+                        </Typography>
+                        <Box sx={{ display: 'flex', gap: 2 }}>
+                            <Box sx={{ flex: '0 0 40%' }}>
+                                <TextField
+                                    label="ID"
+                                    fullWidth
+                                    size="small"
+                                    value={productoEditar?.id || ''}
+                                    onChange={e => setProductoEditar({ ...productoEditar, id: e.target.value })}
+                                    disabled={!nuevoProducto}
+                                />
+                            </Box>
+                            <Box sx={{ flex: '0 0 55%' }}>
+                                <TextField
+                                    label="Nombre"
+                                    fullWidth
+                                    size="small"
+                                    value={productoEditar?.nombre || ''}
+                                    onChange={e => setProductoEditar({ ...productoEditar, nombre: e.target.value })}
+                                    error={!!formErrors.nombre}
+                                    helperText={formErrors.nombre}
+                                />
+                            </Box>
+                        </Box>
+                    </Box>
+
+                    {/* Sección 2: Descripción */}
+                    <Box>
+                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                            Descripción
+                        </Typography>
+                        <TextField
+                            label="Descripción"
+                            fullWidth
+                            multiline
+                            rows={3}
+                            size="small"
+                            value={productoEditar?.descripcion || ''}
+                            onChange={e => setProductoEditar({ ...productoEditar, descripcion: e.target.value })}
+                        />
+                    </Box>
+
+
+
+                    {/* Sección 4: Precio y Stock */}
+                    <Box>
+                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                            Detalles de inventario
+                        </Typography>
+                        <Grid container spacing={2}>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Precio"
+                                    type="number"
+                                    fullWidth
+                                    size="small"
+                                    value={productoEditar?.precio || ''}
+                                    onChange={e => setProductoEditar({ ...productoEditar, precio: parseInt(e.target.value) || 0 })}
+                                    error={!!formErrors.precio}
+                                    helperText={formErrors.precio}
+                                    InputProps={{
+                                        startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                    }}
+                                />
+                            </Grid>
+                            <Grid item xs={6}>
+                                <TextField
+                                    label="Stock"
+                                    type="number"
+                                    fullWidth
+                                    size="small"
+                                    value={productoEditar?.stock || ''}
+                                    onChange={e => setProductoEditar({ ...productoEditar, stock: parseInt(e.target.value) || 0 })}
+                                    error={!!formErrors.stock}
+                                    helperText={formErrors.stock}
+                                />
+                            </Grid>
+                        </Grid>
+                    </Box>
+
+                    {/* Sección 5: Imágenes */}
+                    <Box>
+                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                            Imágenes
+                        </Typography>
+
+                        <Button
+                            variant="outlined"
+                            component="label"
+                            startIcon={<UploadIcon />}
+                            fullWidth
+                            sx={{ mb: 3 }}
+                        >
+                            Subir imágenes
+                            <input
+                                type="file"
+                                hidden
+                                multiple
+                                accept="image/*"
+                                onChange={handleImagenChange}
                             />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                label="Stock"
-                                type="number"
-                                fullWidth
-                                size="small"
-                                value={productoEditar?.stock || ''}
-                                onChange={e => setProductoEditar({ ...productoEditar, stock: parseInt(e.target.value) || 0 })}
-                                error={!!formErrors.stock}
-                                helperText={formErrors.stock}
-                            />
-                        </Grid>
-                        <Grid item xs={6}>
-                            <TextField
-                                label="Precio"
-                                type="number"
-                                fullWidth
-                                size="small"
-                                value={productoEditar?.precio || ''}
-                                onChange={e => setProductoEditar({ ...productoEditar, precio: parseFloat(e.target.value) || 0 })}
-                                error={!!formErrors.precio}
-                                helperText={formErrors.precio}
-                                InputProps={{
-                                    startAdornment: '$',
-                                }}
-                            />
-                        </Grid>
-                        <Grid item xs={12}>
-                            <TextField
-                                select
-                                label="Categoría"
-                                fullWidth
-                                size="small"
-                                value={productoEditar?.categoria || 'Partes'}
-                                onChange={e => setProductoEditar({ ...productoEditar, categoria: e.target.value })}
-                                SelectProps={{
-                                    native: true,
-                                }}
-                            >
-                                {categorias.map((option) => (
-                                    <option key={option} value={option}>
-                                        {option}
-                                    </option>
-                                ))}
-                            </TextField>
-                        </Grid>
-                    </Grid>
-                </DialogContent>
-                <DialogActions sx={{ borderTop: '1px solid #e0e0e0', p: 2 }}>
+                        </Button>
+
+                        {/* Preview de imágenes */}
+                        {imagenesPreview.length > 0 && (
+                            <Box sx={{
+                                border: '1px dashed #e0e0e0',
+                                borderRadius: 1,
+                                p: 2,
+                                mb: 2
+                            }}>
+                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                    Vista previa de imágenes ({imagenesPreview.length})
+                                </Typography>
+                                <Grid container spacing={1}>
+                                    {imagenesPreview.map((img, index) => (
+                                        <Grid item xs={4} key={index}>
+                                            <Box sx={{
+                                                position: 'relative',
+                                                borderRadius: 1,
+                                                overflow: 'hidden',
+                                                height: 100
+                                            }}>
+                                                <img
+                                                    src={img}
+                                                    alt={`Preview ${index}`}
+                                                    style={{
+                                                        width: '100%',
+                                                        height: '100%',
+                                                        objectFit: 'cover'
+                                                    }}
+                                                />
+                                                <IconButton
+                                                    size="small"
+                                                    sx={{
+                                                        position: 'absolute',
+                                                        top: 4,
+                                                        right: 4,
+                                                        backgroundColor: 'rgba(0,0,0,0.5)',
+                                                        color: 'white',
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(0,0,0,0.7)'
+                                                        }
+                                                    }}
+                                                    onClick={() => eliminarImagenPreview(index)}
+                                                >
+                                                    <CloseIcon fontSize="small" />
+                                                </IconButton>
+                                            </Box>
+                                        </Grid>
+                                    ))}
+                                </Grid>
+                            </Box>
+                        )}
+                    </Box>
+                </Box>
+
+                {/* Botones de acción */}
+                <Box sx={{
+                    display: 'flex',
+                    justifyContent: 'flex-end',
+                    gap: 2,
+                    pt: 2,
+                    borderTop: '1px solid #e0e0e0',
+                    pb: 4,
+                    flexShrink: 0
+                }}>
                     <Button
+                        variant="outlined"
                         onClick={() => {
+                            setOpenDrawer(false);
                             setProductoEditar(null);
-                            setNuevoProducto(false);
-                            setFormErrors({});
+                            setImagenesPreview([]);
+                            setImagenesSubir([]);
                         }}
+                        sx={{ width: '120px' }}
                     >
                         Cancelar
                     </Button>
                     <Button
                         variant="contained"
-                        onClick={nuevoProducto ? handleCrearProducto : handleGuardarEdicion}
+                        onClick={handleGuardarEdicion}
+                        sx={{ width: '120px' }}
                     >
-                        {nuevoProducto ? 'Agregar' : 'Guardar'}
+                        {nuevoProducto ? 'Crear' : 'Guardar'}
                     </Button>
-                </DialogActions>
-            </Dialog>
+                </Box>
+            </Drawer>
 
             {/* Modal Eliminación */}
             <Dialog open={!!productoEliminar} onClose={() => setProductoEliminar(null)}>
@@ -322,14 +552,12 @@ export default function GestionarComponentes() {
                         Esta acción no se puede deshacer
                     </Alert>
                     <Typography variant="body1" sx={{ mb: 1 }}>
-                        <strong>Producto:</strong> {productoEliminar?.nombre}
+                        <strong>Componente:</strong> {productoEliminar?.nombre}
                     </Typography>
                     <Typography variant="body1" sx={{ mb: 1 }}>
                         <strong>ID:</strong> {productoEliminar?.id}
                     </Typography>
-                    <Typography variant="body1">
-                        <strong>Categoría:</strong> {productoEliminar?.categoria}
-                    </Typography>
+
                 </DialogContent>
                 <DialogActions sx={{ borderTop: '1px solid #e0e0e0', p: 2 }}>
                     <Button onClick={() => setProductoEliminar(null)}>Cancelar</Button>

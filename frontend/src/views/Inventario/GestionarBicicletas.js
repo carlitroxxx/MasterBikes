@@ -198,7 +198,6 @@ export default function GestionarBicicletas() {
 
     const bicicletasFiltradas = bicicletasMostradas.filter(b =>
         b.nombre.toLowerCase().includes(busqueda.toLowerCase()) ||
-        b.descripcion.toLowerCase().includes(busqueda.toLowerCase()) ||
         b.id.toString().toLowerCase().includes(busqueda.toLowerCase())
     );
 
@@ -264,7 +263,7 @@ export default function GestionarBicicletas() {
                         onClick={handleNuevaBicicleta}
                         sx={{ height: '40px' }}
                     >
-                        Agregar
+                        Agregar Bicicleta
                     </Button>
                 </Box>
             </Box>
@@ -292,7 +291,6 @@ export default function GestionarBicicletas() {
                             <TableRow sx={{ bgcolor: '#f5f5f5' }}>
                                 <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
                                 <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Descripción</TableCell>
                                 {tipoBicicleta === 'venta' ? (
                                     <>
                                         <TableCell sx={{ fontWeight: 'bold' }} align="right">Precio</TableCell>
@@ -313,7 +311,6 @@ export default function GestionarBicicletas() {
                                     <TableRow key={bicicleta.id} hover>
                                         <TableCell>{bicicleta.id}</TableCell>
                                         <TableCell>{bicicleta.nombre}</TableCell>
-                                        <TableCell sx={{ maxWidth: 300 }}>{bicicleta.descripcion}</TableCell>
 
                                         {tipoBicicleta === 'venta' ? (
                                             <>
