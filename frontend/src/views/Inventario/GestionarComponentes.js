@@ -21,7 +21,7 @@ const productosIniciales = [
 
 const categorias = ['Partes', 'Ruedas', 'Accesorios', 'Herramientas'];
 
-export default function GestionarProductos() {
+export default function GestionarComponentes() {
     const [productos, setProductos] = useState(productosIniciales);
     const [productoEditar, setProductoEditar] = useState(null);
     const [productoEliminar, setProductoEliminar] = useState(null);

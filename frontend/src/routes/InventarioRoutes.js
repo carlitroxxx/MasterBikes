@@ -1,7 +1,7 @@
 import { Routes, Route, Link } from 'react-router-dom';
 import { Box, Button, Container, Typography } from '@mui/material';
-import IngresarProductos from '../views/Inventario/IngresarProductos';
-import GestionarProductos from "../views/Inventario/GestionarProductos";
+import GestionarBicicletas from '../views/Inventario/GestionarBicicletas';
+import GestionarComponentes from "../views/Inventario/GestionarComponentes";
 
 function InventarioNav() {
     return (
@@ -18,8 +18,8 @@ export default function InventarioRoutes() {
             <Typography variant="h4" gutterBottom>Panel de Inventario</Typography>
             <InventarioNav />
             <Routes>
-                <Route path="recepcion" element={<IngresarProductos />} />
-                <Route path="ingresos" element={<GestionarProductos />} />
+                <Route path="recepcion" element={<GestionarBicicletas />} />
+                <Route path="ingresos" element={<GestionarComponentes />} />
             </Routes>
         </Container>
     );

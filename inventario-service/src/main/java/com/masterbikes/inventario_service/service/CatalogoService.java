@@ -8,7 +8,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CatalogoService {
@@ -26,6 +25,11 @@ public class CatalogoService {
     public ProductoVenta guardarProductoVenta(ProductoVenta producto) {
         return productoVentaRepo.save(producto);
     }
+
+    public BicicletaArriendo guardarBicicletaArriendo(BicicletaArriendo bicicleta) {
+        return bicicletaArriendoRepo.save(bicicleta);
+    }
+
     public List<ProductoVenta> getProductosVenta() {
         return productoVentaRepo.findAll();
     }
@@ -41,7 +45,6 @@ public class CatalogoService {
     public ProductoVenta agregarImagenesAProducto(String id, List<String> urls) {
         ProductoVenta producto = productoVentaRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
-
         producto.getImagenesUrls().addAll(urls);
         return productoVentaRepo.save(producto);
     }
@@ -49,8 +52,15 @@ public class CatalogoService {
     public void eliminarImagenDeProducto(String id, String urlImagen) {
         ProductoVenta producto = productoVentaRepo.findById(id)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
-
         producto.getImagenesUrls().remove(urlImagen);
         productoVentaRepo.save(producto);
+    }
+
+    public boolean existeProductoConId(String id) {
+        return productoVentaRepo.existsById(id);
+    }
+
+    public boolean existeBicicletaConId(String id) {
+        return bicicletaArriendoRepo.existsById(id);
     }
 }

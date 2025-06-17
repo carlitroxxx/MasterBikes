@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface BicicletaArriendoRepository extends MongoRepository<BicicletaArriendo, String> {
     List<BicicletaArriendo> findByDisponible(boolean disponible);
+    boolean existsById(String id);
 }

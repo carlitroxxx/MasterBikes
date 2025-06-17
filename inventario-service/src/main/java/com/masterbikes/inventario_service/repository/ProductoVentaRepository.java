@@ -7,4 +7,5 @@ import java.util.List;
 
 public interface ProductoVentaRepository extends MongoRepository<ProductoVenta, String> {
     List<ProductoVenta> findByTipo(String tipo);
+    boolean existsById(String id);
 }

@@ -25,7 +25,7 @@ Funciones mínimas para el PMV:
 	Controlar stock de bicicletas y productos.
 	Registrar venta (productos y/o bicicletas).
 - Sistema:
-	Validación de stock para arriendos y ventas.
+	Validación de stock a la hora de realizar arriendos y ventas.
 	Gestión de usuarios.
 - Supervisor:
 	Consultar reporte diario simple (ventas y reparaciones).
@@ -38,7 +38,8 @@ Funcionalidades que quedan fuera del PMV:
 	- Integración real con pasarelas de pago (agregar api con métodos de pagos).
 	- Gestión de pagos (puede ser simulado).
 	- Notificación automática por correo (mínimo: confirmaciones).
-
+	- Ingreso de ordenes de proveedores al inventario
+	- Interfaz para API de SHIMANO
 -------------------------------------------------------------------------------------------
 SpringBoot Config
 - Maven	

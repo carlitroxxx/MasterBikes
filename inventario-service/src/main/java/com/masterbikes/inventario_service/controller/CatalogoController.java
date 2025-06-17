@@ -21,40 +21,70 @@ public class CatalogoController {
 
     private final CatalogoService catalogoService;
     private final CloudinaryService cloudinaryService;
+    private final ObjectMapper objectMapper;
 
     @Autowired
-    public CatalogoController(CatalogoService catalogoService, CloudinaryService cloudinaryService) {
+    public CatalogoController(CatalogoService catalogoService,
+                              CloudinaryService cloudinaryService,
+                              ObjectMapper objectMapper) {
         this.catalogoService = catalogoService;
         this.cloudinaryService = cloudinaryService;
+        this.objectMapper = objectMapper;
     }
+
+    // ======================
+    // Endpoints para Productos de Venta
+    // ======================
 
     @GetMapping("/venta")
     public List<ProductoVenta> getProductosVenta() {
         return catalogoService.getProductosVenta();
     }
 
-    @PostMapping(value = "/venta", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PostMapping("/venta")
+    public ResponseEntity<?> crearProductoVenta(@RequestBody ProductoVenta producto) {
+        // Validaciones básicas
+        if (producto.getId() == null || producto.getId().isEmpty()) {
+            return ResponseEntity.badRequest().body("El ID es requerido");
+        }
+
+        if (catalogoService.existeProductoConId(producto.getId())) {
+            return ResponseEntity.badRequest().body("Ya existe un producto con este ID");
+        }
+
+        if (producto.getTipo() == null || producto.getNombre() == null) {
+            return ResponseEntity.badRequest().body("Tipo y nombre son obligatorios");
+        }
+
+        if (producto.getPrecio() <= 0 || producto.getStock() < 0) {
+            return ResponseEntity.badRequest().body("Precio y stock deben ser positivos");
+        }
+
+        ProductoVenta guardado = catalogoService.guardarProductoVenta(producto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+    }
+
+    @PostMapping(value = "/venta/con-imagenes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<?> crearProductoConImagenes(
             @RequestPart("producto") String productoStr,
             @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenes) {
-
         try {
-            ProductoVenta producto = new ObjectMapper().readValue(productoStr, ProductoVenta.class);
+            ProductoVenta producto = objectMapper.readValue(productoStr, ProductoVenta.class);
 
-            // Aquí irían las mismas validaciones que en la versión simple
+            // Validaciones básicas
+            if (producto.getId() == null || producto.getId().isEmpty()) {
+                return ResponseEntity.badRequest().body("El ID es requerido");
+            }
+            if (catalogoService.existeProductoConId(producto.getId())) {
+                return ResponseEntity.badRequest().body("Ya existe un producto con este ID");
+            }
             if (producto.getTipo() == null || producto.getNombre() == null) {
                 return ResponseEntity.badRequest().body("Tipo y nombre son obligatorios");
             }
-
-            if (!"bicicleta".equalsIgnoreCase(producto.getTipo()) &&
-                    !"componente".equalsIgnoreCase(producto.getTipo())) {
-                return ResponseEntity.badRequest().body("Tipo debe ser 'bicicleta' o 'componente'");
-            }
-
-            // Validar precio y stock
             if (producto.getPrecio() <= 0 || producto.getStock() < 0) {
                 return ResponseEntity.badRequest().body("Precio y stock deben ser positivos");
             }
+
             ProductoVenta guardado = catalogoService.guardarProductoVenta(producto);
 
             if (imagenes != null && !imagenes.isEmpty()) {
@@ -73,16 +103,38 @@ public class CatalogoController {
         return catalogoService.getProductosPorTipo(tipo);
     }
 
+    // ======================
+    // Endpoints para Bicicletas de Arriendo
+    // ======================
+
     @GetMapping("/arriendo")
     public List<BicicletaArriendo> getBicicletasArriendo() {
         return catalogoService.getBicicletasArriendo();
     }
 
+    @PostMapping("/arriendo")
+    public ResponseEntity<?> crearBicicletaArriendo(@RequestBody BicicletaArriendo bicicleta) {
+        // Validaciones básicas
+        if (bicicleta.getId() == null || bicicleta.getId().isEmpty()) {
+            return ResponseEntity.badRequest().body("El ID es requerido");
+        }
+
+        if (catalogoService.existeBicicletaConId(bicicleta.getId())) {
+            return ResponseEntity.badRequest().body("Ya existe una bicicleta con este ID");
+        }
+
+        BicicletaArriendo guardada = catalogoService.guardarBicicletaArriendo(bicicleta);
+        return ResponseEntity.status(HttpStatus.CREATED).body(guardada);
+    }
+
+    // ======================
+    // Endpoints para Gestión de Imágenes
+    // ======================
+
     @PostMapping("/venta/{id}/imagenes")
     public ResponseEntity<?> agregarImagenesProducto(
             @PathVariable String id,
             @RequestParam("imagenes") List<MultipartFile> imagenes) {
-
         try {
             List<String> urls = cloudinaryService.uploadMultipleImages(imagenes);
             ProductoVenta producto = catalogoService.agregarImagenesAProducto(id, urls);
@@ -96,7 +148,6 @@ public class CatalogoController {
     public ResponseEntity<?> eliminarImagenProducto(
             @PathVariable String id,
             @RequestParam String urlImagen) {
-
         try {
             cloudinaryService.deleteImage(urlImagen);
             catalogoService.eliminarImagenDeProducto(id, urlImagen);
@@ -105,6 +156,10 @@ public class CatalogoController {
             return ResponseEntity.badRequest().body("Error al eliminar imagen: " + e.getMessage());
         }
     }
+
+    // ======================
+    // Endpoint de Prueba
+    // ======================
 
     @PostMapping("/test-upload")
     public ResponseEntity<String> testUpload(@RequestParam("file") MultipartFile file) {
