@@ -1,6 +1,6 @@
 
 import React from 'react';
-import ArriendoForm from '../components/ArriendoForm';
+import ArriendoForm from '../Arriendo/ArriendoForm';
 
 const ArriendosPage = () => {
   return (
