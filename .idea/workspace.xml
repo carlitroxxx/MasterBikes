@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="82e22629-e534-4dbc-985e-d8386e8db997" name="Changes" comment="Ux buscador,drawer mejorado">
+    <list default="true" id="82e22629-e534-4dbc-985e-d8386e8db997" name="Changes" comment="Ux drawer agregar editar componentes">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/controller/CatalogoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/controller/CatalogoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/service/CatalogoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/java/com/masterbikes/inventario_service/service/CatalogoService.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -107,7 +109,8 @@
       <workItem from="1749965016201" duration="5130000" />
       <workItem from="1750010333937" duration="2494000" />
       <workItem from="1750019338333" duration="5729000" />
-      <workItem from="1750164152633" duration="6125000" />
+      <workItem from="1750164152633" duration="6472000" />
+      <workItem from="1750172775349" duration="3322000" />
     </task>
     <task id="LOCAL-00001" summary="Springboot Usuario e Inventario agregado">
       <option name="closed" value="true" />
@@ -149,7 +152,15 @@
       <option name="project" value="LOCAL" />
       <updated>1750167590959</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Ux drawer agregar editar componentes">
+      <option name="closed" value="true" />
+      <created>1750170356760</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1750170356760</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -184,6 +195,7 @@
     <MESSAGE value="Catalogo conectado al backend" />
     <MESSAGE value="Ux paginador arreglado" />
     <MESSAGE value="Ux buscador,drawer mejorado" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ux buscador,drawer mejorado" />
+    <MESSAGE value="Ux drawer agregar editar componentes" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ux drawer agregar editar componentes" />
   </component>
 </project>

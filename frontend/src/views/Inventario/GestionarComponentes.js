@@ -61,6 +61,8 @@ export default function GestionarComponentes() {
 
         try {
             if (nuevoProducto) {
+                // Crear nuevo producto (código existente se mantiene igual)
+                // ...
                 // Crear nuevo producto
                 const formData = new FormData();
                 const productoData = {
@@ -85,8 +87,36 @@ export default function GestionarComponentes() {
                 }
             } else {
                 // Actualizar producto existente
-                const response = await axios.put(`${API_URL}/venta/${productoEditar.id}`, productoEditar);
-                setProductos(productos.map(p => p.id === productoEditar.id ? response.data : p));
+                if (imagenesSubir.length > 0 || imagenesPreview.length !== productoEditar.imagenesUrls?.length) {
+                    // Si hay imágenes nuevas o se eliminaron algunas, usar el endpoint con imágenes
+                    const formData = new FormData();
+                    const productoData = {
+                        ...productoEditar,
+                        imagenesUrls: imagenesPreview.filter(url => url.startsWith('http')) // Mantener solo las URLs existentes
+                    };
+                    formData.append('producto', JSON.stringify(productoData));
+
+                    if (imagenesSubir.length > 0) {
+                        imagenesSubir.forEach((file) => {
+                            formData.append('imagenes', file);
+                        });
+                    }
+
+                    const response = await axios.put(
+                        `${API_URL}/venta/${productoEditar.id}/con-imagenes`,
+                        formData,
+                        {
+                            headers: {
+                                'Content-Type': 'multipart/form-data'
+                            }
+                        }
+                    );
+                    setProductos(productos.map(p => p.id === productoEditar.id ? response.data : p));
+                } else {
+                    // Si no hay cambios en las imágenes, usar el endpoint normal
+                    const response = await axios.put(`${API_URL}/venta/${productoEditar.id}`, productoEditar);
+                    setProductos(productos.map(p => p.id === productoEditar.id ? response.data : p));
+                }
             }
 
             setOpenDrawer(false);
@@ -101,7 +131,6 @@ export default function GestionarComponentes() {
             showSnackbar(`Error al ${nuevoProducto ? 'crear' : 'actualizar'} el componente`, 'error');
         }
     };
-
     const handleNuevoProducto = () => {
         setProductoEditar({
             id: '',
@@ -131,14 +160,18 @@ export default function GestionarComponentes() {
         setProductoEditar({ ...producto });
         setNuevoProducto(false);
         setOpenDrawer(true);
-        setImagenesPreview(producto.imagenesUrls || []);
+        // Solo establecer las URLs de imágenes existentes (no las previews locales)
+        setImagenesPreview(producto.imagenesUrls?.filter(url => url.startsWith('http')) || []);
+        setImagenesSubir([]);
     };
 
     const handleImagenChange = (e) => {
         const files = Array.from(e.target.files);
+        if (files.length === 0) return;
+
         const previews = files.map(file => URL.createObjectURL(file));
-        setImagenesPreview([...imagenesPreview, ...previews]);
-        setImagenesSubir([...imagenesSubir, ...files]);
+        setImagenesPreview(prev => [...prev, ...previews]);
+        setImagenesSubir(prev => [...prev, ...files]);
     };
 
     const eliminarImagenPreview = async (index) => {
@@ -147,11 +180,19 @@ export default function GestionarComponentes() {
 
             // Si es una URL existente (no una preview local)
             if (url.startsWith('http')) {
+                // Eliminar del backend
                 await axios.delete(`${API_URL}/venta/${productoEditar.id}/imagenes`, {
                     params: { urlImagen: url }
                 });
+
+                // Actualizar el estado del producto editado
+                setProductoEditar(prev => ({
+                    ...prev,
+                    imagenesUrls: prev.imagenesUrls.filter(img => img !== url)
+                }));
             }
 
+            // Eliminar de los estados locales
             const nuevasPreviews = [...imagenesPreview];
             nuevasPreviews.splice(index, 1);
             setImagenesPreview(nuevasPreviews);
@@ -308,6 +349,11 @@ export default function GestionarComponentes() {
                 onClose={() => {
                     setOpenDrawer(false);
                     setProductoEditar(null);
+                    imagenesPreview.forEach(preview => {
+                        if (preview.startsWith('blob:')) {
+                            URL.revokeObjectURL(preview);
+                        }
+                    });
                     setImagenesPreview([]);
                     setImagenesSubir([]);
                 }}

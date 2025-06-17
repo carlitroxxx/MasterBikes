@@ -76,11 +76,9 @@ export default function GestionarBicicletas() {
                     // Crear nueva bicicleta de venta
                     const formData = new FormData();
                     formData.append('producto', JSON.stringify(bicicletaEditar));
-
-                    imagenesSubir.forEach((file, index) => {
-                        formData.append(`imagenes`, file);
+                    imagenesSubir.forEach((file) => {
+                        formData.append('imagenes', file);
                     });
-
                     const response = await axios.post(`${API_URL}/venta/con-imagenes`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
@@ -88,11 +86,23 @@ export default function GestionarBicicletas() {
                     });
                     setBicicletasVenta([...bicicletasVenta, response.data]);
                 } else {
-                    // Actualizar bicicleta de venta
-                    const response = await axios.put(`${API_URL}/venta/${bicicletaEditar.id}`, bicicletaEditar);
+                    // Actualizar bicicleta de venta con imágenes
+                    const formData = new FormData();
+                    formData.append('producto', JSON.stringify(bicicletaEditar));
+                    if (imagenesSubir.length > 0) {
+                        imagenesSubir.forEach((file) => {
+                            formData.append('imagenes', file);
+                        });
+                    }
+                    const response = await axios.put(`${API_URL}/venta/${bicicletaEditar.id}/con-imagenes`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
                     setBicicletasVenta(bicicletasVenta.map(b => b.id === bicicletaEditar.id ? response.data : b));
                 }
             } else {
+                // Código existente para arriendo...
                 if (nuevaBicicleta) {
                     // Crear nueva bicicleta de arriendo
                     const response = await axios.post(`${API_URL}/arriendo`, bicicletaEditar);
@@ -116,6 +126,7 @@ export default function GestionarBicicletas() {
             showSnackbar(`Error al ${nuevaBicicleta ? 'crear' : 'actualizar'} la bicicleta`, 'error');
         }
     };
+
 
     const handleNuevaBicicleta = () => {
         setFormTipoBicicleta(tipoBicicleta);

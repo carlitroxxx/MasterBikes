@@ -143,6 +143,37 @@ public class CatalogoController {
             return ResponseEntity.badRequest().body("Error al subir imágenes: " + e.getMessage());
         }
     }
+    @PutMapping(value = "/venta/{id}/con-imagenes", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> actualizarProductoConImagenes(
+            @PathVariable String id,
+            @RequestPart("producto") String productoStr,
+            @RequestPart(value = "imagenes", required = false) List<MultipartFile> imagenes) {
+        try {
+            ProductoVenta producto = objectMapper.readValue(productoStr, ProductoVenta.class);
+
+            // Validaciones básicas
+            if (!id.equals(producto.getId())) {
+                return ResponseEntity.badRequest().body("El ID del path no coincide con el ID del producto");
+            }
+            if (producto.getTipo() == null || producto.getNombre() == null) {
+                return ResponseEntity.badRequest().body("Tipo y nombre son obligatorios");
+            }
+            if (producto.getPrecio() <= 0 || producto.getStock() < 0) {
+                return ResponseEntity.badRequest().body("Precio y stock deben ser positivos");
+            }
+
+            ProductoVenta actualizado = catalogoService.actualizarProductoVenta(producto);
+
+            if (imagenes != null && !imagenes.isEmpty()) {
+                List<String> urls = cloudinaryService.uploadMultipleImages(imagenes);
+                actualizado = catalogoService.agregarImagenesAProducto(actualizado.getId(), urls);
+            }
+
+            return ResponseEntity.ok(actualizado);
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error: " + e.getMessage());
+        }
+    }
 
     @DeleteMapping("/venta/{id}/imagenes")
     public ResponseEntity<?> eliminarImagenProducto(
@@ -170,4 +201,87 @@ public class CatalogoController {
             return ResponseEntity.badRequest().body("Error: " + e.getMessage());
         }
     }
+
+    @PutMapping("/venta/{id}")
+    public ResponseEntity<?> actualizarProductoVenta(
+            @PathVariable String id,
+            @RequestBody ProductoVenta producto) {
+        try {
+            // Verificar que el ID del path coincide con el ID del producto
+            if (!id.equals(producto.getId())) {
+                return ResponseEntity.badRequest().body("El ID del path no coincide con el ID del producto");
+            }
+
+            // Validaciones básicas
+            if (producto.getTipo() == null || producto.getNombre() == null) {
+                return ResponseEntity.badRequest().body("Tipo y nombre son obligatorios");
+            }
+            if (producto.getPrecio() <= 0 || producto.getStock() < 0) {
+                return ResponseEntity.badRequest().body("Precio y stock deben ser positivos");
+            }
+
+            ProductoVenta actualizado = catalogoService.actualizarProductoVenta(producto);
+            return ResponseEntity.ok(actualizado);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al actualizar el producto: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/venta/{id}")
+    public ResponseEntity<?> eliminarProductoVenta(@PathVariable String id) {
+        try {
+            catalogoService.eliminarProductoVenta(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al eliminar el producto: " + e.getMessage());
+        }
+    }
+    @PutMapping("/arriendo/{id}")
+    public ResponseEntity<?> actualizarBicicletaArriendo(
+            @PathVariable String id,
+            @RequestBody BicicletaArriendo bicicleta) {
+        try {
+            // Verificar que el ID del path coincide con el ID de la bicicleta
+            if (!id.equals(bicicleta.getId())) {
+                return ResponseEntity.badRequest().body("El ID del path no coincide con el ID de la bicicleta");
+            }
+
+            BicicletaArriendo actualizada = catalogoService.actualizarBicicletaArriendo(bicicleta);
+            return ResponseEntity.ok(actualizada);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al actualizar la bicicleta: " + e.getMessage());
+        }
+    }
+
+    @DeleteMapping("/arriendo/{id}")
+    public ResponseEntity<?> eliminarBicicletaArriendo(@PathVariable String id) {
+        try {
+            catalogoService.eliminarBicicletaArriendo(id);
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body("Error al eliminar la bicicleta: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/venta/producto/{id}")
+    public ResponseEntity<?> obtenerProductoPorId(@PathVariable String id) {
+        try {
+            ProductoVenta producto = catalogoService.obtenerProductoVentaPorId(id);
+            return ResponseEntity.ok(producto);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+
+
+
+
 }
