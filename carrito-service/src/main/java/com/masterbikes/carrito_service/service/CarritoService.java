@@ -6,10 +6,10 @@ import com.masterbikes.carrito_service.model.*;
 import com.masterbikes.carrito_service.repository.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -18,14 +18,50 @@ public class CarritoService {
     private final CarritoRepository carritoRepository;
     private final InventarioServiceClient inventarioClient;
 
+    @Transactional
     public CarritoDto obtenerCarrito(String usuarioId) {
         Carrito carrito = carritoRepository
                 .findByUsuarioIdAndEstado(usuarioId, Carrito.EstadoCarrito.ACTIVO)
                 .orElseGet(() -> crearCarritoInicial(usuarioId));
-
         return convertirADto(carrito);
     }
+    @Transactional
+    public void eliminarCarrito(String id, String usuarioId) {
+        Carrito carrito = carritoRepository.findByIdAndUsuarioId(id, usuarioId)
+                .orElseThrow(() -> new CarritoNoEncontradoException("Carrito no encontrado"));
 
+        carrito.setEstado(Carrito.EstadoCarrito.ABANDONADO);
+        carrito.setFechaActualizacion(new Date());
+        carritoRepository.save(carrito);
+    }
+    @Transactional
+    public CarritoDto agregarProducto(String usuarioId, AgregarProductoRequest request) {
+        ProductoInventarioDto producto = inventarioClient.obtenerProducto(request.getProductoId());
+        if (producto == null) throw new ProductoNoEncontradoException("Producto no encontrado");
+        if (producto.getStock() < request.getCantidad()) throw new StockInsuficienteException("Stock insuficiente");
+
+        Carrito carrito = carritoRepository
+                .findByUsuarioIdAndEstado(usuarioId, Carrito.EstadoCarrito.ACTIVO)
+                .orElseGet(() -> crearCarritoInicial(usuarioId));
+
+        carrito.getItems().removeIf(item -> item.getProductoId().equals(request.getProductoId()));
+        carrito.getItems().add(crearItemCarrito(producto, request.getCantidad()));
+        carrito.setFechaActualizacion(new Date());
+
+        return convertirADto(carritoRepository.save(carrito));
+    }
+
+    @Transactional
+    public void eliminarItem(String carritoId, String usuarioId, String productoId) {
+        Carrito carrito = carritoRepository.findByIdAndUsuarioId(carritoId, usuarioId)
+                .orElseThrow(() -> new CarritoNoEncontradoException("Carrito no encontrado"));
+        carrito.getItems().removeIf(item -> item.getProductoId().equals(productoId));
+        carrito.setFechaActualizacion(new Date());
+        carritoRepository.save(carrito);
+    }
+
+    // ... (métodos auxiliares crearCarritoInicial, crearItemCarrito, convertirADto)
+    // Métodos auxiliares privados
     private Carrito crearCarritoInicial(String usuarioId) {
         Carrito carrito = new Carrito();
         carrito.setUsuarioId(usuarioId);
@@ -34,34 +70,6 @@ public class CarritoService {
         carrito.setEstado(Carrito.EstadoCarrito.ACTIVO);
         carrito.setItems(new ArrayList<>());
         return carritoRepository.save(carrito);
-    }
-
-    public CarritoDto agregarProducto(String usuarioId, AgregarProductoRequest request) {
-        ProductoInventarioDto producto = inventarioClient.obtenerProducto(request.getProductoId());
-        if (producto == null) {
-            throw new ProductoNoEncontradoException("Producto no encontrado");
-        }
-        if (producto.getStock() < request.getCantidad()) {
-            throw new StockInsuficienteException("Stock insuficiente");
-        }
-
-        Carrito carrito = carritoRepository
-                .findByUsuarioIdAndEstado(usuarioId, Carrito.EstadoCarrito.ACTIVO)
-                .orElseGet(() -> crearCarritoInicial(usuarioId));
-
-        Optional<ItemCarrito> itemExistente = carrito.getItems().stream()
-                .filter(item -> item.getProductoId().equals(request.getProductoId()))
-                .findFirst();
-
-        if (itemExistente.isPresent()) {
-            ItemCarrito item = itemExistente.get();
-            item.setCantidad(item.getCantidad() + request.getCantidad());
-        } else {
-            carrito.getItems().add(crearItemCarrito(producto, request.getCantidad()));
-        }
-
-        carrito.setFechaActualizacion(new Date());
-        return convertirADto(carritoRepository.save(carrito));
     }
 
     private ItemCarrito crearItemCarrito(ProductoInventarioDto producto, int cantidad) {
@@ -100,13 +108,5 @@ public class CarritoService {
                 .sum());
 
         return dto;
-    }
-
-    public void eliminarCarrito(String id, String usuarioId) {
-        Carrito carrito = carritoRepository.findByIdAndUsuarioId(id, usuarioId)
-                .orElseThrow(() -> new CarritoNoEncontradoException("Carrito no encontrado"));
-
-        carrito.setEstado(Carrito.EstadoCarrito.ABANDONADO);
-        carritoRepository.save(carrito);
     }
 }

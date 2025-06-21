@@ -1,7 +1,7 @@
 package com.masterbikes.carrito_service.dto;
 
-import lombok.Data;
 import jakarta.validation.constraints.*;
+import lombok.Data;
 
 @Data
 public class AgregarProductoRequest {

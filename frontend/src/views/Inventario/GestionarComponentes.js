@@ -7,6 +7,9 @@ import {
     FormControl, InputLabel, Select, MenuItem, Chip, Avatar,
     Stack, InputAdornment
 } from '@mui/material';
+// Agrega estas importaciones al inicio del archivo
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import {
     Edit as EditIcon,
     Delete as DeleteIcon,
@@ -31,7 +34,9 @@ export default function GestionarComponentes() {
     const [openDrawer, setOpenDrawer] = useState(false);
     const [imagenesPreview, setImagenesPreview] = useState([]);
     const [imagenesSubir, setImagenesSubir] = useState([]);
-
+// Agrega estos estados con los demás useState
+    const [idDisponible, setIdDisponible] = useState(null);
+    const [validandoId, setValidandoId] = useState(false);
 
     // Cargar productos al montar el componente
     useEffect(() => {
@@ -48,7 +53,39 @@ export default function GestionarComponentes() {
         }
     };
 
+    // Agrega esta función con las otras funciones del componente
+    const verificarDisponibilidadId = async (id) => {
+        if (!id) {
+            setIdDisponible(null);
+            return;
+        }
+
+        setValidandoId(true);
+        try {
+            const response = await axios.get(`${API_URL}/venta/producto/${id}`);
+            // Si el producto existe y es un componente
+            if (response.data && response.data.tipo === "componente") {
+                setIdDisponible(false);
+            } else {
+                setIdDisponible(true); // No es un componente (ID disponible)
+            }
+        } catch (error) {
+            if (error.response?.status === 404) {
+                setIdDisponible(true); // ID no existe (disponible)
+            } else {
+                setIdDisponible(null); // Error de conexión
+                console.error("Error verificando ID:", error);
+            }
+        } finally {
+            setValidandoId(false);
+        }
+    };
     const handleGuardarEdicion = async () => {
+        // Validación del ID para nuevos productos
+        if (nuevoProducto && idDisponible === false) {
+            showSnackbar('El ID ingresado ya está en uso para otro componente', 'error');
+            return;
+        }
         const errors = {};
         if (!productoEditar.nombre) errors.nombre = 'Requerido';
         if (productoEditar.stock < 0) errors.stock = 'No puede ser negativo';
@@ -349,6 +386,8 @@ export default function GestionarComponentes() {
                 onClose={() => {
                     setOpenDrawer(false);
                     setProductoEditar(null);
+                    setIdDisponible(null);
+                    setValidandoId(false);
                     imagenesPreview.forEach(preview => {
                         if (preview.startsWith('blob:')) {
                             URL.revokeObjectURL(preview);
@@ -407,9 +446,42 @@ export default function GestionarComponentes() {
                                     fullWidth
                                     size="small"
                                     value={productoEditar?.id || ''}
-                                    onChange={e => setProductoEditar({ ...productoEditar, id: e.target.value })}
+                                    onChange={e => {
+                                        setProductoEditar({ ...productoEditar, id: e.target.value });
+                                        if (nuevoProducto) {
+                                            verificarDisponibilidadId(e.target.value);
+                                        }
+                                    }}
                                     disabled={!nuevoProducto}
                                 />
+                                {nuevoProducto && idDisponible !== null && !validandoId && (
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            mt: 0.5,
+                                            color: idDisponible ? 'success.main' : 'error.main'
+                                        }}
+                                    >
+                                        {idDisponible ? (
+                                            <>
+                                                <CheckCircleIcon fontSize="inherit" sx={{ mr: 0.5 }} />
+                                                ID disponible
+                                            </>
+                                        ) : (
+                                            <>
+                                                <ErrorIcon fontSize="inherit" sx={{ mr: 0.5 }} />
+                                                ID no disponible
+                                            </>
+                                        )}
+                                    </Typography>
+                                )}
+                                {nuevoProducto && validandoId && (
+                                    <Typography variant="caption" sx={{ mt: 0.5 }}>
+                                        Validando ID...
+                                    </Typography>
+                                )}
                             </Box>
                             <Box sx={{ flex: '0 0 55%' }}>
                                 <TextField

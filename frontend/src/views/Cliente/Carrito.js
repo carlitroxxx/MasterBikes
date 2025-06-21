@@ -1,57 +1,112 @@
 import React from 'react';
 import {
-    Container,
-    Typography,
-    List,
-    ListItem,
-    ListItemText,
-    Button,
-    Grid,
-    Divider,
-    Box,
-    IconButton,
-    Badge,
-    Paper
+    Container, Typography, List, ListItem, ListItemText, Button,
+    Grid, Divider, Box, IconButton, Badge, Paper, CircularProgress, Alert
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PaymentIcon from '@mui/icons-material/Payment';
+import AddIcon from '@mui/icons-material/Add';
+import RemoveIcon from '@mui/icons-material/Remove';
 
 export default function Carrito() {
-    const [productos, setProductos] = React.useState([
-        { id: 1, nombre: 'Cadena de Bicicleta', cantidad: 2, precio: 1500, imagen: 'https://via.placeholder.com/80' },
-        { id: 2, nombre: 'Neumático MTB', cantidad: 1, precio: 5000, imagen: 'https://via.placeholder.com/80' },
-    ]);
+    const [carrito, setCarrito] = React.useState({
+        id: null,
+        items: [],
+        estado: 'ACTIVO'
+    });
+    const [loading, setLoading] = React.useState(true);
+    const [error, setError] = React.useState(null);
 
-    const total = productos.reduce((acc, p) => acc + p.cantidad * p.precio, 0);
+    // Obtener carrito al cargar el componente
+    React.useEffect(() => {
+        const fetchCarrito = async () => {
+            try {
+                const response = await fetch('http://localhost:8083/api/carrito/usuario-actual');
+                if (!response.ok) throw new Error('Error al cargar el carrito');
+                const data = await response.json();
+                setCarrito(data);
+            } catch (err) {
+                setError(err.message);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCarrito();
+    }, []);
 
-    const handleEliminar = (id) => {
-        setProductos(productos.filter(p => p.id !== id));
+    // Eliminar producto del carrito
+    const handleEliminar = async (productoId) => {
+        try {
+            const response = await fetch(
+                `http://localhost:8083/api/carrito/${carrito.id}/items/${productoId}?usuarioId=usuario-actual`,
+                { method: 'DELETE' }
+            );
+            if (!response.ok) throw new Error('Error al eliminar producto');
+
+            const updatedCarrito = await response.json();
+            setCarrito(updatedCarrito);
+        } catch (err) {
+            setError(err.message);
+        }
     };
 
-    const handleCambiarCantidad = (id, nuevaCantidad) => {
+    // Actualizar cantidad de un producto
+    const handleCambiarCantidad = async (productoId, nuevaCantidad) => {
         if (nuevaCantidad < 1) return;
-        setProductos(productos.map(p => p.id === id ? {...p, cantidad: nuevaCantidad} : p));
+
+        try {
+            const response = await fetch(
+                'http://localhost:8083/api/carrito/usuario-actual/items',
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        productoId,
+                        cantidad: nuevaCantidad
+                    })
+                }
+            );
+            if (!response.ok) throw new Error('Error al actualizar cantidad');
+
+            const updatedCarrito = await response.json();
+            setCarrito(updatedCarrito);
+        } catch (err) {
+            setError(err.message);
+        }
     };
+
+    // Calcular total
+    const total = carrito.items.reduce((sum, item) => sum + (item.precioUnitario * item.cantidad), 0);
+
+    if (loading) return (
+        <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+            <CircularProgress size={60} />
+        </Box>
+    );
+
+    if (error) return (
+        <Container sx={{ py: 4 }}>
+            <Alert severity="error" sx={{ mb: 3 }}>
+                Error: {error}
+            </Alert>
+            <Button
+                variant="contained"
+                onClick={() => window.location.reload()}
+            >
+                Reintentar
+            </Button>
+        </Container>
+    );
 
     return (
-        <Container
-            disableGutters // Elimina el padding interno del Container
-            maxWidth="none"
-            sx={{
-                mx: 0,
-                py: 4,
-                width: '100%',
-                px: { xs: 1, sm: 2, md: 3 } // Padding lateral mínimo
-            }}
-        >
-            <Box sx={{
-                display: 'flex',
-                alignItems: 'center',
-                mb: 4,
-                px: { xs: 2, sm: 3 } // Padding solo para el título
-            }}>
-                <Badge badgeContent={productos.length} color="primary" sx={{ mr: 2 }}>
+        <Container maxWidth="lg" sx={{ py: 4 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
+                <Badge
+                    badgeContent={carrito.items.length}
+                    color="primary"
+                    sx={{ mr: 2 }}
+                >
                     <ShoppingCartIcon fontSize="large" />
                 </Badge>
                 <Typography variant="h4" component="h1">
@@ -59,112 +114,75 @@ export default function Carrito() {
                 </Typography>
             </Box>
 
-            <Grid container
-                  spacing={3}
-                  sx={{
-                      margin: 0,
-                      width: '100%',
-                      display: 'flex',
-                      justifyContent: 'space-between', // Esto separará los items a los extremos
-                      alignItems: 'flex-start' // Alinea los items en la parte superior
-                  }}> {/* Reduje el espacio entre grids */}
-                {/* Columna izquierda - Productos (ahora ocupa más espacio) */}
+            <Grid container spacing={3}>
+                {/* Lista de productos */}
+                <Grid item xs={12} md={8}>
+                    <Paper elevation={3} sx={{ p: 3 }}>
+                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                            Productos ({carrito.items.length})
+                        </Typography>
+                        <Divider sx={{ mb: 3 }} />
 
-                <Grid item xs={12} md={8} lg={9} sx={{ padding: '0 !important' ,width: '70%',minWidth:'350px'}}> {/* Cambié de md=8 a md=9 */}
-                                                <Paper elevation={2} sx={{
-                                                    p: { xs: 2, sm: 3 , lg: 3},
-                                                    height: '100%',
-                                                    mx: 0
-                                                }}>
-                                                    <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-                                                        Productos
-                                                    </Typography>
-                                                    <Divider sx={{ mb: 3 }} />
-
-                                                    {productos.length === 0 ? (
-                                                        <Typography variant="body1" color="text.secondary" sx={{ py: 4, textAlign: 'center' }}>
-                                                            No hay productos en tu carrito
-                                                        </Typography>
-                                                    ) : (
-                                                        <List sx={{ width: '100%' }}>
-                                                            {productos.map((p) => (
-                                                                <React.Fragment key={p.id}>
-                                                                    <ListItem sx={{
-                                                                        py: 2,
-                                                                        px: 0,
-                                                                        gap: 2 // Espacio entre elementos
-                                                                    }}>
-                                                                        <Box
-                                                                            component="img"
-                                                                            src={p.imagen}
-                                                                            alt={p.nombre}
-                                                                            sx={{
-                                                                                width: 100, // Aumenté el tamaño de la imagen
-                                                                                height: 100,
-                                                                                objectFit: 'cover',
-                                                                                borderRadius: 1,
-                                                                                flexShrink: 0
-                                                                            }}
-                                                                        />
-                                                                        <Box sx={{
-                                                                            flexGrow: 1,
-                                                                            minWidth: 0,
-                                                                            display: 'flex',
-                                                flexDirection: 'column',
-                                                justifyContent: 'space-between'
-                                            }}>
+                        {carrito.items.length === 0 ? (
+                            <Typography
+                                variant="body1"
+                                color="text.secondary"
+                                sx={{ py: 4, textAlign: 'center' }}
+                            >
+                                No hay productos en tu carrito
+                            </Typography>
+                        ) : (
+                            <List>
+                                {carrito.items.map((item) => (
+                                    <React.Fragment key={item.productoId}>
+                                        <ListItem sx={{ py: 2, px: 0 }}>
+                                            <Box
+                                                component="img"
+                                                src={item.imagenesUrls?.[0] || 'https://via.placeholder.com/100'}
+                                                alt={item.nombre}
+                                                sx={{
+                                                    width: 100,
+                                                    height: 100,
+                                                    objectFit: 'cover',
+                                                    borderRadius: 1,
+                                                    mr: 2
+                                                }}
+                                            />
+                                            <Box sx={{ flexGrow: 1 }}>
                                                 <ListItemText
-                                                    primary={p.nombre}
+                                                    primary={item.nombre}
                                                     primaryTypographyProps={{
                                                         fontWeight: 'medium',
-                                                        fontSize: '1.1rem'
+                                                        variant: 'h6'
                                                     }}
-                                                    secondary={`$${p.precio.toLocaleString()}`}
+                                                    secondary={`$${item.precioUnitario.toLocaleString()}`}
                                                     secondaryTypographyProps={{
-                                                        fontSize: '1rem'
+                                                        variant: 'body1'
                                                     }}
                                                 />
-                                                <Box sx={{
-                                                    display: 'flex',
-                                                    alignItems: 'center',
-                                                    mt: 1
-                                                }}>
-                                                    <Button
-                                                        size="small"
-                                                        onClick={() => handleCambiarCantidad(p.id, p.cantidad - 1)}
-                                                        disabled={p.cantidad <= 1}
-                                                        sx={{ minWidth: 36 }}
+                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
+                                                    <IconButton
+                                                        onClick={() => handleCambiarCantidad(item.productoId, item.cantidad - 1)}
+                                                        disabled={item.cantidad <= 1}
                                                     >
-                                                        -
-                                                    </Button>
-                                                    <Typography sx={{ mx: 2 }}>{p.cantidad}</Typography>
-                                                    <Button
-                                                        size="small"
-                                                        onClick={() => handleCambiarCantidad(p.id, p.cantidad + 1)}
-                                                        sx={{ minWidth: 36 }}
+                                                        <RemoveIcon />
+                                                    </IconButton>
+                                                    <Typography sx={{ mx: 1 }}>{item.cantidad}</Typography>
+                                                    <IconButton
+                                                        onClick={() => handleCambiarCantidad(item.productoId, item.cantidad + 1)}
                                                     >
-                                                        +
-                                                    </Button>
+                                                        <AddIcon />
+                                                    </IconButton>
                                                 </Box>
                                             </Box>
-                                            <Box sx={{
-                                                display: 'flex',
-                                                alignItems: 'center',
-                                                minWidth: 'fit-content',
-                                                gap: 1
-                                            }}>
-                                                <Typography sx={{
-                                                    fontWeight: 'bold',
-                                                    fontSize: '1.1rem',
-                                                    minWidth: 100,
-                                                    textAlign: 'right'
-                                                }}>
-                                                    ${(p.precio * p.cantidad).toLocaleString()}
+                                            <Box sx={{ textAlign: 'right' }}>
+                                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                                                    ${(item.precioUnitario * item.cantidad).toLocaleString()}
                                                 </Typography>
                                                 <IconButton
-                                                    onClick={() => handleEliminar(p.id)}
+                                                    onClick={() => handleEliminar(item.productoId)}
                                                     color="error"
-                                                    size="medium"
+                                                    sx={{ mt: 1 }}
                                                 >
                                                     <DeleteIcon />
                                                 </IconButton>
@@ -178,40 +196,25 @@ export default function Carrito() {
                     </Paper>
                 </Grid>
 
-                {/* Columna derecha - Resumen de Compra (ahora más estrecha) */}
-                <Grid item xs={12} md={4} lg={3} sx={{ padding: '0 !important',width: '23%' ,minWidth:'350px'}}> {/* Cambié de md=4 a md=3 */}
-                    <Paper elevation={2} sx={{
-                        p: { xs: 2, sm: 3, lg: 3 },
-                        width: '100%', // Cambiado de '120%' a '100%'
-                        position: 'sticky',
-                        top: 16,
-                        height: 'fit-content'
-                    }}>
-                        <Typography variant="h6" sx={{
-                            mb: 2,
-                            fontWeight: 'bold',
-                            fontSize: '1.2rem'
-                        }}>
+                {/* Resumen de compra */}
+                <Grid item xs={12} md={4}>
+                    <Paper elevation={3} sx={{ p: 3, position: 'sticky', top: 16 }}>
+                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
                             Resumen de Compra
                         </Typography>
-                        <Divider sx={{ mb: 3 }} />
+                        <Divider sx={{ mb: 2 }} />
 
                         <Box sx={{ mb: 2 }}>
-                            {productos.map(p => (
-                                <Box key={p.id} sx={{
-                                    display: 'flex',
-                                    justifyContent: 'space-between',
-                                    mb: 1.5,
-                                    gap: 1
-                                }}>
-                                    <Typography variant="body2" noWrap sx={{
-                                        maxWidth: '60%',
-                                        fontSize: '0.95rem'
-                                    }}>
-                                        {p.nombre} x{p.cantidad}
+                            {carrito.items.map(item => (
+                                <Box
+                                    key={item.productoId}
+                                    sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}
+                                >
+                                    <Typography variant="body2">
+                                        {item.nombre} x{item.cantidad}
                                     </Typography>
-                                    <Typography variant="body2" sx={{ fontSize: '0.95rem' }}>
-                                        ${(p.precio * p.cantidad).toLocaleString()}
+                                    <Typography variant="body2">
+                                        ${(item.precioUnitario * item.cantidad).toLocaleString()}
                                     </Typography>
                                 </Box>
                             ))}
@@ -219,17 +222,9 @@ export default function Carrito() {
 
                         <Divider sx={{ my: 2 }} />
 
-                        <Box sx={{
-                            display: 'flex',
-                            justifyContent: 'space-between',
-                            mb: 3,
-                            alignItems: 'center'
-                        }}>
-                            <Typography variant="h6" sx={{ fontSize: '1.2rem' }}>Total</Typography>
-                            <Typography variant="h6" sx={{
-                                fontWeight: 'bold',
-                                fontSize: '1.3rem'
-                            }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                            <Typography variant="h6">Total</Typography>
+                            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                                 ${total.toLocaleString()}
                             </Typography>
                         </Box>
@@ -240,12 +235,8 @@ export default function Carrito() {
                             fullWidth
                             size="large"
                             startIcon={<PaymentIcon />}
-                            disabled={productos.length === 0}
-                            sx={{
-                                py: 1.5,
-                                fontWeight: 'bold',
-                                fontSize: '1.05rem'
-                            }}
+                            disabled={carrito.items.length === 0}
+                            sx={{ py: 1.5, fontWeight: 'bold' }}
                         >
                             Proceder al Pago
                         </Button>

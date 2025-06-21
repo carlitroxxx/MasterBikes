@@ -6,6 +6,9 @@ import {
     Box, Tooltip, Alert, Snackbar, Grid, Divider, MenuItem, Select,
     FormControl, InputLabel, Chip, Drawer, Avatar, Stack, InputAdornment
 } from '@mui/material';
+// Agregar estos imports junto con los otros iconos
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import ErrorIcon from '@mui/icons-material/Error';
 import {
     Edit as EditIcon,
     Delete as DeleteIcon,
@@ -35,17 +38,46 @@ export default function GestionarBicicletas() {
     const [imagenesPreview, setImagenesPreview] = useState([]);
     const [imagenesSubir, setImagenesSubir] = useState([]);
     const [formTipoBicicleta, setFormTipoBicicleta] = useState('venta');
+    // Agregar esto junto con los otros estados al inicio del componente
+    const [idDisponible, setIdDisponible] = useState(null);
+    const [validandoId, setValidandoId] = useState(false);
     // Cargar datos iniciales
     useEffect(() => {
         cargarBicicletas();
     }, []);
 
+    // Agregar esta función junto con las otras funciones del componente
+    const verificarDisponibilidadId = async (id) => {
+        if (!id) {
+            setIdDisponible(null);
+            return;
+        }
+        setValidandoId(true);
+        try {
+            if (formTipoBicicleta === 'venta') {
+                await axios.get(`${API_URL}/bicicletas/venta/${id}`);
+                setIdDisponible(false); // Si la petición no falla, el ID existe
+            } else {
+                await axios.get(`${API_URL}/bicicletas/arriendo/${id}`);
+                setIdDisponible(false); // Si la petición no falla, el ID existe
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                setIdDisponible(true); // ID no encontrado, está disponible
+            } else {
+                setIdDisponible(null); // Error desconocido, no mostrar estado
+            }
+        } finally {
+            setValidandoId(false);
+        }
+    };
     const cargarBicicletas = async () => {
         try {
             const [ventaResponse, arriendoResponse] = await Promise.all([
-                axios.get(`${API_URL}/venta`),
+                axios.get(`${API_URL}/venta/bicicleta`),
                 axios.get(`${API_URL}/arriendo`)
             ]);
+
             setBicicletasVenta(ventaResponse.data);
             setBicicletasArriendo(arriendoResponse.data);
         } catch (error) {
@@ -55,6 +87,10 @@ export default function GestionarBicicletas() {
     };
 
     const handleGuardarEdicion = async () => {
+        if (nuevaBicicleta && idDisponible === false) {
+            showSnackbar('El ID ingresado ya está en uso', 'error');
+            return;
+        }
         const errors = {};
         if (!bicicletaEditar.nombre) errors.nombre = 'Requerido';
 
@@ -400,6 +436,8 @@ export default function GestionarBicicletas() {
                 onClose={() => {
                     setOpenDrawer(false);
                     setBicicletaEditar(null);
+                    setIdDisponible(null);
+                    setValidandoId(false);
                     setImagenesPreview([]);
                     setImagenesSubir([]);
                 }}
@@ -480,9 +518,41 @@ export default function GestionarBicicletas() {
                                     fullWidth
                                     size="small"
                                     value={bicicletaEditar?.id || ''}
-                                    onChange={e => setBicicletaEditar({ ...bicicletaEditar, id: e.target.value })}
+                                    onChange={e => {
+                                        setBicicletaEditar({ ...bicicletaEditar, id: e.target.value });
+                                        verificarDisponibilidadId(e.target.value);
+                                    }}
                                     disabled={!nuevaBicicleta}
                                 />
+                                {idDisponible !== null && (
+                                    <Typography
+                                        variant="caption"
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            mt: 0.5,
+                                            color: idDisponible ? 'success.main' : 'error.main'
+                                        }}
+                                    >
+                                        {validandoId ? (
+                                            <>Validando ID...</>
+                                        ) : (
+                                            <>
+                                                {idDisponible ? (
+                                                    <>
+                                                        <CheckCircleIcon fontSize="inherit" sx={{ mr: 0.5 }} />
+                                                        ID disponible
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <ErrorIcon fontSize="inherit" sx={{ mr: 0.5 }} />
+                                                        ID no disponible
+                                                    </>
+                                                )}
+                                            </>
+                                        )}
+                                    </Typography>
+                                )}
                             </Box>
                             <Box sx={{ flex: '0 0 55%' }}>
                                 <TextField

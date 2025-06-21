@@ -280,6 +280,26 @@ public class CatalogoController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         }
     }
+    //bicicleta venta por id
+    @GetMapping("/bicicletas/venta/{id}")
+    public ResponseEntity<?> obtenerBicicletaVentaPorId(@PathVariable String id) {
+        try {
+            ProductoVenta bicicleta = catalogoService.obtenerProductoVentaPorId(id);
+            return ResponseEntity.ok(bicicleta);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
+    //bicicleta arriendo por id
+    @GetMapping("/bicicletas/arriendo/{id}")
+    public ResponseEntity<?> obtenerBicicletaArriendoPorId(@PathVariable String id) {
+        try {
+            BicicletaArriendo bicicleta = catalogoService.obtenerArriendoPorId(id);
+            return ResponseEntity.ok(bicicleta);
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
+    }
 
 
 

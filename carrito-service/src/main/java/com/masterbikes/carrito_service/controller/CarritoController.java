@@ -1,17 +1,15 @@
 package com.masterbikes.carrito_service.controller;
 
-
 import com.masterbikes.carrito_service.dto.*;
-import com.masterbikes.carrito_service.service.*;
+import com.masterbikes.carrito_service.service.CarritoService;
 import lombok.AllArgsConstructor;
-import org.springframework.http.*;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/carrito")
 @AllArgsConstructor
 public class CarritoController {
-
     private final CarritoService carritoService;
 
     @GetMapping("/{usuarioId}")
@@ -24,6 +22,15 @@ public class CarritoController {
             @PathVariable String usuarioId,
             @RequestBody AgregarProductoRequest request) {
         return ResponseEntity.ok(carritoService.agregarProducto(usuarioId, request));
+    }
+
+    @DeleteMapping("/{id}/items/{productoId}")
+    public ResponseEntity<Void> eliminarItem(
+            @PathVariable String id,
+            @PathVariable String productoId,
+            @RequestParam String usuarioId) {
+        carritoService.eliminarItem(id, usuarioId, productoId);
+        return ResponseEntity.noContent().build();
     }
 
     @DeleteMapping("/{id}")

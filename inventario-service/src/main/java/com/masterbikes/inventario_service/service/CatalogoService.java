@@ -116,6 +116,10 @@ public class CatalogoService {
 
     public ProductoVenta obtenerProductoVentaPorId(String id) {
         return productoVentaRepo.findById(id)
-                .orElseThrow(() -> new RuntimeException("Producto no encontrado con ID: " + id));
+                .orElseThrow(() -> new RuntimeException("Bicicleta no encontrada con ID: " + id));
+    }
+    public BicicletaArriendo obtenerArriendoPorId(String id) {
+        return bicicletaArriendoRepo.findById(id)
+                .orElseThrow(() -> new RuntimeException("Bicicleta no encontrada con ID: " + id));
     }
 }
