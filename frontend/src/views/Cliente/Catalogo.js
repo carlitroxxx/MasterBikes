@@ -179,10 +179,6 @@ export default function Catalogo() {
                     </Box>
                 ) : (
                     <>
-                        <Typography variant="h4" gutterBottom sx={{ mb: 3, fontWeight: 700 }}>
-                            Catálogo ({productosFiltrados.length} productos)
-                        </Typography>
-
                         <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
                             {productosPagina.map((producto) => (
                                 <Grid item key={producto.id} xs={12} sm={6} md={4} lg={3} sx={{ display: 'flex' }}>

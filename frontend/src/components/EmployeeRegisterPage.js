@@ -1,0 +1,124 @@
+import React, { useState } from 'react';
+import {
+    Container, TextField, Button, Typography, Box, Paper, Avatar,
+    FormControl, InputLabel, Select, MenuItem
+} from '@mui/material';
+import { PersonAdd as PersonAddIcon } from '@mui/icons-material';
+import { useAuth } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+
+export default function EmployeeRegisterPage() {
+    const [nombre, setNombre] = useState('');
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [role, setRole] = useState('VENDEDOR');
+    const [error, setError] = useState('');
+    const { user } = useAuth();
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setError('');
+
+        try {
+            const response = await axios.post('http://localhost:8081/api/auth/register/employee', {
+                nombre,
+                email,
+                password,
+                role
+            }, {
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`
+                }
+            });
+
+            alert('Empleado registrado con éxito');
+            setNombre('');
+            setEmail('');
+            setPassword('');
+            setRole('VENDEDOR');
+        } catch (error) {
+            console.error('Error al registrar empleado:', error);
+            setError('Error al registrar empleado. Verifica los datos y tus permisos.');
+        }
+    };
+
+    // Solo permitir acceso a supervisores
+    if (!user || user.role !== 'SUPERVISOR') {
+        navigate('/');
+        return null;
+    }
+
+    return (
+        <Container component="main" maxWidth="xs">
+            <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
+                        <PersonAddIcon />
+                    </Avatar>
+                    <Typography component="h1" variant="h5">
+                        Registrar Nuevo Empleado
+                    </Typography>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Nombre completo"
+                            autoComplete="name"
+                            autoFocus
+                            value={nombre}
+                            onChange={(e) => setNombre(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Correo electrónico"
+                            autoComplete="email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="Contraseña temporal"
+                            type="password"
+                            autoComplete="new-password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
+                        <FormControl fullWidth margin="normal">
+                            <InputLabel>Rol</InputLabel>
+                            <Select
+                                value={role}
+                                label="Rol"
+                                onChange={(e) => setRole(e.target.value)}
+                            >
+                                <MenuItem value="VENDEDOR">Vendedor</MenuItem>
+                                <MenuItem value="TECNICO">Técnico</MenuItem>
+                                <MenuItem value="INVENTARIO">Inventario</MenuItem>
+                            </Select>
+                        </FormControl>
+                        {error && (
+                            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                                {error}
+                            </Typography>
+                        )}
+                        <Button
+                            type="submit"
+                            fullWidth
+                            variant="contained"
+                            color="secondary"
+                            sx={{ mt: 3, mb: 2 }}
+                        >
+                            Registrar Empleado
+                        </Button>
+                    </Box>
+                </Box>
+            </Paper>
+        </Container>
+    );
+}

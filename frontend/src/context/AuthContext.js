@@ -1,0 +1,83 @@
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
+
+const AuthContext = createContext();
+
+export function AuthProvider({ children }) {
+    const [user, setUser] = useState(null);
+    const [loading, setLoading] = useState(true);
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        const storedUser = localStorage.getItem('user');
+        const token = localStorage.getItem('token');
+
+        if (storedUser && token) {
+            setUser(JSON.parse(storedUser));
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+        }
+        setLoading(false);
+    }, []);
+
+    const login = async (email, password) => {
+        try {
+            const response = await axios.post('http://localhost:8081/api/auth/login', { email, password });
+            const { token, nombre, role, email: userEmail } = response.data;
+
+            const userData = { nombre, role, email: userEmail };
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('token', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setUser(userData);
+
+            // Redirigir según el rol
+            if (role === 'CLIENTE') {
+                navigate('/cliente/catalogo');
+            } else {
+                navigate(`/${role.toLowerCase()}/dashboard`);
+            }
+
+            return true;
+        } catch (error) {
+            console.error('Login error:', error);
+            return false;
+        }
+    };
+
+    const register = async (nombre, email, password) => {
+        try {
+            const response = await axios.post('http://localhost:8081/api/auth/register', { nombre, email, password });
+            const { token, nombre: userName, role, email: userEmail } = response.data;
+
+            const userData = { nombre: userName, role, email: userEmail };
+            localStorage.setItem('user', JSON.stringify(userData));
+            localStorage.setItem('token', token);
+            axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
+            setUser(userData);
+
+            navigate('/cliente/catalogo');
+            return true;
+        } catch (error) {
+            console.error('Register error:', error);
+            return false;
+        }
+    };
+
+    const logout = () => {
+        localStorage.removeItem('user');
+        localStorage.removeItem('token');
+        delete axios.defaults.headers.common['Authorization'];
+        setUser(null);
+    };
+
+    return (
+        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+            {!loading && children}
+        </AuthContext.Provider>
+    );
+}
+
+export function useAuth() {
+    return useContext(AuthContext);
+}
