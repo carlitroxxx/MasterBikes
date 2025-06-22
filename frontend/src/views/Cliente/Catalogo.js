@@ -2,13 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import {
     Container, Typography, Grid, Card, CardContent, CardActions, Button,
     Box, CircularProgress, Alert, Pagination, Chip, Dialog, DialogTitle,
-    DialogContent, Divider, IconButton, TextField, InputAdornment, AppBar,
-    Toolbar, ToggleButton, ToggleButtonGroup, Badge
+    DialogContent, Divider, IconButton, AppBar,
+    Toolbar, ToggleButton, ToggleButtonGroup, Badge, Snackbar
 } from '@mui/material';
 import {
     ShoppingCart, Close, Add, Remove, DirectionsBike, Settings, Apps,
     ChevronLeft, ChevronRight
 } from '@mui/icons-material';
+import { useCart } from '../../context/CartContext';
+import { useAuth } from '../../context/AuthContext';
 
 const API_URL = 'http://localhost:8080/api/inventario';
 
@@ -21,6 +23,8 @@ const categorias = [
 const PRODUCTOS_POR_PAGINA = 8;
 
 export default function Catalogo() {
+    const { user } = useAuth();
+    const { addToCart, itemCount } = useCart();
     const [paginaActual, setPaginaActual] = useState(1);
     const [categoriaSeleccionada, setCategoriaSeleccionada] = useState('todos');
     const [cargando, setCargando] = useState(true);
@@ -31,9 +35,10 @@ export default function Catalogo() {
     const [currentImageIndex, setCurrentImageIndex] = useState(0);
     const [zoomPosition, setZoomPosition] = useState({ x: 0, y: 0 });
     const [showZoom, setShowZoom] = useState(false);
+    const [snackbar, setSnackbar] = useState({ open: false, message: '' });
     const imgRef = useRef(null);
     const thumbnailsRef = useRef(null);
-    const [carrito, setCarrito] = useState([]);
+
     // Fetch productos
     useEffect(() => {
         const fetchProductos = async () => {
@@ -68,22 +73,29 @@ export default function Catalogo() {
         setShowZoom(false);
     };
 
-    const handleAddToCart = (producto, cantidad) => {
-        setCarrito(prev => {
-            const existe = prev.find(item => item.id === producto.id);
-            if (existe) {
-                return prev.map(item =>
-                    item.id === producto.id
-                        ? { ...item, cantidad: item.cantidad + cantidad }
-                        : item
-                );
-            }
-            return [...prev, { ...producto, cantidad }];
-        });
+    const handleAddToCart = async (producto, cantidad) => {
+        if (!user) {
+            setSnackbar({
+                open: true,
+                message: 'Debes iniciar sesión para agregar productos al carrito'
+            });
+            return;
+        }
 
-        // Opcional: Mostrar notificación
-        // setSnackbar({ open: true, message: `${cantidad} ${producto.nombre} agregado(s) al carrito` });
+        const result = await addToCart(producto.id, cantidad);
+        if (result.success) {
+            setSnackbar({
+                open: true,
+                message: `${cantidad} ${producto.nombre} agregado(s) al carrito`
+            });
+        } else {
+            setSnackbar({
+                open: true,
+                message: result.error || 'Error al agregar al carrito'
+            });
+        }
     };
+
     const selectImage = (index) => {
         setCurrentImageIndex(index);
         setShowZoom(false);
@@ -138,6 +150,10 @@ export default function Catalogo() {
         paginaActual * PRODUCTOS_POR_PAGINA
     );
 
+    const handleCloseSnackbar = () => {
+        setSnackbar({ ...snackbar, open: false });
+    };
+
     if (error) {
         return (
             <Container sx={{ py: 4 }}>
@@ -161,7 +177,7 @@ export default function Catalogo() {
                         onChange={(_, nuevaCategoria) => {
                             if (nuevaCategoria) {
                                 setCategoriaSeleccionada(nuevaCategoria);
-                                setPaginaActual(1); // Resetear página al cambiar categoría
+                                setPaginaActual(1);
                             }
                         }}
                         sx={{ mr: 2 }}
@@ -180,8 +196,12 @@ export default function Catalogo() {
                         ))}
                     </ToggleButtonGroup>
                     <Box sx={{ flexGrow: 1 }} />
-                    <IconButton color="inherit">
-                        <Badge badgeContent={carrito.reduce((total, item) => total + item.cantidad, 0)} color="error">
+                    <IconButton
+                        color="inherit"
+                        component="a"
+                        href="/cliente/carrito"
+                    >
+                        <Badge badgeContent={itemCount} color="error">
                             <ShoppingCart />
                         </Badge>
                     </IconButton>
@@ -213,151 +233,152 @@ export default function Catalogo() {
                                     Por favor, intenta con otra categoría o verifica más tarde.
                                 </Typography>
                             </Box>
-                            ):(
-                                <>
-                        <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
-                            {productosPagina.map((producto) => (
-                                <Grid item key={producto.id} xs={12} sm={6} md={4} lg={3} sx={{ display: 'flex' }}>
-                                    <Card
-                                        onClick={() => handleOpenDialog(producto)}
-                                        sx={{
-                                            width: '100%',
-                                            minWidth: 340,
-                                            maxWidth: 340,
-                                            height: '100%',
-                                            display: 'flex',
-                                            flexDirection: 'column',
-                                            borderRadius: 2,
-                                            boxShadow: 2,
-                                            transition: 'all 0.3s ease',
-                                            '&:hover': {
-                                                transform: 'scale(1.03)',
-                                                boxShadow: 4,
-                                                cursor: 'pointer'
-                                            }
-                                        }}
-                                    >
-                                        <Box
-                                            sx={{
-                                            height: 180,
-                                            width: '100%',
-                                            bgcolor: 'grey.100',
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            justifyContent: 'center',
-                                            overflow: 'hidden',
-                                            flexShrink: 0
-                                        }}>
-                                            {producto.imagenesUrls?.[0] ? (
-                                                <img
-                                                    src={producto.imagenesUrls[0]}
-                                                    alt={producto.nombre}
-                                                    style={{
+                        ) : (
+                            <>
+                                <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
+                                    {productosPagina.map((producto) => (
+                                        <Grid item key={producto.id} xs={12} sm={6} md={4} lg={3} sx={{ display: 'flex' }}>
+                                            <Card
+                                                onClick={() => handleOpenDialog(producto)}
+                                                sx={{
+                                                    width: '100%',
+                                                    minWidth: 340,
+                                                    maxWidth: 340,
+                                                    height: '100%',
+                                                    display: 'flex',
+                                                    flexDirection: 'column',
+                                                    borderRadius: 2,
+                                                    boxShadow: 2,
+                                                    transition: 'all 0.3s ease',
+                                                    '&:hover': {
+                                                        transform: 'scale(1.03)',
+                                                        boxShadow: 4,
+                                                        cursor: 'pointer'
+                                                    }
+                                                }}
+                                            >
+                                                <Box
+                                                    sx={{
+                                                        height: 180,
                                                         width: '100%',
-                                                        height: '100%',
-                                                        objectFit: 'cover'
-                                                    }}
-                                                />
-                                            ) : (
-                                                producto.tipo === 'bicicleta' ? (
-                                                    <DirectionsBike sx={{ fontSize: 60, color: 'action.active' }} />
-                                                ) : (
-                                                    <Settings sx={{ fontSize: 60, color: 'action.active' }} />
-                                                )
-                                            )}
-                                        </Box>
+                                                        bgcolor: 'grey.100',
+                                                        display: 'flex',
+                                                        alignItems: 'center',
+                                                        justifyContent: 'center',
+                                                        overflow: 'hidden',
+                                                        flexShrink: 0
+                                                    }}>
+                                                    {producto.imagenesUrls?.[0] ? (
+                                                        <img
+                                                            src={producto.imagenesUrls[0]}
+                                                            alt={producto.nombre}
+                                                            style={{
+                                                                width: '100%',
+                                                                height: '100%',
+                                                                objectFit: 'cover'
+                                                            }}
+                                                        />
+                                                    ) : (
+                                                        producto.tipo === 'bicicleta' ? (
+                                                            <DirectionsBike sx={{ fontSize: 60, color: 'action.active' }} />
+                                                        ) : (
+                                                            <Settings sx={{ fontSize: 60, color: 'action.active' }} />
+                                                        )
+                                                    )}
+                                                </Box>
 
-                                        <CardContent sx={{ flexGrow: 1, p: 2 }}>
-                                            <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                                                <Typography variant="body2" color="text.secondary">
-                                                    Stock: {producto.stock}
-                                                </Typography>
-                                                <Chip
-                                                    label={producto.tipo === 'bicicleta' ? 'Bicicleta' : 'Componente'}
-                                                    size="small"
-                                                    color="secondary"
-                                                />
-                                            </Box>
+                                                <CardContent sx={{ flexGrow: 1, p: 2 }}>
+                                                    <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
+                                                        <Typography variant="body2" color="text.secondary">
+                                                            Stock: {producto.stock}
+                                                        </Typography>
+                                                        <Chip
+                                                            label={producto.tipo === 'bicicleta' ? 'Bicicleta' : 'Componente'}
+                                                            size="small"
+                                                            color="secondary"
+                                                        />
+                                                    </Box>
 
-                                            <Typography
-                                                gutterBottom
-                                                variant="h6"
-                                                component="h3"
-                                                sx={{
-                                                    fontWeight: 600,
-                                                    mb: 1,
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 2,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    minHeight: '3em'
-                                                }}
-                                            >
-                                                {producto.nombre}
-                                            </Typography>
+                                                    <Typography
+                                                        gutterBottom
+                                                        variant="h6"
+                                                        component="h3"
+                                                        sx={{
+                                                            fontWeight: 600,
+                                                            mb: 1,
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 2,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden',
+                                                            minHeight: '3em'
+                                                        }}
+                                                    >
+                                                        {producto.nombre}
+                                                    </Typography>
 
-                                            <Typography
-                                                variant="body2"
-                                                color="text.secondary"
-                                                sx={{
-                                                    mb: 2,
-                                                    display: '-webkit-box',
-                                                    WebkitLineClamp: 3,
-                                                    WebkitBoxOrient: 'vertical',
-                                                    overflow: 'hidden',
-                                                    minHeight: '4.5em'
-                                                }}
-                                            >
-                                                {producto.descripcion}
-                                            </Typography>
+                                                    <Typography
+                                                        variant="body2"
+                                                        color="text.secondary"
+                                                        sx={{
+                                                            mb: 2,
+                                                            display: '-webkit-box',
+                                                            WebkitLineClamp: 3,
+                                                            WebkitBoxOrient: 'vertical',
+                                                            overflow: 'hidden',
+                                                            minHeight: '4.5em'
+                                                        }}
+                                                    >
+                                                        {producto.descripcion}
+                                                    </Typography>
 
-                                            <Typography
-                                                variant="h6"
-                                                color="primary"
-                                                sx={{
-                                                    fontWeight: 700,
-                                                    mt: 'auto'
-                                                }}
-                                            >
-                                                ${producto.precio.toLocaleString('es-CL')}
-                                            </Typography>
-                                        </CardContent>
+                                                    <Typography
+                                                        variant="h6"
+                                                        color="primary"
+                                                        sx={{
+                                                            fontWeight: 700,
+                                                            mt: 'auto'
+                                                        }}
+                                                    >
+                                                        ${producto.precio.toLocaleString('es-CL')}
+                                                    </Typography>
+                                                </CardContent>
 
-                                        <CardActions sx={{ p: 2 }}>
-                                            <Button
-                                                fullWidth
-                                                variant="contained"
-                                                startIcon={<ShoppingCart />}
-                                                sx={{
-                                                    fontWeight: 600,
-                                                    py: 1
-                                                }}
-                                                onClick={(e) => {
-                                                    e.stopPropagation(); // Evita que el evento se propague al Card
-                                                    handleAddToCart(producto, 1); // Agrega 1 unidad al carrito
-                                                }}
-                                            >
-                                                Agregar al carrito
-                                            </Button>
-                                        </CardActions>
-                                    </Card>
+                                                <CardActions sx={{ p: 2 }}>
+                                                    <Button
+                                                        fullWidth
+                                                        variant="contained"
+                                                        startIcon={<ShoppingCart />}
+                                                        sx={{
+                                                            fontWeight: 600,
+                                                            py: 1
+                                                        }}
+                                                        onClick={(e) => {
+                                                            e.stopPropagation();
+                                                            handleAddToCart(producto, 1);
+                                                        }}
+                                                        disabled={producto.stock <= 0}
+                                                    >
+                                                        {producto.stock > 0 ? 'Agregar al carrito' : 'Sin stock'}
+                                                    </Button>
+                                                </CardActions>
+                                            </Card>
+                                        </Grid>
+                                    ))}
                                 </Grid>
-                            ))}
-                        </Grid>
 
-                        {totalPaginas > 1 && (
-                            <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
-                                <Pagination
-                                    count={totalPaginas}
-                                    page={paginaActual}
-                                    onChange={handleChangePagina}
-                                    color="primary"
-                                    size="large"
-                                />
-                            </Box>
+                                {totalPaginas > 1 && (
+                                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+                                        <Pagination
+                                            count={totalPaginas}
+                                            page={paginaActual}
+                                            onChange={handleChangePagina}
+                                            color="primary"
+                                            size="large"
+                                        />
+                                    </Box>
+                                )}
+                            </>
                         )}
-                        </>
-                    )}
                     </>
                 )}
             </Container>
@@ -556,14 +577,29 @@ export default function Catalogo() {
                                         textTransform: 'uppercase',
                                         letterSpacing: '0.5px'
                                     }}
+                                    onClick={() => {
+                                        handleAddToCart(productoSeleccionado, unidades);
+                                        handleCloseDialog();
+                                    }}
+                                    disabled={productoSeleccionado?.stock <= 0}
                                 >
-                                    Agregar al carrito ({unidades})
+                                    {productoSeleccionado?.stock > 0
+                                        ? `Agregar al carrito (${unidades})`
+                                        : 'Sin stock'}
                                 </Button>
                             </Box>
                         </Box>
                     </Box>
                 </Box>
             </Dialog>
+
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={3000}
+                onClose={handleCloseSnackbar}
+                message={snackbar.message}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            />
         </>
     );
 }

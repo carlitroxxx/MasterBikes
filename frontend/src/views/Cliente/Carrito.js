@@ -8,8 +8,10 @@ import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
 import PaymentIcon from '@mui/icons-material/Payment';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
+import { useAuth } from '../../context/AuthContext';
 
 export default function Carrito() {
+    const { user } = useAuth();    // Obtener carrito al cargar el componente
     const [carrito, setCarrito] = React.useState({
         id: null,
         items: [],
@@ -17,12 +19,12 @@ export default function Carrito() {
     });
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
-
-    // Obtener carrito al cargar el componente
     React.useEffect(() => {
+        if (!user) return;
+
         const fetchCarrito = async () => {
             try {
-                const response = await fetch('http://localhost:8083/api/carrito/usuario-actual');
+                const response = await fetch(`http://localhost:8083/api/carrito/${user.email}`);
                 if (!response.ok) throw new Error('Error al cargar el carrito');
                 const data = await response.json();
                 setCarrito(data);
@@ -33,13 +35,13 @@ export default function Carrito() {
             }
         };
         fetchCarrito();
-    }, []);
+    }, [user]);
 
     // Eliminar producto del carrito
     const handleEliminar = async (productoId) => {
         try {
             const response = await fetch(
-                `http://localhost:8083/api/carrito/${carrito.id}/items/${productoId}?usuarioId=usuario-actual`,
+                `http://localhost:8083/api/carrito/${carrito.id}/items/${productoId}?usuarioId=${user.email}`,
                 { method: 'DELETE' }
             );
             if (!response.ok) throw new Error('Error al eliminar producto');
@@ -57,7 +59,7 @@ export default function Carrito() {
 
         try {
             const response = await fetch(
-                'http://localhost:8083/api/carrito/usuario-actual/items',
+                `http://localhost:8083/api/carrito/${user.email}/items`,
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

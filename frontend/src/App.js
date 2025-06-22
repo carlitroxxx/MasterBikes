@@ -9,11 +9,13 @@ import RegisterPage from './components/RegisterPage';
 import EmployeeRegisterPage from './components/EmployeeRegisterPage';
 import {AuthProvider, useAuth} from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
+import {CartProvider} from "./context/CartContext";
 
 function App() {
     return (
         <Router>
             <AuthProvider>
+                <CartProvider>
                 <Navbar />
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
@@ -39,6 +41,7 @@ function App() {
                     {/* Redirigir según el rol cuando se accede a la raíz */}
                     <Route path="/" element={<HomeRedirect />} />
                 </Routes>
+                </CartProvider>
             </AuthProvider>
         </Router>
     );
