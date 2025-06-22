@@ -179,6 +179,26 @@ export default function Catalogo() {
                     </Box>
                 ) : (
                     <>
+                        {productosFiltrados.length === 0 ? (
+                            <Box sx={{
+                                display: 'flex',
+                                flexDirection: 'column',
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                py: 10,
+                                textAlign: 'center'
+                            }}>
+                                <Typography variant="h5" color="text.secondary" gutterBottom>
+                                    {categoriaSeleccionada === 'todos'
+                                        ? 'No hay productos disponibles'
+                                        : `No hay ${categoriaSeleccionada === 'bicicleta' ? 'bicicletas' : 'componentes'} disponibles`}
+                                </Typography>
+                                <Typography variant="body1" color="text.secondary">
+                                    Por favor, intenta con otra categoría o verifica más tarde.
+                                </Typography>
+                            </Box>
+                            ):(
+                                <>
                         <Grid container spacing={3} sx={{ justifyContent: 'center' }}>
                             {productosPagina.map((producto) => (
                                 <Grid item key={producto.id} xs={12} sm={6} md={4} lg={3} sx={{ display: 'flex' }}>
@@ -315,6 +335,8 @@ export default function Catalogo() {
                                 />
                             </Box>
                         )}
+                        </>
+                    )}
                     </>
                 )}
             </Container>
