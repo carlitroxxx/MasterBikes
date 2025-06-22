@@ -33,7 +33,7 @@ export default function Catalogo() {
     const [showZoom, setShowZoom] = useState(false);
     const imgRef = useRef(null);
     const thumbnailsRef = useRef(null);
-
+    const [carrito, setCarrito] = useState([]);
     // Fetch productos
     useEffect(() => {
         const fetchProductos = async () => {
@@ -68,6 +68,22 @@ export default function Catalogo() {
         setShowZoom(false);
     };
 
+    const handleAddToCart = (producto, cantidad) => {
+        setCarrito(prev => {
+            const existe = prev.find(item => item.id === producto.id);
+            if (existe) {
+                return prev.map(item =>
+                    item.id === producto.id
+                        ? { ...item, cantidad: item.cantidad + cantidad }
+                        : item
+                );
+            }
+            return [...prev, { ...producto, cantidad }];
+        });
+
+        // Opcional: Mostrar notificación
+        // setSnackbar({ open: true, message: `${cantidad} ${producto.nombre} agregado(s) al carrito` });
+    };
     const selectImage = (index) => {
         setCurrentImageIndex(index);
         setShowZoom(false);
@@ -165,7 +181,7 @@ export default function Catalogo() {
                     </ToggleButtonGroup>
                     <Box sx={{ flexGrow: 1 }} />
                     <IconButton color="inherit">
-                        <Badge badgeContent={0} color="error">
+                        <Badge badgeContent={carrito.reduce((total, item) => total + item.cantidad, 0)} color="error">
                             <ShoppingCart />
                         </Badge>
                     </IconButton>
@@ -203,6 +219,7 @@ export default function Catalogo() {
                             {productosPagina.map((producto) => (
                                 <Grid item key={producto.id} xs={12} sm={6} md={4} lg={3} sx={{ display: 'flex' }}>
                                     <Card
+                                        onClick={() => handleOpenDialog(producto)}
                                         sx={{
                                             width: '100%',
                                             minWidth: 340,
@@ -219,9 +236,9 @@ export default function Catalogo() {
                                                 cursor: 'pointer'
                                             }
                                         }}
-                                        onClick={() => handleOpenDialog(producto)}
                                     >
-                                        <Box sx={{
+                                        <Box
+                                            sx={{
                                             height: 180,
                                             width: '100%',
                                             bgcolor: 'grey.100',
@@ -314,6 +331,10 @@ export default function Catalogo() {
                                                 sx={{
                                                     fontWeight: 600,
                                                     py: 1
+                                                }}
+                                                onClick={(e) => {
+                                                    e.stopPropagation(); // Evita que el evento se propague al Card
+                                                    handleAddToCart(producto, 1); // Agrega 1 unidad al carrito
                                                 }}
                                             >
                                                 Agregar al carrito
