@@ -35,6 +35,28 @@ public class CarritoService {
         carritoRepository.save(carrito);
     }
     @Transactional
+    public CarritoDto actualizarCantidad(String usuarioId, String productoId, int cantidad) {
+        if (cantidad <= 0) {
+            throw new StockInsuficienteException("La cantidad debe ser mayor a cero");
+        }
+
+        Carrito carrito = carritoRepository
+                .findByUsuarioIdAndEstado(usuarioId, Carrito.EstadoCarrito.ACTIVO)
+                .orElseThrow(() -> new CarritoNoEncontradoException("Carrito no encontrado"));
+
+        ProductoInventarioDto producto = inventarioClient.obtenerProducto(productoId);
+        if (producto == null) throw new ProductoNoEncontradoException("Producto no encontrado");
+        if (producto.getStock() < cantidad) throw new StockInsuficienteException("Stock insuficiente");
+
+        carrito.getItems().stream()
+                .filter(item -> item.getProductoId().equals(productoId))
+                .findFirst()
+                .ifPresent(item -> item.setCantidad(cantidad));
+
+        carrito.setFechaActualizacion(new Date());
+        return convertirADto(carritoRepository.save(carrito));
+    }
+    @Transactional
     public CarritoDto agregarProducto(String usuarioId, AgregarProductoRequest request) {
         ProductoInventarioDto producto = inventarioClient.obtenerProducto(request.getProductoId());
         if (producto == null) throw new ProductoNoEncontradoException("Producto no encontrado");

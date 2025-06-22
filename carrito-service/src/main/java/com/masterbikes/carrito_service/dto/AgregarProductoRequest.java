@@ -5,10 +5,10 @@ import lombok.Data;
 
 @Data
 public class AgregarProductoRequest {
-    @NotBlank
+    @NotBlank(message = "El ID del producto no puede estar vacío")
     private String productoId;
 
-    @NotNull
-    @Min(1)
+    @NotNull(message = "La cantidad no puede ser nula")
+    @Min(value = 1, message = "La cantidad debe ser al menos 1")
     private Integer cantidad;
 }

@@ -24,6 +24,14 @@ public class CarritoController {
         return ResponseEntity.ok(carritoService.agregarProducto(usuarioId, request));
     }
 
+    @PutMapping("/{usuarioId}/items/{productoId}")
+    public ResponseEntity<CarritoDto> actualizarCantidad(
+            @PathVariable String usuarioId,
+            @PathVariable String productoId,
+            @RequestParam int cantidad) {
+        return ResponseEntity.ok(carritoService.actualizarCantidad(usuarioId, productoId, cantidad));
+    }
+
     @DeleteMapping("/{id}/items/{productoId}")
     public ResponseEntity<Void> eliminarItem(
             @PathVariable String id,
