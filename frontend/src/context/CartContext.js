@@ -46,6 +46,7 @@ export function CartProvider({ children }) {
         fetchCart();
     }, [fetchCart]);
 
+    // En CartContext.js
     const addToCart = async (productoId, cantidad) => {
         if (!user) {
             throw new Error('Debes iniciar sesión para agregar productos al carrito');
@@ -53,9 +54,19 @@ export function CartProvider({ children }) {
 
         try {
             setLoading(true);
+
+            // Verificar si el producto ya existe en el carrito
+            const productoExistente = cart?.items?.find(item => item.productoId === productoId);
+
+            let nuevaCantidad = cantidad;
+            if (productoExistente) {
+                // Si existe, sumamos la cantidad nueva a la existente
+                nuevaCantidad = productoExistente.cantidad + cantidad;
+            }
+
             const response = await axios.post(
                 `${API_BASE_URL}/${user.email}/items`,
-                { productoId, cantidad },
+                { productoId, cantidad: nuevaCantidad },
                 {
                     headers: {
                         'Content-Type': 'application/json',
@@ -63,8 +74,13 @@ export function CartProvider({ children }) {
                     }
                 }
             );
+
             setCart(response.data);
-            return { success: true, cart: response.data };
+            return {
+                success: true,
+                cart: response.data,
+                action: productoExistente ? 'updated' : 'added'
+            };
         } catch (err) {
             console.error("Error adding to cart:", err);
             setError(err.response?.data?.message || 'Error al agregar al carrito');

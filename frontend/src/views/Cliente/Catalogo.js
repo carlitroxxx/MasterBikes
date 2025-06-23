@@ -86,7 +86,9 @@ export default function Catalogo() {
         if (result.success) {
             setSnackbar({
                 open: true,
-                message: `${cantidad} ${producto.nombre} agregado(s) al carrito`
+                message: result.action === 'added'
+                    ? `${cantidad} ${producto.nombre} agregado(s) al carrito`
+                    : `Cantidad de ${producto.nombre} actualizada (${result.cart.items.find(i => i.productoId === producto.id).cantidad} unidades)`
             });
         } else {
             setSnackbar({
