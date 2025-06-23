@@ -44,10 +44,19 @@ public class CarritoService {
                 .findByUsuarioIdAndEstado(usuarioId, Carrito.EstadoCarrito.ACTIVO)
                 .orElseThrow(() -> new CarritoNoEncontradoException("Carrito no encontrado"));
 
+        // Verificar si el producto existe en el carrito
+        boolean productoEnCarrito = carrito.getItems().stream()
+                .anyMatch(item -> item.getProductoId().equals(productoId));
+
+        if (!productoEnCarrito) {
+            throw new ProductoNoEncontradoException("El producto no existe en el carrito");
+        }
+
         ProductoInventarioDto producto = inventarioClient.obtenerProducto(productoId);
-        if (producto == null) throw new ProductoNoEncontradoException("Producto no encontrado");
+        if (producto == null) throw new ProductoNoEncontradoException("Producto no encontrado en inventario");
         if (producto.getStock() < cantidad) throw new StockInsuficienteException("Stock insuficiente");
 
+        // Actualizar cantidad
         carrito.getItems().stream()
                 .filter(item -> item.getProductoId().equals(productoId))
                 .findFirst()

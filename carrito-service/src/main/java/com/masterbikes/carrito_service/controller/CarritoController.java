@@ -28,8 +28,8 @@ public class CarritoController {
     public ResponseEntity<CarritoDto> actualizarCantidad(
             @PathVariable String usuarioId,
             @PathVariable String productoId,
-            @RequestParam int cantidad) {
-        return ResponseEntity.ok(carritoService.actualizarCantidad(usuarioId, productoId, cantidad));
+            @RequestBody ActualizarCantidadRequest request) {  // Usar DTO para la cantidad
+        return ResponseEntity.ok(carritoService.actualizarCantidad(usuarioId, productoId, request.getCantidad()));
     }
 
     @DeleteMapping("/{id}/items/{productoId}")
