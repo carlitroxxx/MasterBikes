@@ -77,23 +77,37 @@ export default function Catalogo() {
         if (!user) {
             setSnackbar({
                 open: true,
-                message: 'Debes iniciar sesión para agregar productos al carrito'
+                message: 'Debes iniciar sesión para agregar productos al carrito',
+                severity: 'error'
+            });
+            return;
+        }
+
+        // Validación adicional en frontend (opcional)
+        if (cantidad > producto.stock) {
+            setSnackbar({
+                open: true,
+                message: `No hay suficiente stock. Disponible: ${producto.stock}`,
+                severity: 'error'
             });
             return;
         }
 
         const result = await addToCart(producto.id, cantidad);
+
         if (result.success) {
             setSnackbar({
                 open: true,
                 message: result.action === 'added'
                     ? `${cantidad} ${producto.nombre} agregado(s) al carrito`
-                    : `Cantidad de ${producto.nombre} actualizada (${result.cart.items.find(i => i.productoId === producto.id).cantidad} unidades)`
+                    : `Cantidad actualizada: ${result.cart.items.find(i => i.productoId === producto.id).cantidad} unidades`,
+                severity: 'success'
             });
         } else {
             setSnackbar({
                 open: true,
-                message: result.error || 'Error al agregar al carrito'
+                message: result.error || 'Error al agregar al carrito',
+                severity: 'error'
             });
         }
     };
@@ -597,11 +611,18 @@ export default function Catalogo() {
 
             <Snackbar
                 open={snackbar.open}
-                autoHideDuration={3000}
+                autoHideDuration={6000}
                 onClose={handleCloseSnackbar}
-                message={snackbar.message}
                 anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-            />
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity || 'info'}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </>
     );
 }
