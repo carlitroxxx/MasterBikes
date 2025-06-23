@@ -10,16 +10,20 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useAuth } from '../../context/AuthContext';
+import { useCart } from '../../context/CartContext';
 
 export default function Carrito() {
     const { user } = useAuth();
-    const [carrito, setCarrito] = React.useState({
-        id: null,
-        items: [],
-        estado: 'ACTIVO'
-    });
-    const [loading, setLoading] = React.useState(true);
-    const [error, setError] = React.useState(null);
+    const {
+        cart,
+        loading,
+        error,
+        updateQuantity,
+        removeItem,
+        calculateTotal,
+        itemCount
+    } = useCart();
+
     const [snackbar, setSnackbar] = React.useState({
         open: false,
         message: '',
@@ -31,24 +35,6 @@ export default function Carrito() {
         productoNombre: ''
     });
 
-    // Obtener carrito al cargar el componente
-    React.useEffect(() => {
-        const fetchCarrito = async () => {
-            try {
-                const response = await fetch(`http://localhost:8083/api/carrito/${user.email}`);
-                if (!response.ok) throw new Error('Error al cargar el carrito');
-                const data = await response.json();
-                setCarrito(data);
-            } catch (err) {
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchCarrito();
-    }, [user.email]);
-
-    // Abrir diálogo de confirmación para eliminar
     const confirmarEliminar = (productoId, productoNombre) => {
         setDialogEliminar({
             open: true,
@@ -57,7 +43,6 @@ export default function Carrito() {
         });
     };
 
-    // Cerrar diálogo
     const cerrarDialogoEliminar = () => {
         setDialogEliminar({
             open: false,
@@ -66,76 +51,48 @@ export default function Carrito() {
         });
     };
 
-    // Eliminar producto del carrito (confirmado)
     const handleEliminarConfirmado = async () => {
         const { productoId } = dialogEliminar;
         try {
-            setLoading(true);
-            const response = await fetch(
-                `http://localhost:8083/api/carrito/${carrito.id}/items/${productoId}?usuarioId=${user.email}`,
-                { method: 'DELETE' }
-            );
-
-            if (!response.ok) throw new Error('Error al eliminar producto');
-
-            // Recargar el carrito después de eliminar
-            const carritoResponse = await fetch(`http://localhost:8083/api/carrito/${user.email}`);
-            const carritoActualizado = await carritoResponse.json();
-            setCarrito(carritoActualizado);
-
-            setSnackbar({
-                open: true,
-                message: 'Producto eliminado correctamente',
-                severity: 'success'
-            });
+            const result = await removeItem(productoId);
+            if (result.success) {
+                setSnackbar({
+                    open: true,
+                    message: 'Producto eliminado correctamente',
+                    severity: 'success'
+                });
+            } else {
+                throw new Error(result.error || 'Error al eliminar producto');
+            }
         } catch (err) {
-            setError(err.message);
             setSnackbar({
                 open: true,
                 message: err.message || 'Error al eliminar producto',
                 severity: 'error'
             });
         } finally {
-            setLoading(false);
             cerrarDialogoEliminar();
         }
     };
 
-    // Actualizar cantidad de un producto
     const handleCambiarCantidad = async (productoId, nuevaCantidad) => {
         if (nuevaCantidad < 1) return;
 
         try {
-            setLoading(true);
-            const response = await fetch(
-                `http://localhost:8083/api/carrito/${user.email}/items`,
-                {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        productoId,
-                        cantidad: nuevaCantidad
-                    })
-                }
-            );
-            if (!response.ok) throw new Error('Error al actualizar cantidad');
-
-            const updatedCarrito = await response.json();
-            setCarrito(updatedCarrito);
+            const result = await updateQuantity(productoId, nuevaCantidad);
+            if (!result.success) {
+                throw new Error(result.error || 'Error al actualizar cantidad');
+            }
         } catch (err) {
-            setError(err.message);
             setSnackbar({
                 open: true,
                 message: err.message || 'Error al actualizar cantidad',
                 severity: 'error'
             });
-        } finally {
-            setLoading(false);
         }
     };
 
-    // Calcular total
-    const total = carrito.items.reduce((sum, item) => sum + (item.precioUnitario * item.cantidad), 0);
+    const total = calculateTotal();
 
     const handleCloseSnackbar = () => {
         setSnackbar({ ...snackbar, open: false });
@@ -165,7 +122,7 @@ export default function Carrito() {
         <Container maxWidth="lg" sx={{ py: 4 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
                 <Badge
-                    badgeContent={carrito.items.length}
+                    badgeContent={itemCount}
                     color="primary"
                     sx={{ mr: 2 }}
                 >
@@ -181,11 +138,11 @@ export default function Carrito() {
                 <Grid item xs={12} md={8}>
                     <Paper elevation={3} sx={{ p: 3 }}>
                         <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
-                            Productos ({carrito.items.length})
+                            Productos ({cart?.items?.length || 0})
                         </Typography>
                         <Divider sx={{ mb: 3 }} />
 
-                        {carrito.items.length === 0 ? (
+                        {!cart?.items || cart.items.length === 0 ? (
                             <Typography
                                 variant="body1"
                                 color="text.secondary"
@@ -195,7 +152,7 @@ export default function Carrito() {
                             </Typography>
                         ) : (
                             <List>
-                                {carrito.items.map((item) => (
+                                {cart.items.map((item) => (
                                     <React.Fragment key={item.productoId}>
                                         <ListItem sx={{ py: 2, px: 0 }}>
                                             <Box
@@ -267,7 +224,7 @@ export default function Carrito() {
                         <Divider sx={{ mb: 2 }} />
 
                         <Box sx={{ mb: 2 }}>
-                            {carrito.items.map(item => (
+                            {cart?.items?.map(item => (
                                 <Box
                                     key={item.productoId}
                                     sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}
@@ -297,7 +254,7 @@ export default function Carrito() {
                             fullWidth
                             size="large"
                             startIcon={<PaymentIcon />}
-                            disabled={carrito.items.length === 0}
+                            disabled={!cart?.items || cart.items.length === 0}
                             sx={{ py: 1.5, fontWeight: 'bold' }}
                         >
                             Proceder al Pago
