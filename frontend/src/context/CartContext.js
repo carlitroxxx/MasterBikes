@@ -94,8 +94,28 @@ export function CartProvider({ children }) {
         }
     };
 
+
+    // En tu CartContext.js
+    const getProductStock = async (productoId) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:8080/api/inventario/venta/producto/${productoId}`
+            );
+            return response.data.stock;
+        } catch (err) {
+            console.error("Error obteniendo stock:", err);
+            return null;
+        }
+    };
+
+
     const updateQuantity = async (productoId, nuevaCantidad) => {
-        if (!cart || !user) return;
+        if (!cart || !user) {
+            return {
+                success: false,
+                error: 'Carrito o usuario no disponible'
+            };
+        }
 
         try {
             setLoading(true);
@@ -108,12 +128,21 @@ export function CartProvider({ children }) {
                     }
                 }
             );
+
             setCart(response.data);
-            return { success: true, cart: response.data };
+            return {
+                success: true,
+                cart: response.data,
+                message: 'Cantidad actualizada correctamente'
+            };
         } catch (err) {
             console.error("Error updating quantity:", err);
-            setError(err.response?.data?.message || 'Error al actualizar cantidad');
-            return { success: false, error: err.response?.data };
+            return {
+                success: false,
+                error: err.response?.data?.message || 'Error al actualizar cantidad',
+                status: err.response?.status,
+                data: err.response?.data // Añadimos toda la respuesta del error
+            };
         } finally {
             setLoading(false);
         }

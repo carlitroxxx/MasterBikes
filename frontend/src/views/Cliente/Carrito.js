@@ -11,6 +11,7 @@ import AddIcon from '@mui/icons-material/Add';
 import RemoveIcon from '@mui/icons-material/Remove';
 import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
+import axios from "axios";
 
 export default function Carrito() {
     const { user } = useAuth();
@@ -24,6 +25,23 @@ export default function Carrito() {
         itemCount
     } = useCart();
 
+    // En Carrito.js, añade esta función antes del componente
+    const getProductStock = async (productoId) => {
+        try {
+            const response = await axios.get(
+                `http://localhost:8080/api/inventario/venta/producto/${productoId}`,
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            );
+            return response.data.stock;
+        } catch (err) {
+            console.error("Error obteniendo stock:", err);
+            return null;
+        }
+    };
     const [snackbar, setSnackbar] = React.useState({
         open: false,
         message: '',
@@ -80,8 +98,29 @@ export default function Carrito() {
 
         try {
             const result = await updateQuantity(productoId, nuevaCantidad);
-            if (!result.success) {
-                throw new Error(result.error || 'Error al actualizar cantidad');
+            if (result.success) {
+                setSnackbar({
+                    open: true,
+                    message: 'Cantidad actualizada correctamente',
+                    severity: 'success'
+                });
+            } else {
+                // Manejar error de stock insuficiente
+                // Luego en handleCambiarCantidad:
+                if (result.status === 400 && result.error.includes('Stock insuficiente')) {
+                    const stock = await getProductStock(productoId);
+                    setSnackbar({
+                        open: true,
+                        message: `Stock insuficiente. Máximo disponible: ${stock || 'N/A'}`,
+                        severity: 'error'
+                    });
+                } else {
+                    setSnackbar({
+                        open: true,
+                        message: result.error || 'Error al actualizar cantidad',
+                        severity: 'error'
+                    });
+                }
             }
         } catch (err) {
             setSnackbar({
@@ -90,6 +129,12 @@ export default function Carrito() {
                 severity: 'error'
             });
         }
+    };
+
+// Función auxiliar para extraer el número de stock del mensaje de error
+    const extraerStockDeMensaje = (mensaje) => {
+        const match = mensaje.match(/\d+/);
+        return match ? match[0] : null;
     };
 
     const total = calculateTotal();
@@ -119,7 +164,7 @@ export default function Carrito() {
     );
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Container maxWidth="xl" sx={{ py: 4, mx: 0}}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
                 <Badge
                     badgeContent={itemCount}
@@ -135,7 +180,7 @@ export default function Carrito() {
 
             <Grid container spacing={3}>
                 {/* Lista de productos */}
-                <Grid item xs={12} md={8}>
+                <Grid item xs={12} md={7}>
                     <Paper elevation={3} sx={{ p: 3 }}>
                         <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
                             Productos ({cart?.items?.length || 0})
@@ -151,103 +196,234 @@ export default function Carrito() {
                                 No hay productos en tu carrito
                             </Typography>
                         ) : (
-                            <List>
+                            <Box sx={{ width: '100%', overflowX: 'auto' }}>
+                                {/* Headers con más espacio */}
+                                <Box sx={{
+                                    display: 'grid',
+                                    gridTemplateColumns: '120px minmax(200px, 1fr) 120px 150px 120px 80px',
+                                    gap: 3,
+                                    py: 1, // Reducido de py: 2
+                                    px: 1,
+                                    mb: 1,
+                                    borderBottom: '2px solid',
+                                    borderColor: 'divider',
+                                    minWidth: 900
+                                }}>
+                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>IMAGEN</Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>PRODUCTO</Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right', fontSize: '0.75rem' }}>PRECIO UNIT.</Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>CANTIDAD</Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right', fontSize: '0.75rem' }}>SUBTOTAL</Typography>
+                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>ACCIÓN</Typography>
+                                </Box>
+
+                                {/* Productos */}
                                 {cart.items.map((item) => (
-                                    <React.Fragment key={item.productoId}>
-                                        <ListItem sx={{ py: 2, px: 0 }}>
-                                            <Box
-                                                component="img"
-                                                src={item.imagenesUrls?.[0] || 'https://via.placeholder.com/100'}
-                                                alt={item.nombre}
+                                    <Box
+                                        key={item.productoId}
+                                        sx={{
+                                            display: 'grid',
+                                            gridTemplateColumns: '120px minmax(200px, 1fr) 120px 150px 120px 80px',
+                                            gap: 3,
+                                            alignItems: 'center',
+                                            py: 1, // Reducido de py: 2
+                                            px: 1,
+                                            borderBottom: '1px solid',
+                                            borderColor: 'divider',
+                                            '&:hover': {
+                                                backgroundColor: 'action.hover',
+                                                borderRadius: 1
+                                            },
+                                            transition: 'background-color 0.3s ease',
+                                            minWidth: 900
+                                        }}
+                                    >
+                                        {/* Imagen (sin cambios) */}
+                                        <Box
+                                            component="img"
+                                            src={item.imagenesUrls?.[0] || 'https://via.placeholder.com/100'}
+                                            alt={item.nombre}
+                                            sx={{
+                                                width: 80, // Reducido de 100
+                                                height: 80, // Reducido de 100
+                                                objectFit: 'cover',
+                                                borderRadius: 1,
+                                                margin: '0 auto'
+                                            }}
+                                        />
+
+                                        {/* Nombre */}
+                                        <Typography variant="body2" sx={{ fontWeight: 'medium', pr: 2, fontSize: '0.875rem' }}>
+                                            {item.nombre}
+                                        </Typography>
+
+                                        {/* Precio unitario */}
+                                        <Typography variant="body2" sx={{ textAlign: 'right', pr: 2, fontSize: '0.875rem' }}>
+                                            ${item.precioUnitario.toLocaleString()}
+                                        </Typography>
+
+                                        {/* Cantidad */}
+                                        <Box sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            justifyContent: 'center',
+                                            gap: 1, // Reducido de gap: 2
+                                            px: 1 // Reducido de px: 2
+                                        }}>
+                                            <IconButton
+                                                onClick={() => handleCambiarCantidad(item.productoId, item.cantidad - 1)}
+                                                disabled={item.cantidad <= 1}
+                                                size="small" // Cambiado de size="medium"
                                                 sx={{
-                                                    width: 100,
-                                                    height: 100,
-                                                    objectFit: 'cover',
-                                                    borderRadius: 1,
-                                                    mr: 2
+                                                    p: 0.5, // Reducido de p: 1
+                                                    border: '1px solid',
+                                                    borderColor: 'divider'
                                                 }}
-                                            />
-                                            <Box sx={{ flexGrow: 1 }}>
-                                                <ListItemText
-                                                    primary={item.nombre}
-                                                    primaryTypographyProps={{
-                                                        fontWeight: 'medium',
-                                                        variant: 'h6'
-                                                    }}
-                                                    secondary={`$${item.precioUnitario.toLocaleString()}`}
-                                                    secondaryTypographyProps={{
-                                                        variant: 'body1'
-                                                    }}
-                                                />
-                                                <Box sx={{ display: 'flex', alignItems: 'center', mt: 1 }}>
-                                                    <IconButton
-                                                        onClick={() => handleCambiarCantidad(item.productoId, item.cantidad - 1)}
-                                                        disabled={item.cantidad <= 1}
-                                                    >
-                                                        <RemoveIcon />
-                                                    </IconButton>
-                                                    <Typography sx={{ mx: 1 }}>{item.cantidad}</Typography>
-                                                    <IconButton
-                                                        onClick={() => handleCambiarCantidad(item.productoId, item.cantidad + 1)}
-                                                    >
-                                                        <AddIcon />
-                                                    </IconButton>
-                                                </Box>
-                                            </Box>
-                                            <Box sx={{ textAlign: 'right' }}>
-                                                <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                                                    ${(item.precioUnitario * item.cantidad).toLocaleString()}
-                                                </Typography>
-                                                <IconButton
-                                                    onClick={() => confirmarEliminar(item.productoId, item.nombre)}
-                                                    color="error"
-                                                    sx={{ mt: 1 }}
-                                                >
-                                                    <DeleteIcon />
-                                                </IconButton>
-                                            </Box>
-                                        </ListItem>
-                                        <Divider sx={{ my: 1 }} />
-                                    </React.Fragment>
+                                            >
+                                                <RemoveIcon fontSize="small" />
+                                            </IconButton>
+                                            <Typography variant="body2" sx={{
+                                                minWidth: 24, // Reducido de 30
+                                                textAlign: 'center',
+                                                fontWeight: 'bold',
+                                                fontSize: '0.875rem'
+                                            }}>
+                                                {item.cantidad}
+                                            </Typography>
+                                            <IconButton
+                                                onClick={() => handleCambiarCantidad(item.productoId, item.cantidad + 1)}
+                                                size="small" // Cambiado de size="medium"
+                                                sx={{
+                                                    p: 0.5, // Reducido de p: 1
+                                                    border: '1px solid',
+                                                    borderColor: 'divider'
+                                                }}
+                                            >
+                                                <AddIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+
+                                        {/* Subtotal */}
+                                        <Typography variant="body2" sx={{
+                                            fontWeight: 'bold',
+                                            textAlign: 'right',
+                                            pr: 2, // Reducido de pr: 3
+                                            fontSize: '0.875rem'
+                                        }}>
+                                            ${(item.precioUnitario * item.cantidad).toLocaleString()}
+                                        </Typography>
+
+                                        {/* Eliminar (sin cambios) */}
+                                        <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                                            <IconButton
+                                                onClick={() => confirmarEliminar(item.productoId, item.nombre)}
+                                                color="error"
+                                                size="small" // Cambiado de size="medium"
+                                            >
+                                                <DeleteIcon fontSize="small" />
+                                            </IconButton>
+                                        </Box>
+                                    </Box>
                                 ))}
-                            </List>
+                            </Box>
                         )}
                     </Paper>
                 </Grid>
 
                 {/* Resumen de compra */}
-                <Grid item xs={12} md={4}>
-                    <Paper elevation={3} sx={{ p: 3, position: 'sticky', top: 16 }}>
-                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                <Grid item xs={12} md={5}>
+                    <Paper elevation={3} sx={{
+                        p: 3,
+                        position: 'sticky',
+                        top: 16,
+                        borderRadius: 3, // Bordes más redondeados
+                        minWidth: 300 // Ancho mínimo garantizado
+                    }}>
+                        <Typography variant="h5" sx={{
+                            mb: 2,
+                            fontWeight: 'bold',
+                            color: 'primary.main' // Color destacado
+                        }}>
                             Resumen de Compra
                         </Typography>
-                        <Divider sx={{ mb: 2 }} />
 
-                        <Box sx={{ mb: 2 }}>
+                        <Divider sx={{
+                            mb: 2,
+                            borderColor: 'divider',
+                            borderBottomWidth: 2 // Línea más gruesa
+                        }} />
+
+                        {/* Lista de productos */}
+                        <Box sx={{
+                            mb: 2,
+                            maxHeight: 300,
+                            overflowY: 'auto',
+                            pr: 1 // Espacio para scroll
+                        }}>
                             {cart?.items?.map(item => (
                                 <Box
                                     key={item.productoId}
-                                    sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}
+                                    sx={{
+                                        display: 'flex',
+                                        justifyContent: 'space-between',
+                                        alignItems: 'center',
+                                        mb: 1.5,
+                                        py: 1,
+                                        px: 1,
+                                        '&:hover': {
+                                            bgcolor: 'action.hover',
+                                            borderRadius: 1
+                                        }
+                                    }}
                                 >
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Box
+                                            component="img"
+                                            src={item.imagenesUrls?.[0] || 'https://via.placeholder.com/60'}
+                                            alt={item.nombre}
+                                            sx={{
+                                                width: 40,
+                                                height: 40,
+                                                objectFit: 'cover',
+                                                borderRadius: 1,
+                                                mr: 1.5
+                                            }}
+                                        />
+                                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                            {item.nombre}
+                                        </Typography>
+                                    </Box>
                                     <Typography variant="body2">
-                                        {item.nombre} x{item.cantidad}
-                                    </Typography>
-                                    <Typography variant="body2">
-                                        ${(item.precioUnitario * item.cantidad).toLocaleString()}
+                                        x{item.cantidad} • ${(item.precioUnitario * item.cantidad).toLocaleString()}
                                     </Typography>
                                 </Box>
                             ))}
                         </Box>
 
-                        <Divider sx={{ my: 2 }} />
+                        <Divider sx={{
+                            my: 2,
+                            borderColor: 'divider',
+                            borderBottomWidth: 2
+                        }} />
 
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+                        {/* Total */}
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            alignItems: 'center',
+                            mb: 3,
+                            py: 1,
+                            px: 1,
+                            bgcolor: 'background.paper',
+                            borderRadius: 1
+                        }}>
                             <Typography variant="h6">Total</Typography>
-                            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
                                 ${total.toLocaleString()}
                             </Typography>
                         </Box>
 
+                        {/* Botón de pago */}
                         <Button
                             variant="contained"
                             color="primary"
@@ -255,7 +431,18 @@ export default function Carrito() {
                             size="large"
                             startIcon={<PaymentIcon />}
                             disabled={!cart?.items || cart.items.length === 0}
-                            sx={{ py: 1.5, fontWeight: 'bold' }}
+                            sx={{
+                                py: 1.5,
+                                fontWeight: 'bold',
+                                fontSize: '1rem',
+                                borderRadius: 2, // Bordes más redondeados
+                                boxShadow: 2,
+                                '&:hover': {
+                                    boxShadow: 4,
+                                    transform: 'translateY(-2px)'
+                                },
+                                transition: 'all 0.3s ease'
+                            }}
                         >
                             Proceder al Pago
                         </Button>
