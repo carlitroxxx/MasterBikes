@@ -1,7 +1,8 @@
 import React from 'react';
 import {
     Container, Typography, List, ListItem, ListItemText, Button,
-    Grid, Divider, Box, IconButton, Badge, Paper, CircularProgress, Alert
+    Grid, Divider, Box, IconButton, Badge, Paper, CircularProgress, Alert,
+    Snackbar, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle
 } from '@mui/material';
 import DeleteIcon from '@mui/icons-material/Delete';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -11,7 +12,7 @@ import RemoveIcon from '@mui/icons-material/Remove';
 import { useAuth } from '../../context/AuthContext';
 
 export default function Carrito() {
-    const { user } = useAuth();    // Obtener carrito al cargar el componente
+    const { user } = useAuth();
     const [carrito, setCarrito] = React.useState({
         id: null,
         items: [],
@@ -19,9 +20,19 @@ export default function Carrito() {
     });
     const [loading, setLoading] = React.useState(true);
     const [error, setError] = React.useState(null);
-    React.useEffect(() => {
-        if (!user) return;
+    const [snackbar, setSnackbar] = React.useState({
+        open: false,
+        message: '',
+        severity: 'success'
+    });
+    const [dialogEliminar, setDialogEliminar] = React.useState({
+        open: false,
+        productoId: null,
+        productoNombre: ''
+    });
 
+    // Obtener carrito al cargar el componente
+    React.useEffect(() => {
         const fetchCarrito = async () => {
             try {
                 const response = await fetch(`http://localhost:8083/api/carrito/${user.email}`);
@@ -35,21 +46,58 @@ export default function Carrito() {
             }
         };
         fetchCarrito();
-    }, [user]);
+    }, [user.email]);
 
-    // Eliminar producto del carrito
-    const handleEliminar = async (productoId) => {
+    // Abrir diálogo de confirmación para eliminar
+    const confirmarEliminar = (productoId, productoNombre) => {
+        setDialogEliminar({
+            open: true,
+            productoId,
+            productoNombre
+        });
+    };
+
+    // Cerrar diálogo
+    const cerrarDialogoEliminar = () => {
+        setDialogEliminar({
+            open: false,
+            productoId: null,
+            productoNombre: ''
+        });
+    };
+
+    // Eliminar producto del carrito (confirmado)
+    const handleEliminarConfirmado = async () => {
+        const { productoId } = dialogEliminar;
         try {
+            setLoading(true);
             const response = await fetch(
                 `http://localhost:8083/api/carrito/${carrito.id}/items/${productoId}?usuarioId=${user.email}`,
                 { method: 'DELETE' }
             );
+
             if (!response.ok) throw new Error('Error al eliminar producto');
 
-            const updatedCarrito = await response.json();
-            setCarrito(updatedCarrito);
+            // Recargar el carrito después de eliminar
+            const carritoResponse = await fetch(`http://localhost:8083/api/carrito/${user.email}`);
+            const carritoActualizado = await carritoResponse.json();
+            setCarrito(carritoActualizado);
+
+            setSnackbar({
+                open: true,
+                message: 'Producto eliminado correctamente',
+                severity: 'success'
+            });
         } catch (err) {
             setError(err.message);
+            setSnackbar({
+                open: true,
+                message: err.message || 'Error al eliminar producto',
+                severity: 'error'
+            });
+        } finally {
+            setLoading(false);
+            cerrarDialogoEliminar();
         }
     };
 
@@ -58,6 +106,7 @@ export default function Carrito() {
         if (nuevaCantidad < 1) return;
 
         try {
+            setLoading(true);
             const response = await fetch(
                 `http://localhost:8083/api/carrito/${user.email}/items`,
                 {
@@ -75,11 +124,22 @@ export default function Carrito() {
             setCarrito(updatedCarrito);
         } catch (err) {
             setError(err.message);
+            setSnackbar({
+                open: true,
+                message: err.message || 'Error al actualizar cantidad',
+                severity: 'error'
+            });
+        } finally {
+            setLoading(false);
         }
     };
 
     // Calcular total
     const total = carrito.items.reduce((sum, item) => sum + (item.precioUnitario * item.cantidad), 0);
+
+    const handleCloseSnackbar = () => {
+        setSnackbar({ ...snackbar, open: false });
+    };
 
     if (loading) return (
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
@@ -182,7 +242,7 @@ export default function Carrito() {
                                                     ${(item.precioUnitario * item.cantidad).toLocaleString()}
                                                 </Typography>
                                                 <IconButton
-                                                    onClick={() => handleEliminar(item.productoId)}
+                                                    onClick={() => confirmarEliminar(item.productoId, item.nombre)}
                                                     color="error"
                                                     sx={{ mt: 1 }}
                                                 >
@@ -245,6 +305,49 @@ export default function Carrito() {
                     </Paper>
                 </Grid>
             </Grid>
+
+            {/* Diálogo de confirmación para eliminar */}
+            <Dialog
+                open={dialogEliminar.open}
+                onClose={cerrarDialogoEliminar}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+            >
+                <DialogTitle id="alert-dialog-title">
+                    ¿Eliminar producto del carrito?
+                </DialogTitle>
+                <DialogContent>
+                    <DialogContentText id="alert-dialog-description">
+                        ¿Estás seguro que deseas eliminar "{dialogEliminar.productoNombre}" de tu carrito?
+                    </DialogContentText>
+                </DialogContent>
+                <DialogActions>
+                    <Button onClick={cerrarDialogoEliminar}>Cancelar</Button>
+                    <Button
+                        onClick={handleEliminarConfirmado}
+                        color="error"
+                        autoFocus
+                    >
+                        Eliminar
+                    </Button>
+                </DialogActions>
+            </Dialog>
+
+            {/* Snackbar para notificaciones */}
+            <Snackbar
+                open={snackbar.open}
+                autoHideDuration={6000}
+                onClose={handleCloseSnackbar}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbar.message}
+                </Alert>
+            </Snackbar>
         </Container>
     );
 }

@@ -105,15 +105,20 @@ export function CartProvider({ children }) {
         try {
             setLoading(true);
             const response = await axios.delete(
-                `${API_BASE_URL}/${cart.id}/items/${productoId}?usuarioId=${user.email}`,
-                {
-                    headers: {
-                        'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
-                }
+                `${API_BASE_URL}/${cart.id}/items/${productoId}?usuarioId=${user.email}`
             );
+
+            // Si el backend no devuelve contenido (204)
+            if (response.status === 204) {
+                // Forzar recarga del carrito
+                await fetchCart();
+                return { success: true };
+            }
+
+            // Si el backend devuelve el carrito actualizado
             setCart(response.data);
             return { success: true, cart: response.data };
+
         } catch (err) {
             console.error("Error removing item:", err);
             setError(err.response?.data?.message || 'Error al eliminar producto');

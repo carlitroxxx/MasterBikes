@@ -33,12 +33,12 @@ public class CarritoController {
     }
 
     @DeleteMapping("/{id}/items/{productoId}")
-    public ResponseEntity<Void> eliminarItem(
+    public ResponseEntity<CarritoDto> eliminarItem(
             @PathVariable String id,
             @PathVariable String productoId,
             @RequestParam String usuarioId) {
-        carritoService.eliminarItem(id, usuarioId, productoId);
-        return ResponseEntity.noContent().build();
+        CarritoDto carritoActualizado = carritoService.eliminarItem(id, usuarioId, productoId);
+        return ResponseEntity.ok(carritoActualizado);
     }
 
     @DeleteMapping("/{id}")

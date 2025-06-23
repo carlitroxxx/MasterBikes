@@ -74,12 +74,13 @@ public class CarritoService {
     }
 
     @Transactional
-    public void eliminarItem(String carritoId, String usuarioId, String productoId) {
+    public CarritoDto eliminarItem(String carritoId, String usuarioId, String productoId) {
         Carrito carrito = carritoRepository.findByIdAndUsuarioId(carritoId, usuarioId)
                 .orElseThrow(() -> new CarritoNoEncontradoException("Carrito no encontrado"));
         carrito.getItems().removeIf(item -> item.getProductoId().equals(productoId));
         carrito.setFechaActualizacion(new Date());
-        carritoRepository.save(carrito);
+        Carrito carritoActualizado = carritoRepository.save(carrito);
+        return convertirADto(carritoActualizado);
     }
 
     // ... (métodos auxiliares crearCarritoInicial, crearItemCarrito, convertirADto)
