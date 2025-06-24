@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     Container,
     Typography,
@@ -12,11 +12,13 @@ import {
     Divider
 } from '@mui/material';
 import { Visibility, VisibilityOff, Person, Email, Lock } from '@mui/icons-material';
+import { useAuth } from '../../context/AuthContext';
 
 export default function GestionCuenta() {
+    const { user, updateProfile, changePassword } = useAuth();
     const [usuario, setUsuario] = useState({
-        nombre: 'Juan Pérez',
-        correo: 'juan@correo.com',
+        nombre: '',
+        correo: '',
         password: '',
         newPassword: '',
         confirmPassword: ''
@@ -27,6 +29,18 @@ export default function GestionCuenta() {
     const [showNewPassword, setShowNewPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [successMessage, setSuccessMessage] = useState('');
+    const [submitError, setSubmitError] = useState('');
+
+    // Cargar datos del usuario al montar el componente
+    useEffect(() => {
+        if (user) {
+            setUsuario(prev => ({
+                ...prev,
+                nombre: user.nombre,
+                correo: user.email
+            }));
+        }
+    }, [user]);
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,10 +62,10 @@ export default function GestionCuenta() {
         const newErrors = {};
 
         if (!usuario.nombre.trim()) newErrors.nombre = 'Nombre es requerido';
-        if (!usuario.correo.trim()) {
-            newErrors.correo = 'Correo es requerido';
-        } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(usuario.correo)) {
-            newErrors.correo = 'Correo no válido';
+
+        // Validar contraseña actual solo si se está cambiando la contraseña
+        if (usuario.newPassword && !usuario.password) {
+            newErrors.password = 'Debes ingresar tu contraseña actual para cambiarla';
         }
 
         if (usuario.newPassword && usuario.newPassword.length < 6) {
@@ -66,22 +80,38 @@ export default function GestionCuenta() {
         return Object.keys(newErrors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+        setSubmitError('');
 
         if (validate()) {
-            // Aquí iría la lógica para actualizar los datos en el backend
-            console.log('Datos actualizados:', usuario);
-            setSuccessMessage('Tus datos se han actualizado correctamente');
-            setTimeout(() => setSuccessMessage(''), 3000);
+            try {
+                // Actualizar perfil
+                await updateProfile(usuario.nombre);
 
-            // Reset password fields if update was successful
-            setUsuario(prev => ({
-                ...prev,
-                password: '',
-                newPassword: '',
-                confirmPassword: ''
-            }));
+                // Cambiar contraseña si se proporcionó una nueva
+                if (usuario.newPassword) {
+                    await changePassword(
+                        usuario.password,
+                        usuario.newPassword,
+                        usuario.confirmPassword
+                    );
+                }
+
+                setSuccessMessage('Tus datos se han actualizado correctamente');
+                setTimeout(() => setSuccessMessage(''), 3000);
+
+                // Reset password fields
+                setUsuario(prev => ({
+                    ...prev,
+                    password: '',
+                    newPassword: '',
+                    confirmPassword: ''
+                }));
+            } catch (error) {
+                console.error('Error al actualizar datos:', error);
+                setSubmitError(error.response?.data?.message || 'Error al actualizar los datos');
+            }
         }
     };
 
@@ -103,7 +133,6 @@ export default function GestionCuenta() {
                     borderRadius: 2,
                     boxShadow: 1,
                     p: 4
-
                 }}
             >
                 <Box display="flex" alignItems="center" mb={4}>
@@ -122,6 +151,12 @@ export default function GestionCuenta() {
                 {successMessage && (
                     <Alert severity="success" sx={{ mb: 3 }}>
                         {successMessage}
+                    </Alert>
+                )}
+
+                {submitError && (
+                    <Alert severity="error" sx={{ mb: 3 }}>
+                        {submitError}
                     </Alert>
                 )}
 
@@ -154,9 +189,8 @@ export default function GestionCuenta() {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
-                    error={!!errors.correo}
-                    helperText={errors.correo}
                     InputProps={{
+                        readOnly: true,
                         startAdornment: (
                             <InputAdornment position="start">
                                 <Email color="action" />
@@ -179,6 +213,8 @@ export default function GestionCuenta() {
                     onChange={handleChange}
                     fullWidth
                     margin="normal"
+                    error={!!errors.password}
+                    helperText={errors.password}
                     InputProps={{
                         startAdornment: (
                             <InputAdornment position="start">

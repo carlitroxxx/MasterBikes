@@ -69,10 +69,59 @@ export function AuthProvider({ children }) {
         localStorage.removeItem('token');
         delete axios.defaults.headers.common['Authorization'];
         setUser(null);
+        navigate('/login');
+    };
+
+    const updateProfile = async (nombre) => {
+        try {
+            const response = await axios.put(
+                'http://localhost:8081/api/auth/update-profile',
+                { nombre },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            );
+
+            const updatedUser = { ...user, nombre: response.data.nombre };
+            localStorage.setItem('user', JSON.stringify(updatedUser));
+            setUser(updatedUser);
+            return true;
+        } catch (error) {
+            console.error('Update profile error:', error);
+            throw error;
+        }
+    };
+
+    const changePassword = async (currentPassword, newPassword, confirmPassword) => {
+        try {
+            await axios.put(
+                'http://localhost:8081/api/auth/change-password',
+                { currentPassword, newPassword, confirmPassword },
+                {
+                    headers: {
+                        'Authorization': `Bearer ${localStorage.getItem('token')}`
+                    }
+                }
+            );
+            return true;
+        } catch (error) {
+            console.error('Change password error:', error);
+            throw error;
+        }
     };
 
     return (
-        <AuthContext.Provider value={{ user, loading, login, register, logout }}>
+        <AuthContext.Provider value={{
+            user,
+            loading,
+            login,
+            register,
+            logout,
+            updateProfile,
+            changePassword
+        }}>
             {!loading && children}
         </AuthContext.Provider>
     );

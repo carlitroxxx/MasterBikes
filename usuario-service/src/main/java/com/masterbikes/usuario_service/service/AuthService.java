@@ -1,9 +1,7 @@
 package com.masterbikes.usuario_service.service;
 
 
-import com.masterbikes.usuario_service.dto.AuthResponse;
-import com.masterbikes.usuario_service.dto.EmployeeRegisterRequest;
-import com.masterbikes.usuario_service.dto.RegisterRequest;
+import com.masterbikes.usuario_service.dto.*;
 import com.masterbikes.usuario_service.model.Role;
 import com.masterbikes.usuario_service.model.User;
 import com.masterbikes.usuario_service.repository.UserRepository;
@@ -75,4 +73,31 @@ public class AuthService {
 
         return userRepository.save(user);
     }
+
+    // Agrega estos métodos a AuthService.java
+
+    public User updateProfile(String email, UpdateProfileRequest request) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        user.setNombre(request.getNombre());
+        return userRepository.save(user);
+    }
+
+    public void changePassword(String email, ChangePasswordRequest request) {
+        if (!request.getNewPassword().equals(request.getConfirmPassword())) {
+            throw new RuntimeException("Las contraseñas no coinciden");
+        }
+
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
+            throw new RuntimeException("Contraseña actual incorrecta");
+        }
+
+        user.setPassword(passwordEncoder.encode(request.getNewPassword()));
+        userRepository.save(user);
+    }
+
 }

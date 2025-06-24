@@ -1,12 +1,13 @@
 package com.masterbikes.usuario_service.controller;
 
-import com.masterbikes.usuario_service.dto.AuthRequest;
-import com.masterbikes.usuario_service.dto.AuthResponse;
-import com.masterbikes.usuario_service.dto.EmployeeRegisterRequest;
-import com.masterbikes.usuario_service.dto.RegisterRequest;
+import com.masterbikes.usuario_service.dto.*;
+import com.masterbikes.usuario_service.model.User;
+import com.masterbikes.usuario_service.repository.UserRepository;
 import com.masterbikes.usuario_service.service.AuthService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,10 +15,13 @@ import org.springframework.web.bind.annotation.*;
 public class AuthController {
 
     private final AuthService authService;
+    private final UserRepository userRepository;
 
-    public AuthController(AuthService authService) {
+    public AuthController(AuthService authService, UserRepository userRepository) {
         this.authService = authService;
+        this.userRepository = userRepository;
     }
+
 
     @PostMapping("/login")
     public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
@@ -39,4 +43,36 @@ public class AuthController {
         AuthResponse response = authService.login(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(response);
     }
+
+    // Agrega esto a AuthController.java
+
+    @PutMapping("/update-profile")
+    @PreAuthorize("hasAnyRole('CLIENTE', 'VENDEDOR', 'TECNICO', 'INVENTARIO', 'SUPERVISOR')")
+    public ResponseEntity<User> updateProfile(@RequestBody UpdateProfileRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User updatedUser = authService.updateProfile(email, request);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PutMapping("/change-password")
+    @PreAuthorize("hasAnyRole('CLIENTE', 'VENDEDOR', 'TECNICO', 'INVENTARIO', 'SUPERVISOR')")
+    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        authService.changePassword(email, request);
+        return ResponseEntity.ok("Contraseña actualizada correctamente");
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("hasAnyRole('CLIENTE', 'VENDEDOR', 'TECNICO', 'INVENTARIO', 'SUPERVISOR')")
+    public ResponseEntity<User> getCurrentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String email = authentication.getName();
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+        return ResponseEntity.ok(user);
+    }
+
+
 }
