@@ -86,14 +86,18 @@ public class AuthService {
 
     public void changePassword(String email, ChangePasswordRequest request) {
         if (!request.getNewPassword().equals(request.getConfirmPassword())) {
-            throw new RuntimeException("Las contraseñas no coinciden");
+            throw new RuntimeException("Las nuevas contraseñas no coinciden");
         }
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         if (!passwordEncoder.matches(request.getCurrentPassword(), user.getPassword())) {
-            throw new RuntimeException("Contraseña actual incorrecta");
+            throw new RuntimeException("La contraseña actual es incorrecta");
+        }
+
+        if (request.getNewPassword().length() < 6) {
+            throw new RuntimeException("La nueva contraseña debe tener al menos 6 caracteres");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNewPassword()));

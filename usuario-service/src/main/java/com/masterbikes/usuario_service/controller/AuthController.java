@@ -4,6 +4,9 @@ import com.masterbikes.usuario_service.dto.*;
 import com.masterbikes.usuario_service.model.User;
 import com.masterbikes.usuario_service.repository.UserRepository;
 import com.masterbikes.usuario_service.service.AuthService;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
@@ -57,11 +60,23 @@ public class AuthController {
 
     @PutMapping("/change-password")
     @PreAuthorize("hasAnyRole('CLIENTE', 'VENDEDOR', 'TECNICO', 'INVENTARIO', 'SUPERVISOR')")
-    public ResponseEntity<String> changePassword(@RequestBody ChangePasswordRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        String email = authentication.getName();
-        authService.changePassword(email, request);
-        return ResponseEntity.ok("Contraseña actualizada correctamente");
+    public ResponseEntity<?> changePassword(@RequestBody ChangePasswordRequest request) {
+        try {
+            Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+            String email = authentication.getName();
+            authService.changePassword(email, request);
+            return ResponseEntity.ok("Contraseña actualizada correctamente");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse(e.getMessage()));
+        }
+    }
+
+    // Clase adicional para la respuesta de error
+    @Data
+    @AllArgsConstructor
+    class ErrorResponse {
+        private String message;
     }
 
     @GetMapping("/me")

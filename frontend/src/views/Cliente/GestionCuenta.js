@@ -110,11 +110,11 @@ export default function GestionCuenta() {
                 }));
             } catch (error) {
                 console.error('Error al actualizar datos:', error);
-                setSubmitError(error.message || 'Error al actualizar los datos');
+                // Mostrar el mensaje específico del backend
+                setSubmitError(error.response?.data?.message || error.message || 'Error al actualizar los datos');
             }
         }
     };
-
     return (
         <Container maxWidth="md" sx={{ py: 2}}>
             <Typography variant="h4" gutterBottom sx={{
