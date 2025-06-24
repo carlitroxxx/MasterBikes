@@ -110,7 +110,7 @@ export default function GestionCuenta() {
                 }));
             } catch (error) {
                 console.error('Error al actualizar datos:', error);
-                setSubmitError(error.response?.data?.message || 'Error al actualizar los datos');
+                setSubmitError(error.message || 'Error al actualizar los datos');
             }
         }
     };

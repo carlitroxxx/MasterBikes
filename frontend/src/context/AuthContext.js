@@ -108,7 +108,18 @@ export function AuthProvider({ children }) {
             return true;
         } catch (error) {
             console.error('Change password error:', error);
-            throw error;
+            let errorMessage = 'Error al cambiar la contraseña';
+
+            if (error.response) {
+                // Si el backend devuelve un mensaje específico
+                if (error.response.data.message.includes('contraseña actual')) {
+                    errorMessage = 'La contraseña actual es incorrecta';
+                } else if (error.response.data.message.includes('coinciden')) {
+                    errorMessage = 'Las nuevas contraseñas no coinciden';
+                }
+            }
+
+            throw new Error(errorMessage);
         }
     };
 
