@@ -32,16 +32,29 @@ export default function RegisterPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setRutError('');
 
-        // Validar RUT antes de enviar
         if (!validateRut(rut)) {
             setRutError('Por favor ingrese un RUT válido');
             return;
         }
 
-        const success = await register(nombre, email, password, rut);
-        if (!success) {
-            setError('Error al registrarse. El correo electrónico o RUT ya está en uso.');
+        try {
+            await register(nombre, email, password, rut);
+        } catch (error) {
+            switch(error.message) {
+                case 'EMAIL_EXISTS':
+                    setError('El correo electrónico ya está en uso');
+                    break;
+                case 'RUT_EXISTS':
+                    setError('El RUT ya está registrado');
+                    break;
+                case 'RUT_REQUIRED':
+                    setRutError('El RUT es obligatorio');
+                    break;
+                default:
+                    setError('Error al registrarse. Por favor intente nuevamente');
+            }
         }
     };
 

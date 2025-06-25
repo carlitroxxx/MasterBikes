@@ -48,12 +48,12 @@ public class AuthService {
 
     public User registerClient(RegisterRequest request) {
         if (userRepository.existsByEmail(request.getEmail())) {
-            throw new RuntimeException("El email ya está registrado");
+            throw new RuntimeException("EMAIL_EXISTS"); // Mensaje clave para el frontend
         }
 
         if (request.getRut() != null && !request.getRut().isEmpty() &&
                 userRepository.existsByRut(request.getRut())) {
-            throw new RuntimeException("El RUT ya está registrado");
+            throw new RuntimeException("RUT_EXISTS"); // Mensaje clave para el frontend
         }
 
         User user = new User();
@@ -61,7 +61,7 @@ public class AuthService {
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.CLIENTE);
-        user.setRut(request.getRut()); // Asignar RUT
+        user.setRut(request.getRut());
 
         return userRepository.save(user);
     }

@@ -124,7 +124,33 @@ export default function Navbar() {
             </AppBar>
         );
     }
-
+    if(user.role === 'SUPERVISOR'){
+        return(
+            <AppBar position="static">
+                <Toolbar>
+                    <Box sx={{ flexGrow: 1 }} display="flex" gap={2}>
+                        <Button color="inherit" component={Link} to="/registro/empleado">CREAR USUARIOS</Button>
+                    </Box>
+                    <Box>
+                        <Button
+                            color="inherit"
+                            onClick={handleMenuClick}
+                            startIcon={<Avatar sx={{ width: 24, height: 24 }}>{user.nombre.charAt(0)}</Avatar>}
+                        >
+                            {user.nombre}
+                        </Button>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                        >
+                            <MenuItem onClick={handleLogout}>Cerrar sesión</MenuItem>
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+        );
+    }
     // Render para otros roles (puedes personalizar según necesites)
     return (
         <AppBar position="static">

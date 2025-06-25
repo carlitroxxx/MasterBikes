@@ -33,16 +33,35 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    // AuthController.java (fragmento actualizado)
     @PostMapping("/register")
-    public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
-        // Validar que el RUT esté presente para clientes
-        if (request.getRut() == null || request.getRut().trim().isEmpty()) {
-            throw new RuntimeException("El RUT es obligatorio.");
-        }
+    public ResponseEntity<?> register(@RequestBody RegisterRequest request) {
+        try {
+            if (request.getRut() == null || request.getRut().trim().isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new ErrorResponse("RUT_REQUIRED", "El RUT es obligatorio")); // 2 args
+            }
 
-        authService.registerClient(request);
-        AuthResponse response = authService.login(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(response);
+            authService.registerClient(request);
+            AuthResponse response = authService.login(request.getEmail(), request.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            String errorCode = e.getMessage();
+            if ("EMAIL_EXISTS".equals(errorCode)) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body(new ErrorResponse("EMAIL_EXISTS", "El correo ya está en uso")); // 2 args
+            } else if ("RUT_EXISTS".equals(errorCode)) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body(new ErrorResponse("RUT_EXISTS", "El RUT ya está registrado")); // 2 args
+            } else {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ErrorResponse("UNKNOWN_ERROR", "Error al registrar")); // 2 args
+            }
+        }
     }
 
     @PostMapping("/register/employee")
@@ -73,15 +92,18 @@ public class AuthController {
             authService.changePassword(email, request);
             return ResponseEntity.ok("Contraseña actualizada correctamente");
         } catch (RuntimeException e) {
+            // Asignar un código de error genérico para este caso
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new ErrorResponse(e.getMessage()));
+                    .body(new ErrorResponse("PASSWORD_ERROR", e.getMessage())); // <- Ahora con código
         }
     }
 
     // Clase adicional para la respuesta de error
+    // Dentro de AuthController.java
     @Data
     @AllArgsConstructor
     class ErrorResponse {
+        private String code;  // <- Añade este campo
         private String message;
     }
 

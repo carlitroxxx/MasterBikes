@@ -101,13 +101,13 @@ export function AuthProvider({ children }) {
                 rut
             });
 
-            const { token, nombre: userName, role, email: userEmail, rut: userRut } = response.data; // Añade rut aquí
+            const { token, nombre: userName, role, email: userEmail, rut: userRut } = response.data;
 
             const userData = {
                 nombre: userName,
                 role,
                 email: userEmail,
-                rut: userRut // Añade el RUT al objeto de usuario
+                rut: userRut
             };
 
             localStorage.setItem('user', JSON.stringify(userData));
@@ -118,8 +118,23 @@ export function AuthProvider({ children }) {
             navigate('/cliente/shop');
             return true;
         } catch (error) {
-            console.error('Register error:', error);
-            return false;
+            if (error.response) {
+                // Verificamos el código de error específico
+                const errorCode = error.response.data?.code;
+                if (errorCode === 'EMAIL_EXISTS') {
+                    throw new Error('EMAIL_EXISTS');
+                } else if (errorCode === 'RUT_EXISTS') {
+                    throw new Error('RUT_EXISTS');
+                } else if (errorCode === 'RUT_REQUIRED') {
+                    throw new Error('RUT_REQUIRED');
+                } else {
+                    throw new Error(error.response.data?.message || 'Error al registrarse');
+                }
+            } else if (error.request) {
+                throw new Error('No se pudo conectar al servidor');
+            } else {
+                throw error;
+            }
         }
     };
 
