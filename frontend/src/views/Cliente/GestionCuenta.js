@@ -11,19 +11,19 @@ import {
     Alert,
     Divider
 } from '@mui/material';
-import { Visibility, VisibilityOff, Person, Email, Lock } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
-
+import { Visibility, VisibilityOff, Person, Email, Lock, Badge } from '@mui/icons-material'; // Agregué Badge para el ícono de RUT
+import { formatRut } from '../../components/rutUtils';
 export default function GestionCuenta() {
     const { user, updateProfile, changePassword } = useAuth();
     const [usuario, setUsuario] = useState({
         nombre: '',
         correo: '',
+        rut: '', // Nuevo campo para el RUT
         password: '',
         newPassword: '',
         confirmPassword: ''
     });
-
     const [errors, setErrors] = useState({});
     const [showPassword, setShowPassword] = useState(false);
     const [showNewPassword, setShowNewPassword] = useState(false);
@@ -37,9 +37,11 @@ export default function GestionCuenta() {
             setUsuario(prev => ({
                 ...prev,
                 nombre: user.nombre,
-                correo: user.email
+                correo: user.email,
+                rut: user.rut ? formatRut(user.rut) : 'No registrado' // Formateamos el RUT
             }));
         }
+
     }, [user]);
 
     const handleChange = (e) => {
@@ -181,7 +183,21 @@ export default function GestionCuenta() {
                         ),
                     }}
                 />
-
+                <TextField
+                    label="RUT"
+                    name="rut"
+                    value={usuario.rut}
+                    fullWidth
+                    margin="normal"
+                    InputProps={{
+                        readOnly: true,
+                        startAdornment: (
+                            <InputAdornment position="start">
+                                <Badge color="action" /> {/* Ícono para RUT */}
+                            </InputAdornment>
+                        ),
+                    }}
+                />
                 <TextField
                     label="Correo electrónico"
                     name="correo"

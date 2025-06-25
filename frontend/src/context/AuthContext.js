@@ -22,35 +22,94 @@ export function AuthProvider({ children }) {
 
     const login = async (email, password) => {
         try {
-            const response = await axios.post('http://localhost:8081/api/auth/login', { email, password });
-            const { token, nombre, role, email: userEmail } = response.data;
+            // 1. Validación básica de entrada
+            if (!email || !password) {
+                throw new Error('Email y contraseña son requeridos');
+            }
 
-            const userData = { nombre, role, email: userEmail };
+            // 2. Petición al backend con manejo de errores mejorado
+            const response = await axios.post('http://localhost:8081/api/auth/login', {
+                email,
+                password
+            }, {
+                timeout: 10000, // 10 segundos de timeout
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            // 3. Validación de la respuesta
+            if (!response.data || !response.data.token) {
+                throw new Error('Respuesta inválida del servidor');
+            }
+
+            const { token, nombre, role, email: userEmail, rut } = response.data;
+            console.log("Datos recibidos: ",{ token, nombre, role, email: userEmail, rut });
+
+            // 4. Validación de datos mínimos
+            if (!nombre || !role || !userEmail) {
+                throw new Error('Datos de usuario incompletos');
+            }
+
+            // 5. Almacenamiento seguro (considera usar cookies seguras en producción)
+            const userData = {
+                nombre,
+                role,
+                email: userEmail,
+                rut: rut || null // Asegurarse de incluir el RUT aquí
+            };
+
+            // 6. Usar un servicio de almacenamiento seguro en lugar de localStorage directo
             localStorage.setItem('user', JSON.stringify(userData));
             localStorage.setItem('token', token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            setUser(userData);
+            setUser(userData); // Esto debe incluir el RUT
 
-            // Redirigir según el rol
-            if (role === 'CLIENTE') {
-                navigate('/cliente/shop');
-            } else {
-                navigate(`/${role.toLowerCase()}/dashboard`);
-            }
+            // 8. Redirección mejorada
+            const redirectPath = role === 'CLIENTE'
+                ? '/cliente/shop'
+                : `/${role.toLowerCase()}/dashboard`;
 
+            navigate(redirectPath);
             return true;
+
         } catch (error) {
             console.error('Login error:', error);
+
+            // Manejo específico de errores
+            let errorMessage = 'Error en el inicio de sesión';
+            if (error.response) {
+                // Error del servidor (4xx, 5xx)
+                errorMessage = error.response.data?.message || errorMessage;
+            } else if (error.request) {
+                // No se recibió respuesta
+                errorMessage = 'No se pudo conectar al servidor';
+            }
+
+            // Mostrar feedback al usuario (podrías usar un estado para esto)
+            alert(errorMessage);
             return false;
         }
     };
 
-    const register = async (nombre, email, password , rut)  => {
+    const register = async (nombre, email, password, rut) => {
         try {
-            const response = await axios.post('http://localhost:8081/api/auth/register', { nombre, email, password, rut});
-            const { token, nombre: userName, role, email: userEmail } = response.data;
+            const response = await axios.post('http://localhost:8081/api/auth/register', {
+                nombre,
+                email,
+                password,
+                rut
+            });
 
-            const userData = { nombre: userName, role, email: userEmail };
+            const { token, nombre: userName, role, email: userEmail, rut: userRut } = response.data; // Añade rut aquí
+
+            const userData = {
+                nombre: userName,
+                role,
+                email: userEmail,
+                rut: userRut // Añade el RUT al objeto de usuario
+            };
+
             localStorage.setItem('user', JSON.stringify(userData));
             localStorage.setItem('token', token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
@@ -63,6 +122,7 @@ export function AuthProvider({ children }) {
             return false;
         }
     };
+
 
     const logout = () => {
         localStorage.removeItem('user');
