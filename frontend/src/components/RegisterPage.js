@@ -14,7 +14,7 @@ export default function RegisterPage() {
     const [error, setError] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
-
+    const [emailError, setEmailError] = useState('');
 
     const handleRutChange = (e) => {
         const rawValue = e.target.value;
@@ -31,6 +31,7 @@ export default function RegisterPage() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
+        setEmailError('');
         setError('');
         setRutError('');
 
@@ -38,9 +39,15 @@ export default function RegisterPage() {
             setRutError('Por favor ingrese un RUT válido');
             return;
         }
-
+        if (!email.includes('@') || !email.includes('.')) {
+            setEmailError('Ingrese un correo electrónico válido');
+            return;
+        }
         try {
             await register(nombre, email, password, rut);
+            setEmailError('');
+            setError('');
+            setRutError('');
         } catch (error) {
             switch(error.message) {
                 case 'EMAIL_EXISTS':
@@ -51,6 +58,9 @@ export default function RegisterPage() {
                     break;
                 case 'RUT_REQUIRED':
                     setRutError('El RUT es obligatorio');
+                    break;
+                case 'EMAIL_INVALID':
+                    setEmailError('Ingrese un correo electrónico válido');
                     break;
                 default:
                     setError('Error al registrarse. Por favor intente nuevamente');
@@ -97,6 +107,8 @@ export default function RegisterPage() {
                             autoComplete="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            error={!!emailError}
+                            helperText={emailError}
                         />
                         <TextField
                             margin="normal"

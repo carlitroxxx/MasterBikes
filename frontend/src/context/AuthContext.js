@@ -93,6 +93,9 @@ export function AuthProvider({ children }) {
     };
 
     const register = async (nombre, email, password, rut) => {
+        if (!email.includes('@') || !email.includes('.')) {
+            throw new Error('EMAIL_INVALID');
+        }
         try {
             const response = await axios.post('http://localhost:8081/api/auth/register', {
                 nombre,
@@ -127,6 +130,8 @@ export function AuthProvider({ children }) {
                     throw new Error('RUT_EXISTS');
                 } else if (errorCode === 'RUT_REQUIRED') {
                     throw new Error('RUT_REQUIRED');
+                } else if (errorCode === 'EMAIL_INVALID'){
+                    throw new Error('EMAIL_INVALID');
                 } else {
                     throw new Error(error.response.data?.message || 'Error al registrarse');
                 }

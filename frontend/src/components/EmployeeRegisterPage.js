@@ -19,6 +19,7 @@ export default function EmployeeRegisterPage() {
     const [error, setError] = useState('');
     const { user } = useAuth();
     const navigate = useNavigate();
+    const [emailError, setEmailError] = useState('');
 
     const handleRutChange = (e) => {
         const rawValue = e.target.value;
@@ -33,6 +34,7 @@ export default function EmployeeRegisterPage() {
     };
 
     const handleSubmit = async (e) => {
+        setEmailError('');
         e.preventDefault();
         setError('');
         setRutError('');
@@ -41,7 +43,10 @@ export default function EmployeeRegisterPage() {
             setRutError('Por favor ingrese un RUT válido');
             return;
         }
-
+        if (!email.includes('@') || !email.includes('.')) {
+            setEmailError('Ingrese un correo electrónico válido');
+            return;
+        }
         try {
             const response = await axios.post('http://localhost:8081/api/auth/register/employee', {
                 nombre,
@@ -56,13 +61,17 @@ export default function EmployeeRegisterPage() {
             });
 
             alert('Empleado registrado con éxito');
+            setEmailError('');
+            setError('');
+            setRutError('');
             setNombre('');
             setEmail('');
             setPassword('');
             setRut('');
             setRole('VENDEDOR');
         } catch (error) {
-            switch(error.message) {
+            const errorCode = error.response.data?.code;
+            switch (errorCode) {
                 case 'EMAIL_EXISTS':
                     setError('El correo electrónico ya está en uso');
                     break;
@@ -71,6 +80,9 @@ export default function EmployeeRegisterPage() {
                     break;
                 case 'RUT_REQUIRED':
                     setRutError('El RUT es obligatorio');
+                    break;
+                case 'EMAIL_INVALID':
+                    setEmailError('Ingrese un correo electrónico válido');
                     break;
                 default:
                     setError('Error al registrarse. Por favor intente nuevamente');
@@ -123,6 +135,8 @@ export default function EmployeeRegisterPage() {
                             autoComplete="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            error={!!emailError}
+                            helperText={emailError}
                         />
                         <TextField
                             margin="normal"
@@ -156,6 +170,7 @@ export default function EmployeeRegisterPage() {
                             fullWidth
                             variant="contained"
                             color="secondary"
+                            disabled={!!rutError}
                             sx={{ mt: 3, mb: 2 }}
                         >
                             Registrar Empleado

@@ -63,14 +63,39 @@ public class AuthController {
             }
         }
     }
-
     @PostMapping("/register/employee")
     @PreAuthorize("hasRole('SUPERVISOR')")
-    public ResponseEntity<AuthResponse> registerEmployee(@RequestBody EmployeeRegisterRequest request) {
-        authService.registerEmployee(request);
-        AuthResponse response = authService.login(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> registerEmployee(@RequestBody EmployeeRegisterRequest request) {
+        try {
+            if (request.getRut() == null || request.getRut().trim().isEmpty()) {
+                return ResponseEntity
+                        .status(HttpStatus.BAD_REQUEST)
+                        .body(new ErrorResponse("RUT_REQUIRED", "El RUT es obligatorio")); // 2 args
+            }
+
+            authService.registerEmployee(request);
+            AuthResponse response = authService.login(request.getEmail(), request.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            String errorCode = e.getMessage();
+            if ("EMAIL_EXISTS".equals(errorCode)) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body(new ErrorResponse("EMAIL_EXISTS", "El correo ya está en uso")); // 2 args
+            } else if ("RUT_EXISTS".equals(errorCode)) {
+                return ResponseEntity
+                        .status(HttpStatus.CONFLICT)
+                        .body(new ErrorResponse("RUT_EXISTS", "El RUT ya está registrado")); // 2 args
+            } else {
+                return ResponseEntity
+                        .status(HttpStatus.INTERNAL_SERVER_ERROR)
+                        .body(new ErrorResponse("UNKNOWN_ERROR", "Error al registrar")); // 2 args
+            }
+        }
+
+
     }
+
 
     // Agrega esto a AuthController.java
 
