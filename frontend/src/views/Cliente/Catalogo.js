@@ -215,7 +215,7 @@ export default function Catalogo() {
                     <IconButton
                         color="inherit"
                         component="a"
-                        href="/cliente/carrito"
+                        href="/cliente/cart"
                     >
                         <Badge badgeContent={itemCount} color="error">
                             <ShoppingCart />

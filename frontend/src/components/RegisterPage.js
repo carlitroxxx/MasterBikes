@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { validateRut, formatRut } from './rutUtils';
 import { Container, TextField, Button, Typography, Box, Paper, Avatar } from '@mui/material';
 import { PersonAdd as PersonAddIcon } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
@@ -8,17 +9,39 @@ export default function RegisterPage() {
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rut, setRut] = useState('');
+    const [rutError, setRutError] = useState('');
     const [error, setError] = useState('');
     const { register } = useAuth();
     const navigate = useNavigate();
+
+
+    const handleRutChange = (e) => {
+        const rawValue = e.target.value;
+        const formatted = formatRut(rawValue);
+        setRut(formatted);
+
+        // Validar solo cuando el RUT está completo
+        if (formatted.includes('-')) {
+            setRutError(validateRut(formatted) ? '' : 'RUT inválido');
+        } else {
+            setRutError('');
+        }
+    };
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        const success = await register(nombre, email, password);
+        // Validar RUT antes de enviar
+        if (!validateRut(rut)) {
+            setRutError('Por favor ingrese un RUT válido');
+            return;
+        }
+
+        const success = await register(nombre, email, password, rut);
         if (!success) {
-            setError('Error al registrarse. El correo electrónico ya está en uso.');
+            setError('Error al registrarse. El correo electrónico o RUT ya está en uso.');
         }
     };
 
@@ -42,6 +65,16 @@ export default function RegisterPage() {
                             autoFocus
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="RUT (Ej: 12.345.678-9)"
+                            value={rut}
+                            onChange={handleRutChange}
+                            error={!!rutError}
+                            helperText={rutError}
                         />
                         <TextField
                             margin="normal"
@@ -72,6 +105,7 @@ export default function RegisterPage() {
                             fullWidth
                             variant="contained"
                             sx={{ mt: 3, mb: 2 }}
+                            disabled={!!rutError}
                         >
                             Registrarse
                         </Button>

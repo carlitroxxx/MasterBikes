@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { validateRut, formatRut } from './rutUtils';
 import {
     Container, TextField, Button, Typography, Box, Paper, Avatar,
     FormControl, InputLabel, Select, MenuItem
@@ -12,21 +13,41 @@ export default function EmployeeRegisterPage() {
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [rut, setRut] = useState('');
+    const [rutError, setRutError] = useState('');
     const [role, setRole] = useState('VENDEDOR');
     const [error, setError] = useState('');
     const { user } = useAuth();
     const navigate = useNavigate();
 
+    const handleRutChange = (e) => {
+        const rawValue = e.target.value;
+        const formatted = formatRut(rawValue);
+        setRut(formatted);
+
+        if (formatted.includes('-')) {
+            setRutError(validateRut(formatted) ? '' : 'RUT inválido');
+        } else {
+            setRutError('');
+        }
+    };
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+
+        if (!validateRut(rut)) {
+            setRutError('Por favor ingrese un RUT válido');
+            return;
+        }
 
         try {
             const response = await axios.post('http://localhost:8081/api/auth/register/employee', {
                 nombre,
                 email,
                 password,
-                role
+                role,
+                rut
             }, {
                 headers: {
                     'Authorization': `Bearer ${localStorage.getItem('token')}`
@@ -37,6 +58,7 @@ export default function EmployeeRegisterPage() {
             setNombre('');
             setEmail('');
             setPassword('');
+            setRut('');
             setRole('VENDEDOR');
         } catch (error) {
             console.error('Error al registrar empleado:', error);
@@ -70,6 +92,16 @@ export default function EmployeeRegisterPage() {
                             autoFocus
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
+                        />
+                        <TextField
+                            margin="normal"
+                            required
+                            fullWidth
+                            label="RUT (Ej: 12.345.678-9)"
+                            value={rut}
+                            onChange={handleRutChange}
+                            error={!!rutError}
+                            helperText={rutError}
                         />
                         <TextField
                             margin="normal"
