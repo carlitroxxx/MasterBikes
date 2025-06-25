@@ -15,10 +15,10 @@ export default function ClienteRoutes() {
             }}
         >
             <Routes>
-                <Route path="catalogo" element={<Catalogo />} />
-                <Route path="carrito" element={<Carrito />} />
-                <Route path="reparaciones" element={<Reparaciones />} />
-                <Route path="gestion" element={<GestionCuenta />} />
+                <Route path="shop" element={<Catalogo />} />
+                <Route path="cart" element={<Carrito />} />
+                <Route path="reparacion" element={<Reparaciones />} />
+                <Route path="cuenta" element={<GestionCuenta />} />
                 <Route path="historial" element={<HistorialView />} />
             </Routes>
         </Container>

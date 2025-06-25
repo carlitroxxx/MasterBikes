@@ -19,9 +19,9 @@ function App() {
                 <Navbar />
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/login/employee" element={<EmployeeLoginPage />} />
+                    <Route path="/login/empleado" element={<EmployeeLoginPage />} />
                     <Route path="/registro" element={<RegisterPage />} />
-                    <Route path="/registro/employee" element={
+                    <Route path="/registro/empleado" element={
                         <PrivateRoute allowedRoles={['SUPERVISOR']}>
                             <EmployeeRegisterPage />
                         </PrivateRoute>
@@ -52,7 +52,7 @@ function HomeRedirect() {
 
     if (user) {
         if (user.role === 'CLIENTE') {
-            return <Navigate to="/cliente/catalogo" replace />;
+            return <Navigate to="/cliente/shop" replace />;
         } else {
             return <Navigate to={`/${user.role.toLowerCase()}/dashboard`} replace />;
         }

@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
 
             // Redirigir según el rol
             if (role === 'CLIENTE') {
-                navigate('/cliente/catalogo');
+                navigate('/cliente/shop');
             } else {
                 navigate(`/${role.toLowerCase()}/dashboard`);
             }
@@ -56,7 +56,7 @@ export function AuthProvider({ children }) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             setUser(userData);
 
-            navigate('/cliente/catalogo');
+            navigate('/cliente/shop');
             return true;
         } catch (error) {
             console.error('Register error:', error);

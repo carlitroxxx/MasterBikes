@@ -58,10 +58,10 @@ export default function Navbar() {
             <AppBar position="static">
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }} display="flex" gap={2}>
-                        <Button color="inherit" component={Link} to="/cliente/catalogo">Catálogo</Button>
-                        <Button color="inherit" component={Link} to="/cliente/carrito">Carrito</Button>
-                        <Button color="inherit" component={Link} to="/cliente/reparaciones">Reparaciones</Button>
-                        <Button color="inherit" component={Link} to="/cliente/gestion">Cuenta</Button>
+                        <Button color="inherit" component={Link} to="/cliente/shop">Catálogo</Button>
+                        <Button color="inherit" component={Link} to="/cliente/cart">Carrito</Button>
+                        <Button color="inherit" component={Link} to="/cliente/reparacion">Reparaciones</Button>
+                        <Button color="inherit" component={Link} to="/cliente/cuenta">Cuenta</Button>
 
                         <Button color="inherit" onClick={handleHistorialClick}>Historial</Button>
                         <Menu
