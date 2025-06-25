@@ -8,7 +8,7 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-
+import org.springframework.data.mongodb.core.index.Indexed;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -21,12 +21,15 @@ public class User implements UserDetails {
     @Id
     private String id;
     private String nombre;
+    @Indexed(unique = true)
     private String email;
     private String password;
     private Role role;
     private boolean enabled = true;
     private Date fechaCreacion = new Date();
     private Date fechaUltimoLogin;
+    @Indexed(unique = true)
+    private String rut; // Nuevo campo para el RUT
 
     // Constructor para registro rápido
     public User(String nombre, String email, String password, Role role) {
@@ -34,6 +37,15 @@ public class User implements UserDetails {
         this.email = email;
         this.password = password;
         this.role = role;
+    }
+
+    // Constructor adicional para incluir RUT
+    public User(String nombre, String email, String password, Role role, String rut) {
+        this.nombre = nombre;
+        this.email = email;
+        this.password = password;
+        this.role = role;
+        this.rut = rut;
     }
 
     @Override

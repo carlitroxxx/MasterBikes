@@ -34,6 +34,11 @@ public class AuthController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthResponse> register(@RequestBody RegisterRequest request) {
+        // Validar que el RUT esté presente para clientes
+        if (request.getRut() == null || request.getRut().trim().isEmpty()) {
+            throw new RuntimeException("El RUT es obligatorio.");
+        }
+
         authService.registerClient(request);
         AuthResponse response = authService.login(request.getEmail(), request.getPassword());
         return ResponseEntity.ok(response);

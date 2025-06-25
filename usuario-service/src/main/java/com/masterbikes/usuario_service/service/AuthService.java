@@ -43,7 +43,7 @@ public class AuthService {
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token, user.getNombre(), user.getRole().name(), user.getEmail());
+        return new AuthResponse(token, user.getNombre(), user.getRole().name(), user.getEmail(), user.getRut());
     }
 
     public User registerClient(RegisterRequest request) {
@@ -51,11 +51,17 @@ public class AuthService {
             throw new RuntimeException("El email ya está registrado");
         }
 
+        if (request.getRut() != null && !request.getRut().isEmpty() &&
+                userRepository.existsByRut(request.getRut())) {
+            throw new RuntimeException("El RUT ya está registrado");
+        }
+
         User user = new User();
         user.setNombre(request.getNombre());
         user.setEmail(request.getEmail());
         user.setPassword(passwordEncoder.encode(request.getPassword()));
         user.setRole(Role.CLIENTE);
+        user.setRut(request.getRut()); // Asignar RUT
 
         return userRepository.save(user);
     }
