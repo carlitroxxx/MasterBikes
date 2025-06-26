@@ -5,6 +5,7 @@ import com.masterbikes.usuario_service.dto.*;
 import com.masterbikes.usuario_service.model.Role;
 import com.masterbikes.usuario_service.model.User;
 import com.masterbikes.usuario_service.repository.UserRepository;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -13,6 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class AuthService {
@@ -31,19 +33,27 @@ public class AuthService {
     }
 
     public AuthResponse login(String email, String password) {
+        // Primero verificar si el usuario existe y está habilitado
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
+        if (!user.isEnabled()) {
+            throw new RuntimeException("USER_DISABLED");
+        }
+
+        // Luego proceder con la autenticación
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(email, password)
         );
 
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        User user = (User) authentication.getPrincipal();
         user.setFechaUltimoLogin(new Date());
         userRepository.save(user);
 
         String token = jwtService.generateToken(user);
 
-        return new AuthResponse(token, user.getNombre(), user.getRole().name(), user.getEmail(), user.getRut());
+        return new AuthResponse(token, user.getNombre(), user.getRole().name(), user.getEmail(), user.getRut(), user.getEstado());
     }
 
     public User registerClient(RegisterRequest request) {
@@ -85,8 +95,6 @@ public class AuthService {
 
         return userRepository.save(user);
     }
-
-    // Agrega estos métodos a AuthService.java
 
     public User updateProfile(String email, UpdateProfileRequest request) {
         User user = userRepository.findByEmail(email)

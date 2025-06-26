@@ -13,4 +13,5 @@ public class AuthResponse {
     private String role;
     private String email;
     private String rut; // Nuevo campo RUT
+    private boolean enabled;
 }

@@ -43,9 +43,8 @@ export function AuthProvider({ children }) {
                 throw new Error('Respuesta inválida del servidor');
             }
 
-            const { token, nombre, role, email: userEmail, rut } = response.data;
-            console.log("Datos recibidos: ",{ token, nombre, role, email: userEmail, rut });
-
+            const { token, nombre, role, email: userEmail, rut, enabled } = response.data;
+            console.log("Datos recibidos: ",{ token, nombre, role, email: userEmail, rut, enabled });
             // 4. Validación de datos mínimos
             if (!nombre || !role || !userEmail) {
                 throw new Error('Datos de usuario incompletos');
@@ -66,24 +65,33 @@ export function AuthProvider({ children }) {
             setUser(userData); // Esto debe incluir el RUT
 
             // 8. Redirección mejorada
-            const redirectPath = role === 'CLIENTE'
-                ? '/cliente/shop'
-                : `/${role.toLowerCase()}/dashboard`;
+            let redirectPath;
+            if (role === 'CLIENTE') {
+                redirectPath = '/cliente/shop';
+            } else if (role === 'SUPERVISOR') {
+                redirectPath = '/supervisor/panel';  // o la ruta que desees para el supervisor
+            } else {
+                redirectPath = `/${role.toLowerCase()}/dashboard`;
+            }
 
             navigate(redirectPath);
             return true;
 
         } catch (error) {
-            console.error('Login error:', error);
+            console.error('Login error:', error.response);
 
             // Manejo específico de errores
-            let errorMessage = 'Error en el inicio de sesión';
             if (error.response) {
-                // Error del servidor (4xx, 5xx)
-                errorMessage = error.response.data?.message || errorMessage;
+                const errorCode = error.response.data?.code;
+                if (errorCode === 'USER_DISABLED') {
+                    throw new Error('USER_DISABLED');
+                } else {
+                    throw new Error('LOGIN_FAILED');
+                }
             } else if (error.request) {
-                // No se recibió respuesta
-                errorMessage = 'No se pudo conectar al servidor';
+                throw new Error('No se pudo conectar al servidor');
+            } else {
+                throw error;
             }
 
             // Mostrar feedback al usuario (podrías usar un estado para esto)
@@ -120,6 +128,8 @@ export function AuthProvider({ children }) {
             navigate('/cliente/shop');
             return true;
         } catch (error) {
+            console.error('Login error:', error.response);
+
             if (error.response) {
                 // Verificamos el código de error específico
                 const errorCode = error.response.data?.code;

@@ -42,6 +42,7 @@ export default function Navbar() {
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }}>
                         <Button color="inherit" component={Link} to="/">Inicio</Button>
+                        <Button color="inherit" component={Link} to="/login/emp">EMPLEADO</Button>
                     </Box>
                     <Box>
                         <Button color="inherit" component={Link} to="/login">Login</Button>
@@ -129,7 +130,7 @@ export default function Navbar() {
             <AppBar position="static">
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }} display="flex" gap={2}>
-                        <Button color="inherit" component={Link} to="/registro/empleado">CREAR USUARIOS</Button>
+                        <Button color="inherit" component={Link} to="/supervisor/registro">CREAR USUARIOS</Button>
                     </Box>
                     <Box>
                         <Button

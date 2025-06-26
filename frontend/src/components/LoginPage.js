@@ -12,16 +12,35 @@ export default function LoginPage() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
-
         e.preventDefault();
         setError('');
+
+        // Validación básica del email
         if (!email.includes('@') || !email.includes('.')) {
             setError('Ingrese un correo electrónico válido');
             return;
         }
-        const success = await login(email, password);
-        if (!success) {
-            setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
+
+        try {
+            await login(email, password);
+            // Si el login es exitoso, no necesitas hacer nada más aquí
+            // porque el AuthContext ya maneja la redirección
+        } catch (error) {
+            console.error('Login error:', error);
+
+            switch (error.message) {
+                case 'USER_DISABLED':
+                    setError('Tu cuenta está deshabilitada. Contacta al administrador.');
+                    break;
+                case 'LOGIN_FAILED':
+                    setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
+                    break;
+                case 'No se pudo conectar al servidor':
+                    setError('Error de conexión. Por favor, verifica tu conexión a internet.');
+                    break;
+                default:
+                    setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
+            }
         }
     };
 

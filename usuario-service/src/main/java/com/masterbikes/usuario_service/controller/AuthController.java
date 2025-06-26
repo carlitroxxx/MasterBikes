@@ -13,6 +13,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.Map;
+
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
@@ -28,9 +31,22 @@ public class AuthController {
 
     // En tu AuthController.java
     @PostMapping("/login")
-    public ResponseEntity<AuthResponse> login(@RequestBody AuthRequest request) {
-        AuthResponse response = authService.login(request.getEmail(), request.getPassword());
-        return ResponseEntity.ok(response);
+    public ResponseEntity<?> login(@RequestBody AuthRequest request) {
+        try {
+            AuthResponse response = authService.login(request.getEmail(), request.getPassword());
+            return ResponseEntity.ok(response);
+        } catch (RuntimeException e) {
+            if ("USER_DISABLED".equals(e.getMessage())) {
+                return ResponseEntity
+                        .status(HttpStatus.FORBIDDEN) // 403 Forbidden (cuenta deshabilitada)
+                        .body(new ErrorResponse("USER_DISABLED", "La cuenta está deshabilitada"));
+            } else {
+                // Otros errores (credenciales inválidas, usuario no encontrado, etc.)
+                return ResponseEntity
+                        .status(HttpStatus.UNAUTHORIZED) // 401 Unauthorized
+                        .body(new ErrorResponse("LOGIN_FAILED", "Credenciales inválidas"));
+            }
+        }
     }
 
     // AuthController.java (fragmento actualizado)
@@ -120,6 +136,45 @@ public class AuthController {
             // Asignar un código de error genérico para este caso
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ErrorResponse("PASSWORD_ERROR", e.getMessage())); // <- Ahora con código
+        }
+    }
+
+    @GetMapping("/users")
+    @PreAuthorize("hasRole('SUPERVISOR')") // Solo el supervisor puede ver todos los usuarios
+    public ResponseEntity<List<UserResponseDTO>> getAllUsers() {
+        List<User> users = userRepository.findAll();
+        List<UserResponseDTO> response = users.stream()
+                .map(user -> new UserResponseDTO(
+                        user.getId(),
+                        user.getNombre(),
+                        user.getEmail(),
+                        user.getRole(),
+                        user.getRut(),
+                        user.getFechaCreacion(),
+                        user.getEstado()
+                ))
+                .toList();
+        return ResponseEntity.ok(response);
+    }
+
+    @PatchMapping("/users/{userId}/status")
+    @PreAuthorize("hasRole('SUPERVISOR')")
+    public ResponseEntity<?> updateUserStatus(
+            @PathVariable String userId,
+            @RequestBody Map<String, Boolean> statusRequest
+    ) {
+        try {
+            User user = userRepository.findById(userId)
+                    .orElseThrow(() -> new RuntimeException("USER_NOT_FOUND"));
+
+            user.setEnabled(statusRequest.get("enabled"));
+            userRepository.save(user);
+
+            return ResponseEntity.ok().build();
+        } catch (RuntimeException e) {
+            return ResponseEntity
+                    .status(HttpStatus.BAD_REQUEST)
+                    .body(new ErrorResponse("STATUS_UPDATE_ERROR", e.getMessage()));
         }
     }
 

@@ -4,12 +4,12 @@ import ClienteRoutes from './routes/ClienteRoutes';
 import Navbar from './components/Navbar';
 import InventarioRoutes from "./routes/InventarioRoutes";
 import LoginPage from './components/LoginPage';
-import EmployeeLoginPage from './components/EmployeeLoginPage';
 import RegisterPage from './components/RegisterPage';
-import EmployeeRegisterPage from './components/EmployeeRegisterPage';
 import {AuthProvider, useAuth} from './context/AuthContext';
 import PrivateRoute from './components/PrivateRoute';
 import {CartProvider} from "./context/CartContext";
+import SupervisorRoutes from "./routes/SupervisorRoutes";
+import EmployeeLoginPage from "./components/EmployeeLoginPage";
 
 function App() {
     return (
@@ -19,14 +19,14 @@ function App() {
                 <Navbar />
                 <Routes>
                     <Route path="/login" element={<LoginPage />} />
-                    <Route path="/login/empleado" element={<EmployeeLoginPage />} />
                     <Route path="/registro" element={<RegisterPage />} />
-                    <Route path="/registro/empleado" element={
+                    <Route path="login/emp" element={<EmployeeLoginPage />} />
+
+                    <Route path="/supervisor/*" element={
                         <PrivateRoute allowedRoles={['SUPERVISOR']}>
-                            <EmployeeRegisterPage />
+                            <SupervisorRoutes />
                         </PrivateRoute>
                     } />
-
                     <Route path="/cliente/*" element={
                         <PrivateRoute allowedRoles={['CLIENTE']}>
                             <ClienteRoutes />
