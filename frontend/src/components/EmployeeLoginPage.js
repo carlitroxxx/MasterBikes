@@ -14,7 +14,10 @@ export default function EmployeeLoginPage() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
-
+        if (!email.includes('@') || !email.includes('.')) {
+            setError('Ingrese un correo electrónico válido');
+            return;
+        }
         const success = await login(email, password);
         if (!success) {
             setError('Credenciales incorrectas o no tienes permisos de empleado.');

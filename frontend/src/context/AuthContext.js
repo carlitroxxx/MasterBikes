@@ -87,7 +87,6 @@ export function AuthProvider({ children }) {
             }
 
             // Mostrar feedback al usuario (podrías usar un estado para esto)
-            alert(errorMessage);
             return false;
         }
     };

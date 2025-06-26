@@ -12,9 +12,13 @@ export default function LoginPage() {
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
+
         e.preventDefault();
         setError('');
-
+        if (!email.includes('@') || !email.includes('.')) {
+            setError('Ingrese un correo electrónico válido');
+            return;
+        }
         const success = await login(email, password);
         if (!success) {
             setError('Credenciales incorrectas. Por favor, inténtalo de nuevo.');
