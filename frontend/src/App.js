@@ -10,6 +10,8 @@ import PrivateRoute from './components/PrivateRoute';
 import {CartProvider} from "./context/CartContext";
 import SupervisorRoutes from "./routes/SupervisorRoutes";
 import EmployeeLoginPage from "./components/EmployeeLoginPage";
+import ArriendoForm from "./views/Vendedor/ArriendoForm";
+import ReparacionesList from "./views/Tecnico/ReparacionesList";
 
 function App() {
     return (
@@ -21,7 +23,8 @@ function App() {
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/registro" element={<RegisterPage />} />
                     <Route path="login/emp" element={<EmployeeLoginPage />} />
-
+                    <Route path="/vendedor/arriendo" element={<ArriendoForm/>} />
+                    <Route path="/tecnico/reparaciones" element={<ReparacionesList />} />
                     <Route path="/supervisor/*" element={
                         <PrivateRoute allowedRoles={['SUPERVISOR']}>
                             <SupervisorRoutes />

@@ -22,7 +22,7 @@ Funciones mínimas para el PMV:
 	Ver solicitudes de reparación.
 	Cambiar estado de la reparación (recibida, en proceso, finalizada).
 - Vendedor:
-	Controlar stock de bicicletas y productos.
+	Consultar stock de bicicletas y productos.
 	Registrar venta (productos y/o bicicletas), se excluye pagos.
 - Sistema:
 	Validación de stock a la hora de realizar arriendos y ventas.

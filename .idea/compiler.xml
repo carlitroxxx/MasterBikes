@@ -9,7 +9,7 @@
         <outputRelativeToContentRoot value="true" />
         <module name="carrito-service" />
       </profile>
-      <profile name="Annotation profile for usuario-service" enabled="true">
+      <profile name="Annotation profile for arriendo-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
@@ -18,11 +18,13 @@
         </processorPath>
         <module name="usuario-service" />
         <module name="inventario-service" />
+        <module name="arriendo-service" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="arriendo-service" options="-parameters" />
       <module name="carrito-service" options="-parameters" />
       <module name="inventario-service" options="-parameters" />
       <module name="usuario-service" options="-parameters" />
