@@ -123,6 +123,11 @@ public class CatalogoController {
             return ResponseEntity.badRequest().body("Ya existe una bicicleta con este ID");
         }
 
+        // Validación para el nuevo campo
+        //if (bicicleta.getValorGarantia() < 0) {
+        //    return ResponseEntity.badRequest().body("El valor de garantía debe ser positivo");
+        //}
+
         BicicletaArriendo guardada = catalogoService.guardarBicicletaArriendo(bicicleta);
         return ResponseEntity.status(HttpStatus.CREATED).body(guardada);
     }
@@ -248,6 +253,11 @@ public class CatalogoController {
             // Verificar que el ID del path coincide con el ID de la bicicleta
             if (!id.equals(bicicleta.getId())) {
                 return ResponseEntity.badRequest().body("El ID del path no coincide con el ID de la bicicleta");
+            }
+
+            // Validación para el nuevo campo
+            if (bicicleta.getValorGarantia() < 0) {
+                return ResponseEntity.badRequest().body("El valor de garantía debe ser positivo");
             }
 
             BicicletaArriendo actualizada = catalogoService.actualizarBicicletaArriendo(bicicleta);

@@ -15,4 +15,6 @@ public interface UserRepository extends MongoRepository<User, String> {
     List<User> findAll();
     @Query("{ '_id' : ?0 }")
     Optional<User> findById(String id);
+    @Query("{ $or: [ { 'rut': { $regex: ?0, $options: 'i' } }, { 'nombre': { $regex: ?1, $options: 'i' } } ] }")
+    List<User> findByRutRegexOrNombreRegex(String rutRegex, String nombreRegex);
 }

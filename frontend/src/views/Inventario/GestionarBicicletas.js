@@ -92,6 +92,11 @@ export default function GestionarBicicletas() {
             return;
         }
         const errors = {};
+        if (tipoBicicleta === 'arriendo') {
+            if (bicicletaEditar.valorGarantia < 0) {
+                errors.valorGarantia = 'Debe ser mayor o igual a 0';
+            }
+        }
         if (!bicicletaEditar.nombre) errors.nombre = 'Requerido';
 
         if (tipoBicicleta === 'venta') {
@@ -146,7 +151,9 @@ export default function GestionarBicicletas() {
                 } else {
                     // Actualizar bicicleta de arriendo
                     const response = await axios.put(`${API_URL}/arriendo/${bicicletaEditar.id}`, bicicletaEditar);
-                    setBicicletasArriendo(bicicletasArriendo.map(b => b.id === bicicletaEditar.id ? response.data : b));
+                    setBicicletasArriendo(prev => prev.map(b =>
+                        b.id === bicicletaEditar.id ? { ...response.data } : b
+                    ));
                 }
             }
 
@@ -179,7 +186,8 @@ export default function GestionarBicicletas() {
             nombre: '',
             descripcion: '',
             tarifaDiaria: 0,
-            disponible: true
+            disponible: true,
+            valorGarantia: 0  // Nuevo campo
         });
         setNuevaBicicleta(true);
         setOpenDrawer(true);
@@ -346,6 +354,7 @@ export default function GestionarBicicletas() {
                                 ) : (
                                     <>
                                         <TableCell sx={{ fontWeight: 'bold' }} align="right">Tarifa Diaria</TableCell>
+                                        <TableCell sx={{ fontWeight: 'bold' }} align="right">Valor Garantia</TableCell>
                                         <TableCell sx={{ fontWeight: 'bold' }} align="center">Disponible</TableCell>
                                     </>
                                 )}
@@ -383,6 +392,9 @@ export default function GestionarBicicletas() {
                                             <>
                                                 <TableCell align="right">
                                                     {formatCurrency(bicicleta.tarifaDiaria)}
+                                                </TableCell>
+                                                <TableCell align="right">
+                                                    {formatCurrency(bicicleta.valorGarantia)}  {/* Nueva columna */}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <Chip
@@ -627,6 +639,7 @@ export default function GestionarBicicletas() {
                                 Detalles de arriendo
                             </Typography>
                             <Grid container spacing={2}>
+                                {/* Campo existente: Tarifa Diaria */}
                                 <Grid item xs={6}>
                                     <TextField
                                         label="Tarifa Diaria"
@@ -634,7 +647,10 @@ export default function GestionarBicicletas() {
                                         fullWidth
                                         size="small"
                                         value={bicicletaEditar?.tarifaDiaria || ''}
-                                        onChange={e => setBicicletaEditar({ ...bicicletaEditar, tarifaDiaria: parseInt(e.target.value) || 0 })}
+                                        onChange={e => setBicicletaEditar({
+                                            ...bicicletaEditar,
+                                            tarifaDiaria: parseInt(e.target.value) || 0
+                                        })}
                                         error={!!formErrors.tarifaDiaria}
                                         helperText={formErrors.tarifaDiaria}
                                         InputProps={{
@@ -642,18 +658,43 @@ export default function GestionarBicicletas() {
                                         }}
                                     />
                                 </Grid>
+
+                                {/* Campo existente: Disponibilidad */}
                                 <Grid item xs={6}>
                                     <FormControl fullWidth size="small">
                                         <InputLabel>Disponibilidad</InputLabel>
                                         <Select
                                             value={bicicletaEditar?.disponible ? 'true' : 'false'}
-                                            onChange={e => setBicicletaEditar({ ...bicicletaEditar, disponible: e.target.value === 'true' })}
+                                            onChange={e => setBicicletaEditar({
+                                                ...bicicletaEditar,
+                                                disponible: e.target.value === 'true'
+                                            })}
                                             label="Disponibilidad"
                                         >
                                             <MenuItem value="true">Disponible</MenuItem>
                                             <MenuItem value="false">No disponible</MenuItem>
                                         </Select>
                                     </FormControl>
+                                </Grid>
+
+                                {/* Nuevo campo: Valor Garantía */}
+                                <Grid item xs={6}>
+                                    <TextField
+                                        label="Valor Garantía (CLP)"
+                                        type="number"
+                                        fullWidth
+                                        size="small"
+                                        value={bicicletaEditar?.valorGarantia || ''}
+                                        onChange={e => setBicicletaEditar({
+                                            ...bicicletaEditar,
+                                            valorGarantia: parseInt(e.target.value) || 0
+                                        })}
+                                        error={!!formErrors.valorGarantia}
+                                        helperText={formErrors.valorGarantia}
+                                        InputProps={{
+                                            startAdornment: <InputAdornment position="start">$</InputAdornment>,
+                                        }}
+                                    />
                                 </Grid>
                             </Grid>
                         </Box>

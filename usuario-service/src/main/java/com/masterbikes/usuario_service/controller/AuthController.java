@@ -1,6 +1,7 @@
 package com.masterbikes.usuario_service.controller;
 
 import com.masterbikes.usuario_service.dto.*;
+import com.masterbikes.usuario_service.model.Role;
 import com.masterbikes.usuario_service.model.User;
 import com.masterbikes.usuario_service.repository.UserRepository;
 import com.masterbikes.usuario_service.service.AuthService;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -157,6 +159,38 @@ public class AuthController {
         return ResponseEntity.ok(response);
     }
 
+    @GetMapping("/buscar-usuarios")
+    public ResponseEntity<List<User>> buscarUsuarios(@RequestParam String query) {
+        // Usa una expresión regular para buscar coincidencias parciales en RUT o nombre
+        String regex = ".*" + query + ".*";
+        List<User> usuarios = userRepository.findByRutRegexOrNombreRegex(regex, regex);
+        return ResponseEntity.ok(usuarios);
+    }
+    @GetMapping("/buscar-por-rut")
+    public ResponseEntity<?> buscarPorRut(@RequestParam String rut) {
+        try {
+            // Buscar directamente por RUT usando el repositorio
+            Optional<User> usuario = userRepository.findByRut(rut);
+
+            if (usuario.isPresent()) {
+                User user = usuario.get();
+                return ResponseEntity.ok(Map.of(
+                        "nombre", user.getNombre(),
+                        "email", user.getEmail(),
+                        "telefono", user.getTelefono() != null ? user.getTelefono() : "",
+                        "rut", user.getRut(),
+                        "role", user.getRole().name() // Agregar el rol si es necesario
+                ));
+            }
+
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("No se encontró usuario con RUT: " + rut);
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error al buscar usuario: " + e.getMessage());
+        }
+    }
     @PatchMapping("/users/{userId}/status")
     @PreAuthorize("hasRole('SUPERVISOR')")
     public ResponseEntity<?> updateUserStatus(

@@ -17,4 +17,5 @@ public class BicicletaArriendo {
     private String descripcion;
     private int tarifaDiaria;
     private boolean disponible;
+    private int valorGarantia; // Nuevo atributo
 }

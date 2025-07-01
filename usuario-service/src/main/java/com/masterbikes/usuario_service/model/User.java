@@ -24,6 +24,7 @@ public class User implements UserDetails {
     @Indexed(unique = true)
     private String email;
     private String password;
+    private String telefono;
     private Role role;
     private boolean enabled = true;
     private Date fechaCreacion = new Date();

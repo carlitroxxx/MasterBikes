@@ -28,7 +28,15 @@ services:
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes_usuario
 
-
+  arriendo-service:
+    build: ./arriendo-service
+    container_name: arriendo-service
+    ports:
+      - "8084:8084"
+    depends_on:
+      - mongo
+    environment:
+      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes_arriendo
   carrito-service:
     build: ./carrito-service
     container_name: carrito-service
