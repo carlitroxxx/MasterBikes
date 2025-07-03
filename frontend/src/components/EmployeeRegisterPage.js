@@ -9,6 +9,23 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 
+// Definir la misma paleta de colores que en VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 export default function EmployeeRegisterPage() {
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
@@ -97,16 +114,31 @@ export default function EmployeeRegisterPage() {
     }
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Container component="main" maxWidth="xs" sx={{ backgroundColor: themeColors.background, minHeight: '100vh', py: 4 }}>
+            <Paper elevation={3} sx={{
+                p: 4,
+                mt: 8,
+                backgroundColor: themeColors.paper,
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '12px'
+            }}>
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <PersonAddIcon />
+                    <Avatar sx={{
+                        m: 1,
+                        bgcolor: themeColors.secondary,
+                        width: 56,
+                        height: 56
+                    }}>
+                        <PersonAddIcon fontSize="large" />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
+                    <Typography component="h1" variant="h5" sx={{
+                        color: themeColors.primary,
+                        fontWeight: 'bold',
+                        mb: 2
+                    }}>
                         Registrar Nuevo Empleado
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
                         <TextField
                             margin="normal"
                             required
@@ -116,6 +148,16 @@ export default function EmployeeRegisterPage() {
                             autoFocus
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -126,6 +168,16 @@ export default function EmployeeRegisterPage() {
                             onChange={handleRutChange}
                             error={!!rutError}
                             helperText={rutError}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -137,6 +189,16 @@ export default function EmployeeRegisterPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             error={!!emailError}
                             helperText={emailError}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -147,8 +209,27 @@ export default function EmployeeRegisterPage() {
                             autoComplete="new-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
-                        <FormControl fullWidth margin="normal">
+                        <FormControl fullWidth margin="normal" sx={{
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: themeColors.border,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: themeColors.primary,
+                                },
+                            }
+                        }}>
                             <InputLabel>Rol</InputLabel>
                             <Select
                                 value={role}
@@ -161,7 +242,7 @@ export default function EmployeeRegisterPage() {
                             </Select>
                         </FormControl>
                         {error && (
-                            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            <Typography color={themeColors.error} variant="body2" sx={{ mt: 1 }}>
                                 {error}
                             </Typography>
                         )}
@@ -169,9 +250,23 @@ export default function EmployeeRegisterPage() {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            color="secondary"
                             disabled={!!rutError}
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                py: 1.5,
+                                backgroundColor: themeColors.success,
+                                '&:hover': {
+                                    backgroundColor: '#2E7D32',
+                                },
+                                '&:disabled': {
+                                    backgroundColor: '#BDBDBD',
+                                    color: '#757575'
+                                },
+                                borderRadius: '8px',
+                                fontWeight: 'bold',
+                                fontSize: '1rem'
+                            }}
                         >
                             Registrar Empleado
                         </Button>
