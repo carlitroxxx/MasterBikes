@@ -4,16 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="">
+    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="Ux rutas y vistas fixed">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/frontend/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ArriendosPage.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/pages/ReparacionesPage.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/routes/TecnicoRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/TecnicoRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/routes/VendedorRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/VendedorRoutes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -182,7 +178,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751537223545</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Ux rutas y vistas fixed">
+      <option name="closed" value="true" />
+      <created>1751542683299</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1751542683299</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -215,6 +219,7 @@
     <MESSAGE value="PULL completo" />
     <MESSAGE value="Rutas" />
     <MESSAGE value="Paleta Colores Actualizada" />
-    <option name="LAST_COMMIT_MESSAGE" value="Paleta Colores Actualizada" />
+    <MESSAGE value="Ux rutas y vistas fixed" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ux rutas y vistas fixed" />
   </component>
 </project>

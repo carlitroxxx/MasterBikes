@@ -85,6 +85,10 @@ const ArriendoForm = () => {
 
     // Cargar bicicletas disponibles
     useEffect(() => {
+        calcularTotal();
+    }, [form.fechaInicio, form.fechaFin, form.precioDia]);
+
+    useEffect(() => {
         const fetchBicicletas = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/inventario/arriendo');
@@ -179,8 +183,8 @@ const ArriendoForm = () => {
         setForm({
             ...form,
             bicicleta: newValue,
-            deposito: newValue?.deposito || '',
-            precioDia: newValue?.precioDia || ''
+            deposito: newValue?.valorGarantia || '',
+            precioDia: newValue?.tarifaDiaria || ''
         });
     };
 
@@ -197,9 +201,11 @@ const ArriendoForm = () => {
     const calcularTotal = () => {
         if (form.fechaInicio && form.fechaFin && form.precioDia) {
             const diffTime = Math.abs(new Date(form.fechaFin) - new Date(form.fechaInicio));
-            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1;
-            const total = diffDays * parseFloat(form.precioDia || 0);
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)) + 1; // +1 para incluir ambos días
+            const total = diffDays * parseFloat(form.precioDia);
             setForm(prev => ({ ...prev, diasArriendo: diffDays, total }));
+        } else {
+            setForm(prev => ({ ...prev, diasArriendo: 0, total: 0 }));
         }
     };
 

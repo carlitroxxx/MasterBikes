@@ -19,7 +19,7 @@ import {
     InputAdornment
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
-
+import { Snackbar, Alert } from '@mui/material';
 // Definir la misma paleta de colores que en VentaForm.js
 const themeColors = {
     primary: '#0A2E5A',      // Azul marino profundo
@@ -78,12 +78,14 @@ const ReparacionesList = () => {
     const [confirmationOpen, setConfirmationOpen] = useState(false);
     const [tempEstado, setTempEstado] = useState('');
     const [searchTerm, setSearchTerm] = useState('');
-
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState('');
+    const [snackbarSeverity, setSnackbarSeverity] = useState('success');
     // Filtrar reparaciones por RUT
     const filteredReparaciones = searchTerm
-        ? initialReparaciones.filter(r =>
+        ? reparaciones.filter(r =>
             r.rut.toLowerCase().includes(searchTerm.toLowerCase()))
-        : initialReparaciones;
+        : reparaciones;
 
     const handleOpenDialog = (reparacion) => {
         setSelectedReparacion(reparacion);
@@ -102,13 +104,18 @@ const ReparacionesList = () => {
 
     const confirmEstadoChange = () => {
         if (selectedReparacion && tempEstado) {
-            const updatedReparaciones = initialReparaciones.map(r =>
+            const updatedReparaciones = reparaciones.map(r =>
                 r.id === selectedReparacion.id ? {...r, estado: tempEstado} : r
             );
             setReparaciones(updatedReparaciones);
 
             // Actualizar también la reparación seleccionada en el popup
             setSelectedReparacion({...selectedReparacion, estado: tempEstado});
+
+            // Mostrar notificación
+            setSnackbarMessage(`Estado cambiado a "${tempEstado}"`);
+            setSnackbarSeverity('success');
+            setSnackbarOpen(true);
         }
         setConfirmationOpen(false);
         setTempEstado('');
@@ -389,6 +396,21 @@ const ReparacionesList = () => {
                     </Button>
                 </DialogActions>
             </Dialog>
+            {/* Notificación Snackbar */}
+            <Snackbar
+                open={snackbarOpen}
+                autoHideDuration={3000}
+                onClose={() => setSnackbarOpen(false)}
+                anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+            >
+                <Alert
+                    onClose={() => setSnackbarOpen(false)}
+                    severity={snackbarSeverity}
+                    sx={{ width: '100%' }}
+                >
+                    {snackbarMessage}
+                </Alert>
+            </Snackbar>
         </Box>
     );
 };

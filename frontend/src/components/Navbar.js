@@ -395,6 +395,19 @@ export default function Navbar() {
                         >
                             RESUMEN VENTAS
                         </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/vendedor/arriendo"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            ARRIENDO
+                        </Button>
 
                     </Box>
                     <Box>
@@ -416,6 +429,7 @@ export default function Navbar() {
                         >
                             {user.nombre}
                         </Button>
+
                         <Menu
                             anchorEl={anchorEl}
                             open={Boolean(anchorEl)}
