@@ -7,21 +7,19 @@ import ListaVentas from "../views/Vendedor/ListaVentas";
 import React from "react";
 import ArriendoForm from "../views/Vendedor/ArriendoForm";
 import VentaForm from "../views/Vendedor/VentaForm";
+import ReparacionesList from "../views/Tecnico/ReparacionesList";
 
-export default function VendedorRoutes() {
+export default function TecnicoRoutes() {
     const { user } = useAuth();
 
-    if (['INVENTARIO', 'TECNICO', 'CLIENTE'].includes(user.role)) {
+    if (['INVENTARIO', 'VENDEDOR', 'CLIENTE'].includes(user.role)) {
         return null;
     }
 
     return (
         <Container maxWidth="xl" sx={{ mt: 4 , mx: '10%'}}>
             <Routes>
-                <Route path="arriendo" element={<ArriendoForm/>} />
-                <Route path="ventas" element={<VentaForm />} />
-                <Route path="ventas/resumen" element={<ListaVentas />} />
-
+                <Route path="reparaciones" element={<ReparacionesList />} />
             </Routes>
         </Container>
     );

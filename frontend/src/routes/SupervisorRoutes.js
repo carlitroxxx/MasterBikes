@@ -5,13 +5,14 @@ import PanelUsuarios from "../views/Supervisor/PanelUsuarios";
 import EmployeeRegisterPage from "../components/EmployeeRegisterPage";
 import React from "react";
 import EmployeeLoginPage from "../components/EmployeeLoginPage";
+import ListaVentas from "../views/Vendedor/ListaVentas";
 
 
 
 export default function SupervisorRoutes() {
     const { user } = useAuth();
 
-    if (user.role === 'INVENTARIO') {
+    if (['INVENTARIO', 'VENDEDOR', 'TECNICO', 'CLIENTE'].includes(user.role)) {
         return null;
     }
 
@@ -20,6 +21,8 @@ export default function SupervisorRoutes() {
             <Routes>
                 <Route path="panel" element={<PanelUsuarios />} />
                 <Route path="registro" element={<EmployeeRegisterPage />} />
+                <Route path="/ventas/resumen" element={<ListaVentas />} />
+
             </Routes>
         </Container>
     );
