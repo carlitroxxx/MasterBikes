@@ -72,20 +72,24 @@ export default function VentaForm({ onVentaCreada }) {
     const [success, setSuccess] = useState('');
 
     useEffect(() => {
-        // Simulando carga de productos desde API
         const fetchProductos = async () => {
             try {
-                const mockProductos = [
-                    { id: 1, nombre: 'Bicicleta MTB', precio: 1200, stock: 10 },
-                    { id: 2, nombre: 'Bicicleta Ruta', precio: 1500, stock: 5 },
-                    { id: 3, nombre: 'Casco Profesional', precio: 80, stock: 20 },
-                    { id: 4, nombre: 'Guantes', precio: 25, stock: 30 },
-                    { id: 5, nombre: 'Luz Delantera', precio: 35, stock: 15 },
-                ];
-                setProductosDisponibles(mockProductos);
-                setProductosFiltrados(mockProductos);
+                setLoading(true);
+                const response = await axios.get("http://localhost:8080/api/inventario/venta");
+                const productos = response.data.map(p => ({
+                    id: p.id,
+                    nombre: p.nombre,
+                    precio: p.precio,
+                    stock: p.stock
+                }));
+
+                setProductosDisponibles(productos);
+                setProductosFiltrados(productos);
             } catch (err) {
                 setError('Error al cargar los productos');
+                console.error("Error fetching productos:", err);
+            } finally {
+                setLoading(false);
             }
         };
 
@@ -94,12 +98,18 @@ export default function VentaForm({ onVentaCreada }) {
 
     const handleProductoChange = (event, newValue) => {
         if (newValue) {
+            if (newValue.stock <= 0) {
+                setError('Este producto no tiene stock disponible');
+                return;
+            }
+
             setProductoActual({
                 id: newValue.id,
                 nombre: newValue.nombre,
                 cantidad: 1,
                 precioUnitario: newValue.precio,
-                precioTotal: newValue.precio
+                precioTotal: newValue.precio,
+                stockDisponible: newValue.stock
             });
             setError('');
         } else {
@@ -139,6 +149,12 @@ export default function VentaForm({ onVentaCreada }) {
     const agregarProducto = () => {
         if (!productoActual.id || productoActual.cantidad <= 0) {
             setError('Selecciona un producto y una cantidad válida');
+            return;
+        }
+
+
+        if (productoActual.cantidad > productoActual.stockDisponible) {
+            setError(`No hay suficiente stock. Disponible: ${productoActual.stockDisponible}`);
             return;
         }
 
@@ -250,25 +266,32 @@ export default function VentaForm({ onVentaCreada }) {
 
             // Preparar los datos para enviar al backend
             const ventaRequest = {
-                cliente: clienteGuardado,
+                cliente: {
+                    rut: clienteGuardado.rut,
+                    nombre: clienteGuardado.nombre,
+                    telefono: clienteGuardado.telefono || '',
+                    email: clienteGuardado.email || '',
+                    direccion: clienteGuardado.direccion || ''
+                },
                 productos: productosSeleccionados.map(p => ({
-                    idProducto: p.id,
+                    id: p.id,  // Cambiado de idProducto a id si es necesario
                     nombre: p.nombre,
                     cantidad: p.cantidad,
                     precioUnitario: p.precioUnitario,
                     precioTotal: p.precioTotal
-                }))
+                })),
+                total: calcularTotal() * 1.16  // Agregar el total calculado
             };
+
+            console.log('Datos a enviar:', ventaRequest);  // Para depuración
 
             // Enviar la solicitud al backend
             const response = await axios.post(API_BASE_URL, ventaRequest);
 
-            // Mostrar la respuesta del backend
-            setSuccess(response.data.mensaje);
+            setSuccess('Venta registrada correctamente');
             setOpenBoletaModal(true);
-
         } catch (err) {
-            // Manejar errores de la API o de validación
+            console.error('Error al registrar la venta:', err);
             const errorMessage = err.response?.data?.message ||
                 err.response?.data?.error ||
                 err.message ||
@@ -282,12 +305,16 @@ export default function VentaForm({ onVentaCreada }) {
     // En el componente VentaForm
     const handleCloseBoleta = () => {
         setOpenBoletaModal(false);
-        // Verificar si es función antes de llamar
-        if (typeof onVentaCreada === 'function') {
-            onVentaCreada(); // Recargar lista de ventas
-        }
+
         // Resetear formulario
         setProductosSeleccionados([]);
+        setProductoActual({
+            id: '',
+            nombre: '',
+            cantidad: 1,
+            precioUnitario: '',
+            precioTotal: ''
+        });
         setClienteGuardado(null);
         setCliente({
             rut: '',
@@ -296,6 +323,12 @@ export default function VentaForm({ onVentaCreada }) {
             email: '',
             direccion: ''
         });
+        setSuccess('');
+
+        // Recargar lista de ventas si es necesario
+        if (typeof onVentaCreada === 'function') {
+            onVentaCreada();
+        }
     };
 
 // Al final del componente, antes del export
@@ -345,6 +378,7 @@ export default function VentaForm({ onVentaCreada }) {
                         onChange={handleProductoChange}
                         onInputChange={handleFilterChange}
                         filterOptions={(options) => options}
+                        loading={loading}
                         renderInput={(params) => (
                             <TextField
                                 {...params}
@@ -361,9 +395,18 @@ export default function VentaForm({ onVentaCreada }) {
                                         },
                                     }
                                 }}
+                                InputProps={{
+                                    ...params.InputProps,
+                                    endAdornment: (
+                                        <>
+                                            {loading ? <CircularProgress color="inherit" size={20} /> : null}
+                                            {params.InputProps.endAdornment}
+                                        </>
+                                    ),
+                                }}
                             />
                         )}
-                        noOptionsText="No se encontraron productos"
+                        noOptionsText={loading ? "Cargando..." : "No se encontraron productos"}
                     />
 
                     <TextField

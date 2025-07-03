@@ -4,12 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="Ux rutas y vistas fixed">
+    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="Cambios">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -186,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751542683299</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Cambios">
+      <option name="closed" value="true" />
+      <created>1751545828953</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1751545828953</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -220,6 +225,7 @@
     <MESSAGE value="Rutas" />
     <MESSAGE value="Paleta Colores Actualizada" />
     <MESSAGE value="Ux rutas y vistas fixed" />
-    <option name="LAST_COMMIT_MESSAGE" value="Ux rutas y vistas fixed" />
+    <MESSAGE value="Cambios" />
+    <option name="LAST_COMMIT_MESSAGE" value="Cambios" />
   </component>
 </project>
