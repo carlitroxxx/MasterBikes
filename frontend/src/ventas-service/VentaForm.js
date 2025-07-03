@@ -30,6 +30,21 @@ import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import EditIcon from '@mui/icons-material/Edit';
 import axios from 'axios';
 
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo (90% más oscuro que el anterior)
+    secondary: '#FFA000',    // Ámbar dorado (un toque más suave que el naranja)
+    accent: '#26A69A',       // Verde turquesa (más sobrio)
+    background: '#F5F7FA',   // Gris azulado claro (10% más frío)
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
 export default function VentaForm({ onVentaCreada }) {
     const [productosDisponibles, setProductosDisponibles] = useState([]);
     const [productosFiltrados, setProductosFiltrados] = useState([]);
@@ -293,20 +308,32 @@ export default function VentaForm({ onVentaCreada }) {
             display: 'flex',
             flexDirection: { xs: 'column', md: 'row' },
             gap: 3,
-            width: '100%'
+            width: '100%',
+            backgroundColor: themeColors.background,
+            p: { xs: 2, md: 3 },
+            minHeight: '100vh'
         }}>
             {/* Panel izquierdo - Formulario de productos */}
             <Paper elevation={3} sx={{
                 p: 3,
                 flex: 1,
-                minWidth: { md: '50%' }
+                minWidth: { md: '50%' },
+                backgroundColor: themeColors.paper,
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '12px'
             }}>
-                <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                <Typography variant="h5" gutterBottom sx={{
+                    fontWeight: 'bold',
+                    mb: 3,
+                    color: themeColors.primary,
+                    borderBottom: `2px solid ${themeColors.primary}`,
+                    pb: 1
+                }}>
                     Agregar Productos
                 </Typography>
 
-                {error && <Alert severity="error" sx={{ mb: 2 }}>{error}</Alert>}
-                {success && <Alert severity="success" sx={{ mb: 2 }}>{success}</Alert>}
+                {error && <Alert severity="error" sx={{ mb: 2, backgroundColor: themeColors.error }}>{error}</Alert>}
+                {success && <Alert severity="success" sx={{ mb: 2, backgroundColor: themeColors.success }}>{success}</Alert>}
 
                 <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Autocomplete
@@ -322,6 +349,16 @@ export default function VentaForm({ onVentaCreada }) {
                                 label="Buscar producto por ID o nombre"
                                 fullWidth
                                 margin="normal"
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                             />
                         )}
                         noOptionsText="No se encontraron productos"
@@ -334,6 +371,14 @@ export default function VentaForm({ onVentaCreada }) {
                         value={productoActual.nombre}
                         InputProps={{
                             readOnly: true
+                        }}
+                        sx={{
+                            '& .MuiOutlinedInput-root': {
+                                backgroundColor: themeColors.highlight,
+                                '& fieldset': {
+                                    borderColor: themeColors.border,
+                                },
+                            }
                         }}
                     />
 
@@ -349,6 +394,14 @@ export default function VentaForm({ onVentaCreada }) {
                                     startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                     readOnly: true
                                 }}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: themeColors.highlight,
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                    }
+                                }}
                             />
                         </Grid>
 
@@ -362,17 +415,37 @@ export default function VentaForm({ onVentaCreada }) {
                                 onChange={handleCantidadChange}
                                 inputProps={{ min: 1 }}
                                 required
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                             />
                         </Grid>
                     </Grid>
 
                     <Button
                         variant="contained"
-                        color="primary"
                         onClick={agregarProducto}
                         startIcon={<AddIcon />}
                         fullWidth
-                        sx={{ mt: 1, mb: 3 }}
+                        sx={{
+                            mt: 1,
+                            mb: 3,
+                            backgroundColor: themeColors.secondary,
+                            '&:hover': {
+                                backgroundColor: '#E65100',
+                            },
+                            py: 1.5,
+                            borderRadius: '8px',
+                            fontWeight: 'bold',
+                            fontSize: '1rem'
+                        }}
                         disabled={!productoActual.id}
                     >
                         Agregar Producto
@@ -386,14 +459,28 @@ export default function VentaForm({ onVentaCreada }) {
                 flex: 1,
                 minWidth: { md: '50%' },
                 display: 'flex',
-                flexDirection: 'column'
+                flexDirection: 'column',
+                backgroundColor: themeColors.paper,
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '12px'
             }}>
-                <Typography variant="h5" gutterBottom sx={{ fontWeight: 'bold', mb: 3 }}>
+                <Typography variant="h5" gutterBottom sx={{
+                    fontWeight: 'bold',
+                    mb: 3,
+                    color: themeColors.primary,
+                    borderBottom: `2px solid ${themeColors.primary}`,
+                    pb: 1
+                }}>
                     Resumen de Venta
                 </Typography>
 
                 {productosSeleccionados.length === 0 ? (
-                    <Typography variant="body1" color="textSecondary" sx={{ textAlign: 'center', py: 4, flexGrow: 1 }}>
+                    <Typography variant="body1" sx={{
+                        textAlign: 'center',
+                        py: 4,
+                        flexGrow: 1,
+                        color: themeColors.textSecondary
+                    }}>
                         No hay productos agregados
                     </Typography>
                 ) : (
@@ -401,7 +488,13 @@ export default function VentaForm({ onVentaCreada }) {
                         <TableContainer sx={{ flexGrow: 1 }}>
                             <Table size="small">
                                 <TableHead>
-                                    <TableRow>
+                                    <TableRow sx={{
+                                        backgroundColor: themeColors.primary,
+                                        '& th': {
+                                            color: '#fff',
+                                            fontWeight: 'bold'
+                                        }
+                                    }}>
                                         <TableCell>Producto</TableCell>
                                         <TableCell align="right">Cantidad</TableCell>
                                         <TableCell align="right">P. Unitario</TableCell>
@@ -411,7 +504,17 @@ export default function VentaForm({ onVentaCreada }) {
                                 </TableHead>
                                 <TableBody>
                                     {productosSeleccionados.map((producto) => (
-                                        <TableRow key={producto.id}>
+                                        <TableRow
+                                            key={producto.id}
+                                            sx={{
+                                                '&:nth-of-type(odd)': {
+                                                    backgroundColor: themeColors.highlight
+                                                },
+                                                '&:last-child td': {
+                                                    borderBottom: 'none'
+                                                }
+                                            }}
+                                        >
                                             <TableCell>{producto.nombre}</TableCell>
                                             <TableCell align="right">{producto.cantidad}</TableCell>
                                             <TableCell align="right">${producto.precioUnitario.toFixed(2)}</TableCell>
@@ -419,8 +522,13 @@ export default function VentaForm({ onVentaCreada }) {
                                             <TableCell align="right">
                                                 <IconButton
                                                     onClick={() => eliminarProducto(producto.id)}
-                                                    color="error"
                                                     size="small"
+                                                    sx={{
+                                                        color: themeColors.error,
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(211, 47, 47, 0.08)'
+                                                        }
+                                                    }}
                                                 >
                                                     <DeleteIcon fontSize="small" />
                                                 </IconButton>
@@ -431,23 +539,51 @@ export default function VentaForm({ onVentaCreada }) {
                             </Table>
                         </TableContainer>
 
-                        <Divider sx={{ my: 2 }} />
+                        <Divider sx={{
+                            my: 2,
+                            borderColor: themeColors.border
+                        }} />
 
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                            <Typography variant="subtitle1">Subtotal:</Typography>
-                            <Typography variant="subtitle1">${calcularTotal().toFixed(2)}</Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            mb: 2,
+                            p: 1,
+                            backgroundColor: themeColors.highlight,
+                            borderRadius: '4px'
+                        }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>Subtotal:</Typography>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>${calcularTotal().toFixed(2)}</Typography>
                         </Box>
 
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                            <Typography variant="subtitle1">IVA (16%):</Typography>
-                            <Typography variant="subtitle1">${(calcularTotal() * 0.16).toFixed(2)}</Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            mb: 2,
+                            p: 1,
+                            backgroundColor: themeColors.highlight,
+                            borderRadius: '4px'
+                        }}>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>IVA (16%):</Typography>
+                            <Typography variant="subtitle1" sx={{ fontWeight: 'bold' }}>${(calcularTotal() * 0.16).toFixed(2)}</Typography>
                         </Box>
 
-                        <Divider sx={{ my: 2 }} />
+                        <Divider sx={{
+                            my: 2,
+                            borderColor: themeColors.border
+                        }} />
 
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-                            <Typography variant="h6">Total:</Typography>
-                            <Typography variant="h6">${(calcularTotal() * 1.16).toFixed(2)}</Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            mb: 3,
+                            p: 2,
+                            backgroundColor: themeColors.primary,
+                            color: '#fff',
+                            borderRadius: '8px'
+                        }}>
+                            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Total:</Typography>
+                            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>${(calcularTotal() * 1.16).toFixed(2)}</Typography>
                         </Box>
                     </>
                 )}
@@ -457,38 +593,46 @@ export default function VentaForm({ onVentaCreada }) {
                     <Box sx={{
                         mt: 'auto',
                         p: 2,
-                        backgroundColor: '#f5f5f5',
-                        borderRadius: 1,
-                        position: 'relative'
+                        backgroundColor: themeColors.highlight,
+                        borderRadius: '8px',
+                        position: 'relative',
+                        border: `1px solid ${themeColors.border}`
                     }}>
                         <IconButton
                             onClick={handleEditCliente}
-                            color="primary"
                             size="small"
-                            sx={{ position: 'absolute', right: 8, top: 8 }}
+                            sx={{
+                                position: 'absolute',
+                                right: 8,
+                                top: 8,
+                                color: themeColors.accent,
+                                '&:hover': {
+                                    backgroundColor: 'rgba(21, 101, 192, 0.08)'
+                                }
+                            }}
                         >
                             <EditIcon fontSize="small" />
                         </IconButton>
 
-                        <Typography variant="subtitle1" gutterBottom>
+                        <Typography variant="subtitle1" gutterBottom sx={{ fontWeight: 'bold' }}>
                             Cliente: {clienteGuardado.nombre}
                         </Typography>
                         <Typography variant="body2" gutterBottom>
-                            RUT: {clienteGuardado.rut}
+                            <Box component="span" sx={{ fontWeight: 'bold' }}>RUT:</Box> {clienteGuardado.rut}
                         </Typography>
                         {clienteGuardado.telefono && (
                             <Typography variant="body2" gutterBottom>
-                                Teléfono: {clienteGuardado.telefono}
+                                <Box component="span" sx={{ fontWeight: 'bold' }}>Teléfono:</Box> {clienteGuardado.telefono}
                             </Typography>
                         )}
                         {clienteGuardado.email && (
                             <Typography variant="body2" gutterBottom>
-                                Email: {clienteGuardado.email}
+                                <Box component="span" sx={{ fontWeight: 'bold' }}>Email:</Box> {clienteGuardado.email}
                             </Typography>
                         )}
                         {clienteGuardado.direccion && (
                             <Typography variant="body2">
-                                Dirección: {clienteGuardado.direccion}
+                                <Box component="span" sx={{ fontWeight: 'bold' }}>Dirección:</Box> {clienteGuardado.direccion}
                             </Typography>
                         )}
                     </Box>
@@ -496,13 +640,26 @@ export default function VentaForm({ onVentaCreada }) {
 
                 <Button
                     variant="contained"
-                    color="success"
                     fullWidth
                     size="large"
                     onClick={clienteGuardado ? handleSubmit : handleOpenModal}
                     disabled={productosSeleccionados.length === 0 || loading}
                     startIcon={loading ? <CircularProgress size={20} /> : <CheckCircleIcon />}
-                    sx={{ mt: 3, py: 2 }}
+                    sx={{
+                        mt: 3,
+                        py: 2,
+                        backgroundColor: themeColors.success,
+                        '&:hover': {
+                            backgroundColor: '#2E7D32',
+                        },
+                        '&:disabled': {
+                            backgroundColor: '#BDBDBD',
+                            color: '#757575'
+                        },
+                        borderRadius: '8px',
+                        fontWeight: 'bold',
+                        fontSize: '1.1rem'
+                    }}
                 >
                     {loading ? 'Procesando...' : 'Confirmar Venta'}
                 </Button>
@@ -510,7 +667,13 @@ export default function VentaForm({ onVentaCreada }) {
 
             {/* Modal para datos del cliente */}
             <Dialog open={openModal} onClose={handleCloseModal} maxWidth="sm" fullWidth>
-                <DialogTitle>{clienteGuardado ? 'Editar Cliente' : 'Ingresar Datos del Cliente'}</DialogTitle>
+                <DialogTitle sx={{
+                    backgroundColor: themeColors.primary,
+                    color: '#fff',
+                    fontWeight: 'bold'
+                }}>
+                    {clienteGuardado ? 'Editar Cliente' : 'Ingresar Datos del Cliente'}
+                </DialogTitle>
                 <DialogContent>
                     <Box component="form" sx={{ mt: 2 }}>
                         <Grid container spacing={2}>
@@ -524,6 +687,16 @@ export default function VentaForm({ onVentaCreada }) {
                                     onChange={handleRutChange}
                                     required
                                     placeholder="Ej: 12.345.678-9"
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -535,6 +708,16 @@ export default function VentaForm({ onVentaCreada }) {
                                     value={cliente.nombre}
                                     onChange={handleClienteChange}
                                     required
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
@@ -545,6 +728,16 @@ export default function VentaForm({ onVentaCreada }) {
                                     margin="normal"
                                     value={cliente.telefono}
                                     onChange={handleClienteChange}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12} md={6}>
@@ -556,6 +749,16 @@ export default function VentaForm({ onVentaCreada }) {
                                     margin="normal"
                                     value={cliente.email}
                                     onChange={handleClienteChange}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={12}>
@@ -566,61 +769,116 @@ export default function VentaForm({ onVentaCreada }) {
                                     margin="normal"
                                     value={cliente.direccion}
                                     onChange={handleClienteChange}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Grid>
                         </Grid>
                     </Box>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseModal} color="secondary">
+                    <Button
+                        onClick={handleCloseModal}
+                        sx={{
+                            color: themeColors.textSecondary,
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                            }
+                        }}
+                    >
                         Cancelar
                     </Button>
                     <Button
                         onClick={handleSaveCliente}
-                        color="primary"
                         variant="contained"
+                        sx={{
+                            backgroundColor: themeColors.success,
+                            '&:hover': {
+                                backgroundColor: '#2E7D32',
+                            },
+                            fontWeight: 'bold'
+                        }}
                     >
                         Guardar Cliente
                     </Button>
                 </DialogActions>
             </Dialog>
             <Dialog open={openBoletaModal} onClose={handleCloseBoleta} maxWidth="sm" fullWidth>
-                <DialogTitle>Boleta de Ejemplo (Demo)</DialogTitle>
+                <DialogTitle sx={{
+                    backgroundColor: themeColors.primary,
+                    color: '#fff',
+                    fontWeight: 'bold'
+                }}>
+                    Boleta de Venta
+                </DialogTitle>
                 <DialogContent>
-                    <Paper elevation={0} sx={{ p: 2, border: '1px dashed #ccc' }}>
-                        <Typography variant="h6" align="center" gutterBottom>
+                    <Paper elevation={0} sx={{
+                        p: 2,
+                        border: `1px dashed ${themeColors.border}`,
+                        backgroundColor: themeColors.paper
+                    }}>
+                        <Typography variant="h6" align="center" gutterBottom sx={{
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             TIENDA DE BICICLETAS
                         </Typography>
-                        <Typography variant="body2" align="center" gutterBottom>
+                        <Typography variant="body2" align="center" gutterBottom sx={{
+                            color: themeColors.textSecondary
+                        }}>
                             RUT: 12.345.678-9
                         </Typography>
-                        <Typography variant="body2" align="center" gutterBottom>
+                        <Typography variant="body2" align="center" gutterBottom sx={{
+                            color: themeColors.textSecondary
+                        }}>
                             Dirección: Av. Principal 1234
                         </Typography>
-                        <Typography variant="body2" align="center" gutterBottom>
+                        <Typography variant="body2" align="center" gutterBottom sx={{
+                            color: themeColors.textSecondary
+                        }}>
                             Teléfono: +56 9 8765 4321
                         </Typography>
 
-                        <Divider sx={{ my: 2 }} />
+                        <Divider sx={{
+                            my: 2,
+                            borderColor: themeColors.border
+                        }} />
 
-                        <Typography variant="body2">
-                            <strong>Boleta N°:</strong> 0001-00000001
+                        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
+                            <Box component="span" sx={{ color: themeColors.primary }}>Boleta N°:</Box> 0001-00000001
                         </Typography>
                         <Typography variant="body2">
-                            <strong>Fecha:</strong> {new Date().toLocaleDateString()}
+                            <Box component="span" sx={{ fontWeight: 'bold', color: themeColors.primary }}>Fecha:</Box> {new Date().toLocaleDateString()}
                         </Typography>
                         <Typography variant="body2">
-                            <strong>Cliente:</strong> {clienteGuardado?.nombre || 'No especificado'}
+                            <Box component="span" sx={{ fontWeight: 'bold', color: themeColors.primary }}>Cliente:</Box> {clienteGuardado?.nombre || 'No especificado'}
                         </Typography>
                         <Typography variant="body2">
-                            <strong>RUT:</strong> {clienteGuardado?.rut || 'No especificado'}
+                            <Box component="span" sx={{ fontWeight: 'bold', color: themeColors.primary }}>RUT:</Box> {clienteGuardado?.rut || 'No especificado'}
                         </Typography>
 
-                        <Divider sx={{ my: 2 }} />
+                        <Divider sx={{
+                            my: 2,
+                            borderColor: themeColors.border
+                        }} />
 
                         <Table size="small">
                             <TableHead>
-                                <TableRow>
+                                <TableRow sx={{
+                                    backgroundColor: themeColors.primary,
+                                    '& th': {
+                                        color: '#fff',
+                                        fontWeight: 'bold'
+                                    }
+                                }}>
                                     <TableCell>Producto</TableCell>
                                     <TableCell align="right">Cant.</TableCell>
                                     <TableCell align="right">P.Unit</TableCell>
@@ -629,7 +887,14 @@ export default function VentaForm({ onVentaCreada }) {
                             </TableHead>
                             <TableBody>
                                 {productosSeleccionados.map((producto) => (
-                                    <TableRow key={producto.id}>
+                                    <TableRow
+                                        key={producto.id}
+                                        sx={{
+                                            '&:nth-of-type(odd)': {
+                                                backgroundColor: themeColors.highlight
+                                            }
+                                        }}
+                                    >
                                         <TableCell>{producto.nombre}</TableCell>
                                         <TableCell align="right">{producto.cantidad}</TableCell>
                                         <TableCell align="right">${producto.precioUnitario.toFixed(2)}</TableCell>
@@ -639,33 +904,63 @@ export default function VentaForm({ onVentaCreada }) {
                             </TableBody>
                         </Table>
 
-                        <Divider sx={{ my: 2 }} />
+                        <Divider sx={{
+                            my: 2,
+                            borderColor: themeColors.border
+                        }} />
 
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                            <Typography variant="body2"><strong>Subtotal:</strong></Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Subtotal:</Typography>
                             <Typography variant="body2">${calcularTotal().toFixed(2)}</Typography>
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                            <Typography variant="body2"><strong>IVA (16%):</strong></Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>IVA (16%):</Typography>
                             <Typography variant="body2">${(calcularTotal() * 0.16).toFixed(2)}</Typography>
                         </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-                            <Typography variant="body2"><strong>Total:</strong></Typography>
-                            <Typography variant="body2">${(calcularTotal() * 1.16).toFixed(2)}</Typography>
+                        <Box sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            mb: 2,
+                            backgroundColor: themeColors.highlight,
+                            p: 1,
+                            borderRadius: '4px'
+                        }}>
+                            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>Total:</Typography>
+                            <Typography variant="body2" sx={{ fontWeight: 'bold' }}>${(calcularTotal() * 1.16).toFixed(2)}</Typography>
                         </Box>
 
-                        <Divider sx={{ my: 2 }} />
+                        <Divider sx={{
+                            my: 2,
+                            borderColor: themeColors.border
+                        }} />
 
-                        <Typography variant="body2" align="center" gutterBottom>
-                            <strong>¡Gracias por su compra!</strong>
+                        <Typography variant="body2" align="center" gutterBottom sx={{
+                            fontWeight: 'bold',
+                            color: themeColors.primary
+                        }}>
+                            ¡Gracias por su compra!
                         </Typography>
-                        <Typography variant="caption" align="center" display="block">
+                        <Typography variant="caption" align="center" display="block" sx={{
+                            color: themeColors.textSecondary
+                        }}>
                             Este es un comprobante de ejemplo para demostración
                         </Typography>
                     </Paper>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={handleCloseBoleta} color="primary" variant="contained" fullWidth>
+                    <Button
+                        onClick={handleCloseBoleta}
+                        variant="contained"
+                        fullWidth
+                        sx={{
+                            backgroundColor: themeColors.primary,
+                            '&:hover': {
+                                backgroundColor: '#1B5E20',
+                            },
+                            fontWeight: 'bold',
+                            py: 1.5
+                        }}
+                    >
                         Cerrar
                     </Button>
                 </DialogActions>

@@ -15,13 +15,31 @@ import {
     DialogContent,
     DialogActions,
     CircularProgress,
-    Alert, Button
+    Alert,
+    Button
 } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
 const API_BASE_URL = "http://localhost:8081/api/ventas";
+
+// Paleta de colores idéntica a VentaForm.js
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
 
 export default function ListaVentas() {
     const [ventas, setVentas] = useState([]);
@@ -88,38 +106,73 @@ export default function ListaVentas() {
 
     if (loading) {
         return (
-            <Box sx={{ display: 'flex', justifyContent: 'center', p: 4 }}>
-                <CircularProgress />
+            <Box sx={{
+                display: 'flex',
+                justifyContent: 'center',
+                p: 4,
+                backgroundColor: themeColors.background,
+                minHeight: '100vh'
+            }}>
+                <CircularProgress sx={{ color: themeColors.primary }} />
             </Box>
         );
     }
 
     if (error) {
         return (
-            <Alert severity="error" sx={{ m: 2 }}>
-                {error}
-            </Alert>
+            <Box sx={{ backgroundColor: themeColors.background, p: 2 }}>
+                <Alert severity="error" sx={{
+                    backgroundColor: themeColors.error,
+                    color: '#fff'
+                }}>
+                    {error}
+                </Alert>
+            </Box>
         );
     }
 
     if (!ventas || ventas.length === 0) {
         return (
-            <Typography variant="body1" sx={{ p: 3 }}>
-                No hay ventas registradas
-            </Typography>
+            <Box sx={{
+                backgroundColor: themeColors.background,
+                p: 3,
+                minHeight: '100vh'
+            }}>
+                <Typography variant="body1" sx={{ color: themeColors.textPrimary }}>
+                    No hay ventas registradas
+                </Typography>
+            </Box>
         );
     }
 
     return (
-        <Box sx={{ p: 3 }}>
-            <Typography variant="h4" gutterBottom sx={{ mb: 3 }}>
+        <Box sx={{
+            p: 3,
+            backgroundColor: themeColors.background,
+            minHeight: '100vh'
+        }}>
+            <Typography variant="h4" gutterBottom sx={{
+                mb: 3,
+                color: themeColors.primary,
+                fontWeight: 'bold'
+            }}>
                 Ventas Registradas
             </Typography>
 
-            <TableContainer component={Paper}>
+            <TableContainer component={Paper} sx={{
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '8px',
+                boxShadow: 3
+            }}>
                 <Table>
                     <TableHead>
-                        <TableRow>
+                        <TableRow sx={{
+                            backgroundColor: themeColors.primary,
+                            '& th': {
+                                color: '#fff',
+                                fontWeight: 'bold'
+                            }
+                        }}>
                             <TableCell>ID</TableCell>
                             <TableCell>Fecha</TableCell>
                             <TableCell>Cliente</TableCell>
@@ -130,16 +183,26 @@ export default function ListaVentas() {
                     </TableHead>
                     <TableBody>
                         {ventas.map((item) => (
-                            <TableRow key={item.id}>
-                                <TableCell>{item.id?.substring(0, 8) || 'N/A'}</TableCell>
-                                <TableCell>{formatDate(item.venta?.fecha)}</TableCell>
-                                <TableCell>{item.venta?.cliente?.nombre}</TableCell>
-                                <TableCell>{item.venta?.cliente?.rut}</TableCell>
-                                <TableCell>{formatCurrency(item.venta?.total)}</TableCell>
+                            <TableRow
+                                key={item.id}
+                                sx={{
+                                    '&:nth-of-type(odd)': {
+                                        backgroundColor: themeColors.highlight
+                                    },
+                                    '&:hover': {
+                                        backgroundColor: '#e0e0e0'
+                                    }
+                                }}
+                            >
+                                <TableCell sx={{ color: themeColors.textPrimary }}>{item.id?.substring(0, 8) || 'N/A'}</TableCell>
+                                <TableCell sx={{ color: themeColors.textPrimary }}>{formatDate(item.venta?.fecha)}</TableCell>
+                                <TableCell sx={{ color: themeColors.textPrimary }}>{item.venta?.cliente?.nombre}</TableCell>
+                                <TableCell sx={{ color: themeColors.textPrimary }}>{item.venta?.cliente?.rut}</TableCell>
+                                <TableCell sx={{ color: themeColors.textPrimary }}>{formatCurrency(item.venta?.total)}</TableCell>
                                 <TableCell>
                                     <IconButton
                                         onClick={() => handleViewDetails(item)}
-                                        color="primary"
+                                        sx={{ color: themeColors.primary }}
                                     >
                                         <Visibility />
                                     </IconButton>
@@ -156,40 +219,77 @@ export default function ListaVentas() {
                 onClose={handleCloseDialog}
                 maxWidth="md"
                 fullWidth
+                PaperProps={{
+                    sx: {
+                        backgroundColor: themeColors.background,
+                        border: `1px solid ${themeColors.border}`
+                    }
+                }}
             >
-                <DialogTitle>Detalles de Venta</DialogTitle>
-                <DialogContent>
+                <DialogTitle sx={{
+                    backgroundColor: themeColors.primary,
+                    color: '#fff',
+                    fontWeight: 'bold'
+                }}>
+                    Detalles de Venta
+                </DialogTitle>
+                <DialogContent sx={{ backgroundColor: themeColors.background }}>
                     {selectedVenta && (
                         <Box sx={{ p: 2 }}>
-                            <Typography variant="h6" gutterBottom>
+                            <Typography variant="h6" gutterBottom sx={{ color: themeColors.primary }}>
                                 Venta ID: {selectedVenta.id || 'N/A'}
                             </Typography>
-                            <Typography gutterBottom>
+                            <Typography gutterBottom sx={{ color: themeColors.textPrimary }}>
                                 <strong>Fecha:</strong> {formatDate(selectedVenta.fecha)}
                             </Typography>
-                            <Typography gutterBottom>
+                            <Typography gutterBottom sx={{ color: themeColors.textPrimary }}>
                                 <strong>Estado:</strong> {selectedVenta.estado || 'DESCONOCIDO'}
                             </Typography>
 
-                            <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+                            <Typography variant="h6" sx={{
+                                mt: 3,
+                                mb: 2,
+                                color: themeColors.primary
+                            }}>
                                 Datos del Cliente
                             </Typography>
-                            <Typography><strong>Nombre:</strong> {selectedVenta.cliente?.nombre || 'No especificado'}</Typography>
-                            <Typography><strong>RUT:</strong> {selectedVenta.cliente?.rut || 'No especificado'}</Typography>
+                            <Typography sx={{ color: themeColors.textPrimary }}>
+                                <strong>Nombre:</strong> {selectedVenta.cliente?.nombre || 'No especificado'}
+                            </Typography>
+                            <Typography sx={{ color: themeColors.textPrimary }}>
+                                <strong>RUT:</strong> {selectedVenta.cliente?.rut || 'No especificado'}
+                            </Typography>
                             {selectedVenta.cliente?.telefono && (
-                                <Typography><strong>Teléfono:</strong> {selectedVenta.cliente.telefono}</Typography>
+                                <Typography sx={{ color: themeColors.textPrimary }}>
+                                    <strong>Teléfono:</strong> {selectedVenta.cliente.telefono}
+                                </Typography>
                             )}
                             {selectedVenta.cliente?.email && (
-                                <Typography><strong>Email:</strong> {selectedVenta.cliente.email}</Typography>
+                                <Typography sx={{ color: themeColors.textPrimary }}>
+                                    <strong>Email:</strong> {selectedVenta.cliente.email}
+                                </Typography>
                             )}
 
-                            <Typography variant="h6" sx={{ mt: 3, mb: 2 }}>
+                            <Typography variant="h6" sx={{
+                                mt: 3,
+                                mb: 2,
+                                color: themeColors.primary
+                            }}>
                                 Productos ({selectedVenta.productos?.length || 0})
                             </Typography>
-                            <TableContainer component={Paper}>
+                            <TableContainer component={Paper} sx={{
+                                border: `1px solid ${themeColors.border}`,
+                                borderRadius: '8px'
+                            }}>
                                 <Table size="small">
                                     <TableHead>
-                                        <TableRow>
+                                        <TableRow sx={{
+                                            backgroundColor: themeColors.primary,
+                                            '& th': {
+                                                color: '#fff',
+                                                fontWeight: 'bold'
+                                            }
+                                        }}>
                                             <TableCell>Producto</TableCell>
                                             <TableCell align="right">Cantidad</TableCell>
                                             <TableCell align="right">P. Unitario</TableCell>
@@ -198,11 +298,18 @@ export default function ListaVentas() {
                                     </TableHead>
                                     <TableBody>
                                         {selectedVenta.productos?.map((producto, index) => (
-                                            <TableRow key={index}>
-                                                <TableCell>{producto.nombre || 'Producto sin nombre'}</TableCell>
-                                                <TableCell align="right">{producto.cantidad || 0}</TableCell>
-                                                <TableCell align="right">{formatCurrency(producto.precioUnitario)}</TableCell>
-                                                <TableCell align="right">{formatCurrency(producto.precioTotal)}</TableCell>
+                                            <TableRow
+                                                key={index}
+                                                sx={{
+                                                    '&:nth-of-type(odd)': {
+                                                        backgroundColor: themeColors.highlight
+                                                    }
+                                                }}
+                                            >
+                                                <TableCell sx={{ color: themeColors.textPrimary }}>{producto.nombre || 'Producto sin nombre'}</TableCell>
+                                                <TableCell align="right" sx={{ color: themeColors.textPrimary }}>{producto.cantidad || 0}</TableCell>
+                                                <TableCell align="right" sx={{ color: themeColors.textPrimary }}>{formatCurrency(producto.precioUnitario)}</TableCell>
+                                                <TableCell align="right" sx={{ color: themeColors.textPrimary }}>{formatCurrency(producto.precioTotal)}</TableCell>
                                             </TableRow>
                                         ))}
                                     </TableBody>
@@ -210,21 +317,35 @@ export default function ListaVentas() {
                             </TableContainer>
 
                             <Box sx={{ mt: 3 }}>
-                                <Typography variant="subtitle1" align="right">
+                                <Typography variant="subtitle1" align="right" sx={{ color: themeColors.textPrimary }}>
                                     <strong>Subtotal:</strong> {formatCurrency(selectedVenta.subtotal)}
                                 </Typography>
-                                <Typography variant="subtitle1" align="right">
+                                <Typography variant="subtitle1" align="right" sx={{ color: themeColors.textPrimary }}>
                                     <strong>IVA (16%):</strong> {formatCurrency(selectedVenta.iva)}
                                 </Typography>
-                                <Typography variant="h6" align="right" sx={{ mt: 1 }}>
+                                <Typography variant="h6" align="right" sx={{
+                                    mt: 1,
+                                    color: themeColors.primary,
+                                    fontWeight: 'bold'
+                                }}>
                                     <strong>Total:</strong> {formatCurrency(selectedVenta.total)}
                                 </Typography>
                             </Box>
                         </Box>
                     )}
                 </DialogContent>
-                <DialogActions>
-                    <Button onClick={handleCloseDialog}>Cerrar</Button>
+                <DialogActions sx={{ backgroundColor: themeColors.background }}>
+                    <Button
+                        onClick={handleCloseDialog}
+                        sx={{
+                            color: themeColors.textPrimary,
+                            '&:hover': {
+                                backgroundColor: themeColors.highlight
+                            }
+                        }}
+                    >
+                        Cerrar
+                    </Button>
                 </DialogActions>
             </Dialog>
         </Box>
