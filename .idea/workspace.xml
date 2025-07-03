@@ -4,20 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="Mejora visualmente con su respectiva paleta de colores">
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/GestionCuenta.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/GestionCuenta.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/HistorialView.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/HistorialView.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/Reparaciones.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/Reparaciones.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
-    </list>
+    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="Paleta Colores Actualizada" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -169,7 +156,15 @@
       <option name="project" value="LOCAL" />
       <updated>1751530347382</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL-00003" summary="Paleta Colores Actualizada">
+      <option name="closed" value="true" />
+      <created>1751536920261</created>
+      <option name="number" value="00003" />
+      <option name="presentableId" value="LOCAL-00003" />
+      <option name="project" value="LOCAL" />
+      <updated>1751536920262</updated>
+    </task>
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -201,6 +196,7 @@
   <component name="VcsManagerConfiguration">
     <MESSAGE value="PULL completo" />
     <MESSAGE value="Rutas" />
-    <option name="LAST_COMMIT_MESSAGE" value="Rutas" />
+    <MESSAGE value="Paleta Colores Actualizada" />
+    <option name="LAST_COMMIT_MESSAGE" value="Paleta Colores Actualizada" />
   </component>
 </project>
