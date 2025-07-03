@@ -1,15 +1,19 @@
 // src/App.js
 import React, { useState } from 'react';
-import { Container, Typography } from '@mui/material';
 import VentaForm from './ventas-service/VentaForm';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import ListaVentas from "./ventas-service/ListaVentas";
 
 function App() {
 
     return (
-        <Container maxWidth="md" sx={{ mt: 5 }}>
-            <Typography variant="h4" gutterBottom>Ventas - MasterBikes</Typography>
-            <VentaForm/>
-        </Container>
+        <Router>
+            <Routes>
+                <Route path= "/venta" element={<VentaForm/>}/>
+                <Route path= "/lista-ventas" element={<ListaVentas/>}/>
+            </Routes>
+        </Router>
+
     );
 }
 
