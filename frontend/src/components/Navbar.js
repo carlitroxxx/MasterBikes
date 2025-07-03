@@ -43,6 +43,8 @@ export default function Navbar() {
                     <Box sx={{ flexGrow: 1 }}>
                         <Button color="inherit" component={Link} to="/">Inicio</Button>
                         <Button color="inherit" component={Link} to="/login/emp">EMPLEADO</Button>
+                        <Button color="inherit" component={Link} to="/shop">Catálogo</Button>
+
                     </Box>
                     <Box>
                         <Button color="inherit" component={Link} to="/login">Login</Button>

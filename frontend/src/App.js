@@ -12,6 +12,7 @@ import SupervisorRoutes from "./routes/SupervisorRoutes";
 import EmployeeLoginPage from "./components/EmployeeLoginPage";
 import VendedorRoutes from "./routes/VendedorRoutes";
 import TecnicoRoutes from "./routes/TecnicoRoutes";
+import Catalogo from "./views/Cliente/Catalogo";
 
 function App() {
     return (
@@ -20,9 +21,11 @@ function App() {
                 <CartProvider>
                 <Navbar />
                 <Routes>
+
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/registro" element={<RegisterPage />} />
                     <Route path="login/emp" element={<EmployeeLoginPage />} />
+                    <Route path="shop" element={<Catalogo />} />
 
                     <Route path="/supervisor/*" element={
                         <PrivateRoute allowedRoles={['SUPERVISOR']}>
