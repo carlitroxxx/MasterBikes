@@ -35,6 +35,7 @@ export default function VentaForm({ onVentaCreada }) {
     const [productosFiltrados, setProductosFiltrados] = useState([]);
     const [productosSeleccionados, setProductosSeleccionados] = useState([]);
     const [openBoletaModal, setOpenBoletaModal] = useState(false);
+    const API_BASE_URL = "http://localhost:8081/api/ventas";
     const [productoActual, setProductoActual] = useState({
         id: '',
         nombre: '',
@@ -228,15 +229,36 @@ export default function VentaForm({ onVentaCreada }) {
                 throw new Error('Debes ingresar los datos del cliente');
             }
 
-            // Simulamos el envío a la API (en producción sería real)
-            await new Promise(resolve => setTimeout(resolve, 1000));
+            if (productosSeleccionados.length === 0) {
+                throw new Error('Debes agregar al menos un producto');
+            }
 
-            // Mostramos la boleta de ejemplo
+            // Preparar los datos para enviar al backend
+            const ventaRequest = {
+                cliente: clienteGuardado,
+                productos: productosSeleccionados.map(p => ({
+                    idProducto: p.id,
+                    nombre: p.nombre,
+                    cantidad: p.cantidad,
+                    precioUnitario: p.precioUnitario,
+                    precioTotal: p.precioTotal
+                }))
+            };
+
+            // Enviar la solicitud al backend
+            const response = await axios.post(API_BASE_URL, ventaRequest);
+
+            // Mostrar la respuesta del backend
+            setSuccess(response.data.mensaje);
             setOpenBoletaModal(true);
-            setSuccess('Venta registrada exitosamente');
 
         } catch (err) {
-            setError(err.message || 'Error al registrar la venta');
+            // Manejar errores de la API o de validación
+            const errorMessage = err.response?.data?.message ||
+                err.response?.data?.error ||
+                err.message ||
+                'Error al registrar la venta';
+            setError(errorMessage);
         } finally {
             setLoading(false);
         }
