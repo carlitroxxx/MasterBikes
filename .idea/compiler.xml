@@ -16,6 +16,7 @@
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="usuario-service" />
+        <module name="ventas-service" />
         <module name="inventario-service" />
         <module name="arriendo-service" />
       </profile>
@@ -27,6 +28,7 @@
       <module name="carrito-service" options="-parameters" />
       <module name="inventario-service" options="-parameters" />
       <module name="usuario-service" options="-parameters" />
+      <module name="ventas-service" options="-parameters" />
     </option>
   </component>
 </project>
