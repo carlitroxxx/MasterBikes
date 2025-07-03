@@ -11,6 +11,23 @@ import esLocale from 'date-fns/locale/es';
 import ClearIcon from '@mui/icons-material/Clear';
 import { format } from 'date-fns';
 
+// Paleta de colores consistente con VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 const formasPago = ['Efectivo', 'Tarjeta de Crédito', 'Transferencia', 'Otro'];
 
 // Función para validar RUT chileno
@@ -280,12 +297,20 @@ const ArriendoForm = () => {
 
     return (
         <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={esLocale}>
-            <Paper elevation={3} sx={{ maxWidth: 1000, mx: 'auto', mt: 4, p: 4 }}>
+            <Paper elevation={3} sx={{
+                maxWidth: 1000,
+                mx: 'auto',
+                mt: 4,
+                p: 4,
+                backgroundColor: themeColors.background
+            }}>
                 <Typography variant="h5" gutterBottom sx={{
                     fontWeight: 'bold',
-                    color: 'primary.main',
+                    color: themeColors.primary,
                     mb: 4,
-                    fontSize: '1.8rem'
+                    fontSize: '1.8rem',
+                    borderBottom: `2px solid ${themeColors.primary}`,
+                    pb: 1
                 }}>
                     Registrar Arriendo de Bicicleta
                 </Typography>
@@ -314,6 +339,7 @@ const ArriendoForm = () => {
                                                 <IconButton
                                                     onClick={() => handleClearField('clienteRut')}
                                                     edge="end"
+                                                    sx={{ color: themeColors.textSecondary }}
                                                 >
                                                     <ClearIcon />
                                                 </IconButton>
@@ -326,7 +352,13 @@ const ArriendoForm = () => {
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
-                                    fontSize: '1.1rem'
+                                    fontSize: '1.1rem',
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
                                 }
                             }}
                         />
@@ -349,6 +381,7 @@ const ArriendoForm = () => {
                                         <IconButton
                                             onClick={() => handleClearField('clienteEmail')}
                                             edge="end"
+                                            sx={{ color: themeColors.textSecondary }}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -359,7 +392,13 @@ const ArriendoForm = () => {
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
                                     fontSize: '1.1rem',
-                                    backgroundColor: isExistingUser ? 'action.hover' : 'background.paper'
+                                    backgroundColor: isExistingUser ? themeColors.highlight : themeColors.paper,
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
                                 }
                             }}
                         />
@@ -379,6 +418,7 @@ const ArriendoForm = () => {
                                         <IconButton
                                             onClick={() => handleClearField('clienteTelefono')}
                                             edge="end"
+                                            sx={{ color: themeColors.textSecondary }}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -389,7 +429,13 @@ const ArriendoForm = () => {
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
                                     fontSize: '1.1rem',
-                                    backgroundColor: isExistingUser ? 'action.hover' : 'background.paper'
+                                    backgroundColor: isExistingUser ? themeColors.highlight : themeColors.paper,
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
                                 }
                             }}
                         />
@@ -415,6 +461,7 @@ const ArriendoForm = () => {
                                         <IconButton
                                             onClick={() => handleClearField('clienteNombre')}
                                             edge="end"
+                                            sx={{ color: themeColors.textSecondary }}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -425,7 +472,13 @@ const ArriendoForm = () => {
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
                                     fontSize: '1.1rem',
-                                    backgroundColor: isExistingUser ? 'action.hover' : 'background.paper'
+                                    backgroundColor: isExistingUser ? themeColors.highlight : themeColors.paper,
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
                                 },
                                 minWidth: '516px',
                             }}
@@ -442,14 +495,17 @@ const ArriendoForm = () => {
                             InputProps={{
                                 readOnly: true,
                                 sx: {
-                                    backgroundColor: 'action.hover', // Fondo gris claro (como un campo deshabilitado)
-                                    cursor: 'not-allowed', // Cambia el cursor para indicar que no es editable
+                                    backgroundColor: themeColors.highlight,
+                                    cursor: 'not-allowed',
                                 },
                             }}
                             sx={{
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
                                     fontSize: '1.1rem',
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
                                 },
                             }}
                         />
@@ -470,11 +526,13 @@ const ArriendoForm = () => {
                                     helperText={errors.fechaFin}
                                     size="medium"
                                     InputProps={{
+                                        ...params.InputProps,
                                         endAdornment: form.fechaFin && (
                                             <InputAdornment position="end">
                                                 <IconButton
                                                     onClick={() => handleClearDate('fechaFin')}
                                                     edge="end"
+                                                    sx={{ color: themeColors.textSecondary }}
                                                 >
                                                     <ClearIcon />
                                                 </IconButton>
@@ -484,7 +542,13 @@ const ArriendoForm = () => {
                                     sx={{
                                         '& .MuiOutlinedInput-root': {
                                             height: '56px',
-                                            fontSize: '1.1rem'
+                                            fontSize: '1.1rem',
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
                                         }
                                     }}
                                 />
@@ -509,6 +573,7 @@ const ArriendoForm = () => {
                                         <IconButton
                                             onClick={() => handleClearField('formaPago')}
                                             edge="end"
+                                            sx={{ color: themeColors.textSecondary }}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -519,6 +584,12 @@ const ArriendoForm = () => {
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
                                     fontSize: '1.1rem',
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
                                 },
                                 minWidth: '200px',
                             }}
@@ -563,6 +634,7 @@ const ArriendoForm = () => {
                                                         <IconButton
                                                             onClick={() => handleBicicletaChange(null, null)}
                                                             edge="end"
+                                                            sx={{ color: themeColors.textSecondary }}
                                                         >
                                                             <ClearIcon />
                                                         </IconButton>
@@ -575,6 +647,12 @@ const ArriendoForm = () => {
                                         '& .MuiOutlinedInput-root': {
                                             height: '56px',
                                             fontSize: '1.1rem',
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
                                         },
                                     }}
                                 />
@@ -595,6 +673,7 @@ const ArriendoForm = () => {
                                             onClick={() => setForm({...form, deposito: ''})}
                                             edge="end"
                                             disabled
+                                            sx={{ color: themeColors.textSecondary }}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -607,7 +686,10 @@ const ArriendoForm = () => {
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
                                     fontSize: '1.1rem',
-                                    backgroundColor: 'action.hover'
+                                    backgroundColor: themeColors.highlight,
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
                                 }
                             }}
                         />
@@ -626,6 +708,7 @@ const ArriendoForm = () => {
                                             onClick={() => setForm({...form, precioDia: ''})}
                                             edge="end"
                                             disabled
+                                            sx={{ color: themeColors.textSecondary }}
                                         >
                                             <ClearIcon />
                                         </IconButton>
@@ -638,19 +721,28 @@ const ArriendoForm = () => {
                                 '& .MuiOutlinedInput-root': {
                                     height: '56px',
                                     fontSize: '1.1rem',
-                                    backgroundColor: 'action.hover'
+                                    backgroundColor: themeColors.highlight,
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
                                 }
                             }}
                         />
                     </Grid>
                 </Grid>
 
-                <Divider sx={{ my: 3 }} />
+                <Divider sx={{
+                    my: 3,
+                    borderColor: themeColors.border
+                }} />
 
                 {/* Resumen */}
                 <Grid container spacing={2} sx={{ mb: 4 }}>
                     <Grid item xs={6}>
-                        <Typography variant="body1" sx={{ fontSize: '1.2rem' }}>
+                        <Typography variant="body1" sx={{
+                            fontSize: '1.2rem',
+                            color: themeColors.textPrimary
+                        }}>
                             <strong>Días de arriendo:</strong> {form.diasArriendo}
                         </Typography>
                     </Grid>
@@ -659,7 +751,7 @@ const ArriendoForm = () => {
                             textAlign: 'right',
                             fontSize: '1.2rem',
                             fontWeight: 'bold',
-                            color: 'primary.main'
+                            color: themeColors.primary
                         }}>
                             <strong>Total a pagar:</strong> ${form.total.toLocaleString('es-CL')}
                         </Typography>
@@ -675,7 +767,11 @@ const ArriendoForm = () => {
                         py: 2,
                         fontSize: '1.1rem',
                         fontWeight: 'bold',
-                        letterSpacing: '0.5px'
+                        letterSpacing: '0.5px',
+                        backgroundColor: themeColors.success,
+                        '&:hover': {
+                            backgroundColor: '#1B5E20',
+                        },
                     }}
                 >
                     {loading ? <CircularProgress size={24} /> : 'Registrar Arriendo'}
@@ -689,7 +785,12 @@ const ArriendoForm = () => {
                 >
                     <Alert
                         severity={alert.success ? 'success' : 'error'}
-                        sx={{ width: '100%', fontSize: '1.1rem' }}
+                        sx={{
+                            width: '100%',
+                            fontSize: '1.1rem',
+                            backgroundColor: alert.success ? themeColors.success : themeColors.error,
+                            color: '#fff'
+                        }}
                         onClose={() => setAlert({ ...alert, open: false })}
                     >
                         {alert.message}

@@ -34,6 +34,23 @@ import {
 import { useLocation } from 'react-router-dom';
 import { styled } from '@mui/material/styles';
 
+// Paleta de colores igual a VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 // Datos de ejemplo
 const historialData = {
     compras: [
@@ -60,9 +77,12 @@ const CompactSummaryCard = styled(Card)(({ theme }) => ({
     flexDirection: 'column',
     justifyContent: 'center',
     transition: 'all 0.3s ease',
+    backgroundColor: themeColors.paper,
+    border: `1px solid ${themeColors.border}`,
     '&:hover': {
         transform: 'translateY(-3px)',
-        boxShadow: theme.shadows[4]
+        boxShadow: theme.shadows[4],
+        borderColor: themeColors.primary
     },
     '& .MuiCardContent-root': {
         padding: theme.spacing(2),
@@ -104,10 +124,10 @@ export default function HistorialView() {
 
     const getTypeIcon = () => {
         switch(tipo) {
-            case 'compras': return <ShoppingCart color="primary" />;
-            case 'arriendos': return <DirectionsBike color="primary" />;
-            case 'reparaciones': return <Build color="primary" />;
-            default: return <Receipt color="primary" />;
+            case 'compras': return <ShoppingCart sx={{ color: themeColors.primary }} />;
+            case 'arriendos': return <DirectionsBike sx={{ color: themeColors.primary }} />;
+            case 'reparaciones': return <Build sx={{ color: themeColors.primary }} />;
+            default: return <Receipt sx={{ color: themeColors.primary }} />;
         }
     };
 
@@ -132,9 +152,7 @@ export default function HistorialView() {
         setExpandedRow(expandedRow === id ? null : id);
     };
 
-    // Función para manejar clics en los ítems del menú
     const handleMenuClick = (newTipo) => (event) => {
-        // Prevenir la propagación si el clic fue en el Chip (número)
         if (event.target.closest('.MuiChip-root')) {
             event.preventDefault();
             event.stopPropagation();
@@ -144,8 +162,13 @@ export default function HistorialView() {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ my: 3 }}>
-            <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+        <Container maxWidth="lg" sx={{ my: 3, backgroundColor: themeColors.background, p: 3, borderRadius: '12px' }}>
+            <Typography variant="h4" gutterBottom sx={{
+                fontWeight: 'bold',
+                color: themeColors.primary,
+                borderBottom: `2px solid ${themeColors.primary}`,
+                pb: 1
+            }}>
                 Mi Historial
             </Typography>
 
@@ -154,11 +177,11 @@ export default function HistorialView() {
                 <Grid item xs={12} sm={4}>
                     <CompactSummaryCard>
                         <CardContent sx={{ textAlign: 'center' }}>
-                            <ShoppingCart color="primary" fontSize="large" />
-                            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>
+                            <ShoppingCart sx={{ color: themeColors.primary, fontSize: '2rem' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1, color: themeColors.primary }}>
                                 {historialData.compras.length}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" sx={{ color: themeColors.textSecondary }}>
                                 {historialData.compras.filter(c => c.estado === 'Entregado').length} completadas
                             </Typography>
                         </CardContent>
@@ -167,11 +190,11 @@ export default function HistorialView() {
                 <Grid item xs={12} sm={4}>
                     <CompactSummaryCard>
                         <CardContent sx={{ textAlign: 'center' }}>
-                            <DirectionsBike color="primary" fontSize="large" />
-                            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>
+                            <DirectionsBike sx={{ color: themeColors.primary, fontSize: '2rem' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1, color: themeColors.primary }}>
                                 {historialData.arriendos.length}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" sx={{ color: themeColors.textSecondary }}>
                                 {historialData.arriendos.filter(a => a.estado === 'Finalizado').length} finalizados
                             </Typography>
                         </CardContent>
@@ -180,11 +203,11 @@ export default function HistorialView() {
                 <Grid item xs={12} sm={4}>
                     <CompactSummaryCard>
                         <CardContent sx={{ textAlign: 'center' }}>
-                            <Build color="primary" fontSize="large" />
-                            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1 }}>
+                            <Build sx={{ color: themeColors.primary, fontSize: '2rem' }} />
+                            <Typography variant="h5" sx={{ fontWeight: 'bold', mt: 1, color: themeColors.primary }}>
                                 {historialData.reparaciones.length}
                             </Typography>
-                            <Typography variant="body2" color="text.secondary">
+                            <Typography variant="body2" sx={{ color: themeColors.textSecondary }}>
                                 {historialData.reparaciones.filter(r => r.estado === 'Finalizado').length} completadas
                             </Typography>
                         </CardContent>
@@ -193,28 +216,43 @@ export default function HistorialView() {
             </Grid>
 
             <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2}>
-                {/* Menú lateral con corrección del error de clic */}
-                <Paper sx={{ minWidth: 250, p: 1, height: 'fit-content' }}>
+                {/* Menú lateral */}
+                <Paper sx={{
+                    minWidth: 250,
+                    p: 1,
+                    height: 'fit-content',
+                    backgroundColor: themeColors.paper,
+                    border: `1px solid ${themeColors.border}`,
+                    borderRadius: '12px'
+                }}>
                     <List>
                         <ListItemButton
                             selected={tipo === 'compras'}
                             onClick={handleMenuClick('compras')}
-                            sx={{ borderRadius: 1 }}
+                            sx={{
+                                borderRadius: 1,
+                                '&.Mui-selected': {
+                                    backgroundColor: themeColors.highlight,
+                                    color: themeColors.primary,
+                                    fontWeight: 'bold'
+                                }
+                            }}
                         >
                             <Box display="flex" alignItems="center" width="100%">
-                                <ShoppingCart sx={{ mr: 1 }} />
-                                <ListItemText primary="Compras" />
-                                <Box
-                                    component="span"
-                                    sx={{
-                                        ml: 'auto',
-                                        pointerEvents: 'none'
-                                    }}
-                                >
+                                <ShoppingCart sx={{ mr: 1, color: themeColors.primary }} />
+                                <ListItemText
+                                    primary="Compras"
+                                    primaryTypographyProps={{ color: themeColors.textPrimary }}
+                                />
+                                <Box component="span" sx={{ ml: 'auto', pointerEvents: 'none' }}>
                                     <Chip
                                         label={historialData.compras.length}
                                         size="small"
                                         onClick={(e) => e.stopPropagation()}
+                                        sx={{
+                                            backgroundColor: themeColors.highlight,
+                                            color: themeColors.primary
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -222,22 +260,30 @@ export default function HistorialView() {
                         <ListItemButton
                             selected={tipo === 'arriendos'}
                             onClick={handleMenuClick('arriendos')}
-                            sx={{ borderRadius: 1 }}
+                            sx={{
+                                borderRadius: 1,
+                                '&.Mui-selected': {
+                                    backgroundColor: themeColors.highlight,
+                                    color: themeColors.primary,
+                                    fontWeight: 'bold'
+                                }
+                            }}
                         >
                             <Box display="flex" alignItems="center" width="100%">
-                                <DirectionsBike sx={{ mr: 1 }} />
-                                <ListItemText primary="Arriendos" />
-                                <Box
-                                    component="span"
-                                    sx={{
-                                        ml: 'auto',
-                                        pointerEvents: 'none'
-                                    }}
-                                >
+                                <DirectionsBike sx={{ mr: 1, color: themeColors.primary }} />
+                                <ListItemText
+                                    primary="Arriendos"
+                                    primaryTypographyProps={{ color: themeColors.textPrimary }}
+                                />
+                                <Box component="span" sx={{ ml: 'auto', pointerEvents: 'none' }}>
                                     <Chip
                                         label={historialData.arriendos.length}
                                         size="small"
                                         onClick={(e) => e.stopPropagation()}
+                                        sx={{
+                                            backgroundColor: themeColors.highlight,
+                                            color: themeColors.primary
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -245,22 +291,30 @@ export default function HistorialView() {
                         <ListItemButton
                             selected={tipo === 'reparaciones'}
                             onClick={handleMenuClick('reparaciones')}
-                            sx={{ borderRadius: 1 }}
+                            sx={{
+                                borderRadius: 1,
+                                '&.Mui-selected': {
+                                    backgroundColor: themeColors.highlight,
+                                    color: themeColors.primary,
+                                    fontWeight: 'bold'
+                                }
+                            }}
                         >
                             <Box display="flex" alignItems="center" width="100%">
-                                <Build sx={{ mr: 1 }} />
-                                <ListItemText primary="Reparaciones" />
-                                <Box
-                                    component="span"
-                                    sx={{
-                                        ml: 'auto',
-                                        pointerEvents: 'none'
-                                    }}
-                                >
+                                <Build sx={{ mr: 1, color: themeColors.primary }} />
+                                <ListItemText
+                                    primary="Reparaciones"
+                                    primaryTypographyProps={{ color: themeColors.textPrimary }}
+                                />
+                                <Box component="span" sx={{ ml: 'auto', pointerEvents: 'none' }}>
                                     <Chip
                                         label={historialData.reparaciones.length}
                                         size="small"
                                         onClick={(e) => e.stopPropagation()}
+                                        sx={{
+                                            backgroundColor: themeColors.highlight,
+                                            color: themeColors.primary
+                                        }}
                                     />
                                 </Box>
                             </Box>
@@ -270,11 +324,20 @@ export default function HistorialView() {
 
                 {/* Contenido principal */}
                 <Box flex={1}>
-                    <Paper sx={{ p: 2 }}>
+                    <Paper sx={{
+                        p: 2,
+                        backgroundColor: themeColors.paper,
+                        border: `1px solid ${themeColors.border}`,
+                        borderRadius: '12px'
+                    }}>
                         <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
                             <Box display="flex" alignItems="center">
                                 {getTypeIcon()}
-                                <Typography variant="h6" sx={{ ml: 1, fontWeight: 'bold' }}>
+                                <Typography variant="h6" sx={{
+                                    ml: 1,
+                                    fontWeight: 'bold',
+                                    color: themeColors.primary
+                                }}>
                                     {tipo.charAt(0).toUpperCase() + tipo.slice(1)}
                                 </Typography>
                             </Box>
@@ -286,9 +349,19 @@ export default function HistorialView() {
                                     InputProps={{
                                         startAdornment: (
                                             <InputAdornment position="start">
-                                                <Search />
+                                                <Search sx={{ color: themeColors.textSecondary }} />
                                             </InputAdornment>
                                         ),
+                                        sx: {
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: themeColors.border,
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: themeColors.primary,
+                                                },
+                                            }
+                                        }
                                     }}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     sx={{ width: 180 }}
@@ -300,7 +373,17 @@ export default function HistorialView() {
                                     value={filter}
                                     onChange={(e) => setFilter(e.target.value)}
                                     SelectProps={{ native: true }}
-                                    sx={{ width: 120 }}
+                                    sx={{
+                                        width: 120,
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 >
                                     <option value="todos">Todos</option>
                                     {[...new Set(historialData[tipo].map(item => item.estado))].map((estado) => (
@@ -312,7 +395,13 @@ export default function HistorialView() {
 
                         <Table size="small">
                             <TableHead>
-                                <TableRow>
+                                <TableRow sx={{
+                                    backgroundColor: themeColors.primary,
+                                    '& th': {
+                                        color: '#fff',
+                                        fontWeight: 'bold'
+                                    }
+                                }}>
                                     {tipo === 'compras' && (
                                         <>
                                             <TableCell>Producto</TableCell>
@@ -348,12 +437,16 @@ export default function HistorialView() {
                                 {paginatedData.length > 0 ? (
                                     paginatedData.map((item) => (
                                         <React.Fragment key={item.id}>
-                                            <TableRow hover>
+                                            <TableRow hover sx={{
+                                                '&:nth-of-type(even)': {
+                                                    backgroundColor: themeColors.highlight
+                                                }
+                                            }}>
                                                 {tipo === 'compras' && (
                                                     <>
-                                                        <TableCell>{item.producto}</TableCell>
-                                                        <TableCell>{item.fecha}</TableCell>
-                                                        <TableCell align="right">${item.total.toLocaleString()}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.producto}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.fecha}</TableCell>
+                                                        <TableCell align="right" sx={{ color: themeColors.textPrimary }}>${item.total.toLocaleString()}</TableCell>
                                                         <TableCell>
                                                             <Chip
                                                                 label={item.estado}
@@ -362,7 +455,11 @@ export default function HistorialView() {
                                                             />
                                                         </TableCell>
                                                         <TableCell align="right">
-                                                            <IconButton size="small" onClick={() => handleExpandRow(item.id)}>
+                                                            <IconButton
+                                                                size="small"
+                                                                onClick={() => handleExpandRow(item.id)}
+                                                                sx={{ color: themeColors.primary }}
+                                                            >
                                                                 {expandedRow === item.id ? <ExpandLess /> : <ExpandMore />}
                                                             </IconButton>
                                                         </TableCell>
@@ -370,10 +467,10 @@ export default function HistorialView() {
                                                 )}
                                                 {tipo === 'arriendos' && (
                                                     <>
-                                                        <TableCell>{item.tipo}</TableCell>
-                                                        <TableCell>{item.desde}</TableCell>
-                                                        <TableCell>{item.hasta}</TableCell>
-                                                        <TableCell align="right">${item.precio.toLocaleString()}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.tipo}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.desde}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.hasta}</TableCell>
+                                                        <TableCell align="right" sx={{ color: themeColors.textPrimary }}>${item.precio.toLocaleString()}</TableCell>
                                                         <TableCell>
                                                             <Chip
                                                                 label={item.estado}
@@ -382,7 +479,11 @@ export default function HistorialView() {
                                                             />
                                                         </TableCell>
                                                         <TableCell align="right">
-                                                            <IconButton size="small" onClick={() => handleExpandRow(item.id)}>
+                                                            <IconButton
+                                                                size="small"
+                                                                onClick={() => handleExpandRow(item.id)}
+                                                                sx={{ color: themeColors.primary }}
+                                                            >
                                                                 {expandedRow === item.id ? <ExpandLess /> : <ExpandMore />}
                                                             </IconButton>
                                                         </TableCell>
@@ -390,10 +491,10 @@ export default function HistorialView() {
                                                 )}
                                                 {tipo === 'reparaciones' && (
                                                     <>
-                                                        <TableCell>{item.descripcion}</TableCell>
-                                                        <TableCell>{item.tecnico}</TableCell>
-                                                        <TableCell>{item.fecha}</TableCell>
-                                                        <TableCell align="right">${item.costo.toLocaleString()}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.descripcion}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.tecnico}</TableCell>
+                                                        <TableCell sx={{ color: themeColors.textPrimary }}>{item.fecha}</TableCell>
+                                                        <TableCell align="right" sx={{ color: themeColors.textPrimary }}>${item.costo.toLocaleString()}</TableCell>
                                                         <TableCell>
                                                             <Chip
                                                                 label={item.estado}
@@ -402,7 +503,11 @@ export default function HistorialView() {
                                                             />
                                                         </TableCell>
                                                         <TableCell align="right">
-                                                            <IconButton size="small" onClick={() => handleExpandRow(item.id)}>
+                                                            <IconButton
+                                                                size="small"
+                                                                onClick={() => handleExpandRow(item.id)}
+                                                                sx={{ color: themeColors.primary }}
+                                                            >
                                                                 {expandedRow === item.id ? <ExpandLess /> : <ExpandMore />}
                                                             </IconButton>
                                                         </TableCell>
@@ -412,22 +517,28 @@ export default function HistorialView() {
                                             <TableRow>
                                                 <TableCell style={{ paddingBottom: 0, paddingTop: 0 }} colSpan={6}>
                                                     <Collapse in={expandedRow === item.id} timeout="auto" unmountOnExit>
-                                                        <Box sx={{ margin: 1, p: 2, backgroundColor: 'action.hover', borderRadius: 1 }}>
-                                                            <Typography variant="subtitle2" gutterBottom>
+                                                        <Box sx={{
+                                                            margin: 1,
+                                                            p: 2,
+                                                            backgroundColor: themeColors.highlight,
+                                                            borderRadius: '8px',
+                                                            border: `1px solid ${themeColors.border}`
+                                                        }}>
+                                                            <Typography variant="subtitle2" gutterBottom sx={{ color: themeColors.primary }}>
                                                                 Detalles
                                                             </Typography>
                                                             {tipo === 'compras' && (
-                                                                <Typography>
+                                                                <Typography sx={{ color: themeColors.textPrimary }}>
                                                                     Puedes realizar una devolución de este producto hasta el {new Date(item.fecha).toLocaleDateString()}.
                                                                 </Typography>
                                                             )}
                                                             {tipo === 'arriendos' && (
-                                                                <Typography>
+                                                                <Typography sx={{ color: themeColors.textPrimary }}>
                                                                     Bicicleta arrendada por {(new Date(item.hasta) - new Date(item.desde)) / (1000 * 60 * 60 * 24)} días.
                                                                 </Typography>
                                                             )}
                                                             {tipo === 'reparaciones' && (
-                                                                <Typography>
+                                                                <Typography sx={{ color: themeColors.textPrimary }}>
                                                                     Técnico asignado: {item.tecnico}. Contacto: contacto@taller.com
                                                                 </Typography>
                                                             )}
@@ -440,7 +551,7 @@ export default function HistorialView() {
                                 ) : (
                                     <TableRow>
                                         <TableCell colSpan={6} align="center" sx={{ py: 4 }}>
-                                            <Typography color="text.secondary">
+                                            <Typography sx={{ color: themeColors.textSecondary }}>
                                                 No se encontraron registros
                                             </Typography>
                                         </TableCell>
@@ -457,6 +568,15 @@ export default function HistorialView() {
                                     onChange={(_, value) => setPage(value)}
                                     color="primary"
                                     size="small"
+                                    sx={{
+                                        '& .MuiPaginationItem-root': {
+                                            color: themeColors.primary,
+                                            '&.Mui-selected': {
+                                                backgroundColor: themeColors.primary,
+                                                color: '#fff'
+                                            }
+                                        }
+                                    }}
                                 />
                             </Box>
                         )}

@@ -12,6 +12,23 @@ import {
 import { useCart } from '../../context/CartContext';
 import { useAuth } from '../../context/AuthContext';
 
+// Definir la misma paleta de colores que en VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 const API_URL = 'http://localhost:8080/api/inventario';
 
 const categorias = [
@@ -173,7 +190,7 @@ export default function Catalogo() {
     if (error) {
         return (
             <Container sx={{ py: 4 }}>
-                <Alert severity="error" sx={{ mb: 3 }}>
+                <Alert severity="error" sx={{ mb: 3, backgroundColor: themeColors.error }}>
                     Error: {error} - Verifica que el backend esté corriendo en {API_URL}
                 </Alert>
                 <Button variant="contained" onClick={() => window.location.reload()}>
@@ -185,7 +202,11 @@ export default function Catalogo() {
 
     return (
         <>
-            <AppBar position="static" color="primary" sx={{ mb: 3 }}>
+            <AppBar position="static" sx={{
+                mb: 3,
+                backgroundColor: themeColors.primary,
+                color: '#fff'
+            }}>
                 <Toolbar>
                     <ToggleButtonGroup
                         value={categoriaSeleccionada}
@@ -202,7 +223,13 @@ export default function Catalogo() {
                             <ToggleButton
                                 key={categoria.id}
                                 value={categoria.id}
-                                sx={{ color: 'white' }}
+                                sx={{
+                                    color: 'white',
+                                    '&.Mui-selected': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                                        color: 'white'
+                                    }
+                                }}
                             >
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                                     {categoria.icono}
@@ -224,10 +251,14 @@ export default function Catalogo() {
                 </Toolbar>
             </AppBar>
 
-            <Container maxWidth="xl" sx={{ py: 2 }}>
+            <Container maxWidth="xl" sx={{
+                py: 2,
+                backgroundColor: themeColors.background,
+                minHeight: '100vh'
+            }}>
                 {cargando ? (
                     <Box sx={{ display: 'flex', justifyContent: 'center', py: 4 }}>
-                        <CircularProgress size={60} />
+                        <CircularProgress size={60} sx={{ color: themeColors.primary }} />
                     </Box>
                 ) : (
                     <>
@@ -240,12 +271,12 @@ export default function Catalogo() {
                                 py: 10,
                                 textAlign: 'center'
                             }}>
-                                <Typography variant="h5" color="text.secondary" gutterBottom>
+                                <Typography variant="h5" color={themeColors.textSecondary} gutterBottom>
                                     {categoriaSeleccionada === 'todos'
                                         ? 'No hay productos disponibles'
                                         : `No hay ${categoriaSeleccionada === 'bicicleta' ? 'bicicletas' : 'componentes'} disponibles`}
                                 </Typography>
-                                <Typography variant="body1" color="text.secondary">
+                                <Typography variant="body1" color={themeColors.textSecondary}>
                                     Por favor, intenta con otra categoría o verifica más tarde.
                                 </Typography>
                             </Box>
@@ -263,7 +294,9 @@ export default function Catalogo() {
                                                     height: '100%',
                                                     display: 'flex',
                                                     flexDirection: 'column',
-                                                    borderRadius: 2,
+                                                    borderRadius: '12px',
+                                                    backgroundColor: themeColors.paper,
+                                                    border: `1px solid ${themeColors.border}`,
                                                     boxShadow: 2,
                                                     transition: 'all 0.3s ease',
                                                     '&:hover': {
@@ -277,7 +310,7 @@ export default function Catalogo() {
                                                     sx={{
                                                         height: 180,
                                                         width: '100%',
-                                                        bgcolor: 'grey.100',
+                                                        bgcolor: themeColors.highlight,
                                                         display: 'flex',
                                                         alignItems: 'center',
                                                         justifyContent: 'center',
@@ -296,22 +329,25 @@ export default function Catalogo() {
                                                         />
                                                     ) : (
                                                         producto.tipo === 'bicicleta' ? (
-                                                            <DirectionsBike sx={{ fontSize: 60, color: 'action.active' }} />
+                                                            <DirectionsBike sx={{ fontSize: 60, color: themeColors.textSecondary }} />
                                                         ) : (
-                                                            <Settings sx={{ fontSize: 60, color: 'action.active' }} />
+                                                            <Settings sx={{ fontSize: 60, color: themeColors.textSecondary }} />
                                                         )
                                                     )}
                                                 </Box>
 
                                                 <CardContent sx={{ flexGrow: 1, p: 2 }}>
                                                     <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
-                                                        <Typography variant="body2" color="text.secondary">
+                                                        <Typography variant="body2" color={themeColors.textSecondary}>
                                                             Stock: {producto.stock}
                                                         </Typography>
                                                         <Chip
                                                             label={producto.tipo === 'bicicleta' ? 'Bicicleta' : 'Componente'}
                                                             size="small"
-                                                            color="secondary"
+                                                            sx={{
+                                                                backgroundColor: themeColors.accent,
+                                                                color: '#fff'
+                                                            }}
                                                         />
                                                     </Box>
 
@@ -322,6 +358,7 @@ export default function Catalogo() {
                                                         sx={{
                                                             fontWeight: 600,
                                                             mb: 1,
+                                                            color: themeColors.textPrimary,
                                                             display: '-webkit-box',
                                                             WebkitLineClamp: 2,
                                                             WebkitBoxOrient: 'vertical',
@@ -334,7 +371,7 @@ export default function Catalogo() {
 
                                                     <Typography
                                                         variant="body2"
-                                                        color="text.secondary"
+                                                        color={themeColors.textSecondary}
                                                         sx={{
                                                             mb: 2,
                                                             display: '-webkit-box',
@@ -349,8 +386,8 @@ export default function Catalogo() {
 
                                                     <Typography
                                                         variant="h6"
-                                                        color="primary"
                                                         sx={{
+                                                            color: themeColors.primary,
                                                             fontWeight: 700,
                                                             mt: 'auto'
                                                         }}
@@ -366,7 +403,11 @@ export default function Catalogo() {
                                                         startIcon={<ShoppingCart />}
                                                         sx={{
                                                             fontWeight: 600,
-                                                            py: 1
+                                                            py: 1,
+                                                            backgroundColor: themeColors.secondary,
+                                                            '&:hover': {
+                                                                backgroundColor: '#E65100',
+                                                            }
                                                         }}
                                                         onClick={(e) => {
                                                             e.stopPropagation();
@@ -388,7 +429,15 @@ export default function Catalogo() {
                                             count={totalPaginas}
                                             page={paginaActual}
                                             onChange={handleChangePagina}
-                                            color="primary"
+                                            sx={{
+                                                '& .MuiPaginationItem-root': {
+                                                    color: themeColors.primary,
+                                                },
+                                                '& .Mui-selected': {
+                                                    backgroundColor: `${themeColors.primary} !important`,
+                                                    color: '#fff'
+                                                }
+                                            }}
                                             size="large"
                                         />
                                     </Box>
@@ -405,7 +454,14 @@ export default function Catalogo() {
                 onClose={handleCloseDialog}
                 maxWidth="md"
                 fullWidth
-                PaperProps={{ sx: { borderRadius: 2, p: 3 } }}
+                PaperProps={{
+                    sx: {
+                        borderRadius: '12px',
+                        p: 3,
+                        backgroundColor: themeColors.paper,
+                        border: `1px solid ${themeColors.border}`
+                    }
+                }}
             >
                 <Box sx={{ display: 'flex', flexDirection: { xs: 'column', md: 'row' }, gap: 4 }}>
                     {/* Sección de Imagen */}
@@ -618,7 +674,13 @@ export default function Catalogo() {
                 <Alert
                     onClose={handleCloseSnackbar}
                     severity={snackbar.severity || 'info'}
-                    sx={{ width: '100%' }}
+                    sx={{
+                        width: '100%',
+                        backgroundColor: snackbar.severity === 'error' ? themeColors.error :
+                            snackbar.severity === 'success' ? themeColors.success :
+                                themeColors.info,
+                        color: '#fff'
+                    }}
                 >
                     {snackbar.message}
                 </Alert>

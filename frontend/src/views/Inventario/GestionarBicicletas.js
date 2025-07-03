@@ -6,7 +6,6 @@ import {
     Box, Tooltip, Alert, Snackbar, Grid, Divider, MenuItem, Select,
     FormControl, InputLabel, Chip, Drawer, Avatar, Stack, InputAdornment
 } from '@mui/material';
-// Agregar estos imports junto con los otros iconos
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import {
@@ -21,6 +20,23 @@ import {
     CloudUpload as UploadIcon
 } from '@mui/icons-material';
 import axios from 'axios';
+
+// Definir la paleta de colores igual que en VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
 
 const API_URL = 'http://localhost:8080/api/inventario';
 
@@ -273,40 +289,66 @@ export default function GestionarBicicletas() {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{
+            mt: 4,
+            mb: 4,
+            backgroundColor: themeColors.background,
+            p: 3,
+            borderRadius: '12px',
+            minHeight: '100vh'
+        }}>
             {/* Header */}
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                mb: 3
+                mb: 3,
+                p: 2,
+                backgroundColor: themeColors.paper,
+                borderRadius: '8px',
+                border: `1px solid ${themeColors.border}`,
+                boxShadow: '0px 2px 4px rgba(0,0,0,0.05)'
             }}>
                 <Box>
-                    <Typography variant="h5" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center' }}>
-                        <BikeIcon sx={{ mr: 1 }} /> Gestión de Bicicletas
+                    <Typography variant="h5" fontWeight="bold" sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: themeColors.primary
+                    }}>
+                        <BikeIcon sx={{ mr: 1, color: themeColors.primary }} /> Gestión de Bicicletas
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{ color: themeColors.textSecondary }}>
                         Total: {totalBicicletas} bicicletas | Mostrando: {bicicletasFiltradas.length}
                     </Typography>
                 </Box>
 
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
                     <FormControl size="small" sx={{ minWidth: 180 }}>
-                        <InputLabel id="tipo-bicicleta-label">Tipo de bicicleta</InputLabel>
+                        <InputLabel id="tipo-bicicleta-label" sx={{ color: themeColors.textSecondary }}>Tipo de bicicleta</InputLabel>
                         <Select
                             labelId="tipo-bicicleta-label"
                             value={tipoBicicleta}
                             onChange={(e) => setTipoBicicleta(e.target.value)}
                             label="Tipo de bicicleta"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         >
                             <MenuItem value="venta">
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <SellIcon fontSize="small" /> Bicicletas Venta
+                                    <SellIcon fontSize="small" color="primary" /> Bicicletas Venta
                                 </Box>
                             </MenuItem>
                             <MenuItem value="arriendo">
                                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                    <RentIcon fontSize="small" /> Bicicletas Arriendo
+                                    <RentIcon fontSize="small" color="primary" /> Bicicletas Arriendo
                                 </Box>
                             </MenuItem>
                         </Select>
@@ -316,7 +358,14 @@ export default function GestionarBicicletas() {
                         variant="contained"
                         startIcon={<AddIcon />}
                         onClick={handleNuevaBicicleta}
-                        sx={{ height: '40px' }}
+                        sx={{
+                            height: '40px',
+                            backgroundColor: themeColors.secondary,
+                            '&:hover': {
+                                backgroundColor: '#E65100',
+                            },
+                            fontWeight: 'bold'
+                        }}
                     >
                         Agregar Bicicleta
                     </Button>
@@ -324,7 +373,14 @@ export default function GestionarBicicletas() {
             </Box>
 
             {/* Barra de búsqueda */}
-            <Paper elevation={0} sx={{ p: 2, mb: 3, border: '1px solid #e0e0e0' }}>
+            <Paper elevation={0} sx={{
+                p: 2,
+                mb: 3,
+                backgroundColor: themeColors.paper,
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '8px',
+                boxShadow: '0px 2px 4px rgba(0,0,0,0.05)'
+            }}>
                 <TextField
                     fullWidth
                     variant="outlined"
@@ -332,45 +388,78 @@ export default function GestionarBicicletas() {
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                     InputProps={{
-                        startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
+                        startAdornment: <SearchIcon sx={{ mr: 1, color: themeColors.textSecondary }} />,
+                        sx: {
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: themeColors.border,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: themeColors.primary,
+                                },
+                            }
+                        }
                     }}
                     size="small"
                 />
             </Paper>
 
             {/* Tabla de bicicletas */}
-            <Paper elevation={0} sx={{ border: '1px solid #e0e0e0' }}>
+            <Paper elevation={0} sx={{
+                backgroundColor: themeColors.paper,
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '8px',
+                overflow: 'hidden',
+                boxShadow: '0px 2px 4px rgba(0,0,0,0.05)'
+            }}>
                 <TableContainer>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-                                <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
+                            <TableRow sx={{
+                                backgroundColor: themeColors.primary,
+                                '& th': {
+                                    color: '#fff',
+                                    fontWeight: 'bold'
+                                }
+                            }}>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Nombre</TableCell>
                                 {tipoBicicleta === 'venta' ? (
                                     <>
-                                        <TableCell sx={{ fontWeight: 'bold' }} align="right">Precio</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold' }} align="right">Stock</TableCell>
+                                        <TableCell align="right">Precio</TableCell>
+                                        <TableCell align="right">Stock</TableCell>
                                     </>
                                 ) : (
                                     <>
-                                        <TableCell sx={{ fontWeight: 'bold' }} align="right">Tarifa Diaria</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold' }} align="right">Valor Garantia</TableCell>
-                                        <TableCell sx={{ fontWeight: 'bold' }} align="center">Disponible</TableCell>
+                                        <TableCell align="right">Tarifa Diaria</TableCell>
+                                        <TableCell align="right">Valor Garantia</TableCell>
+                                        <TableCell align="center">Disponible</TableCell>
                                     </>
                                 )}
-                                <TableCell sx={{ fontWeight: 'bold' }} align="center">Acciones</TableCell>
+                                <TableCell align="center">Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {bicicletasFiltradas.length > 0 ? (
                                 bicicletasFiltradas.map((bicicleta) => (
-                                    <TableRow key={bicicleta.id} hover>
-                                        <TableCell>{bicicleta.id}</TableCell>
-                                        <TableCell>{bicicleta.nombre}</TableCell>
+                                    <TableRow
+                                        key={bicicleta.id}
+                                        hover
+                                        sx={{
+                                            '&:nth-of-type(odd)': {
+                                                backgroundColor: themeColors.highlight
+                                            },
+                                            '&:hover': {
+                                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                                            }
+                                        }}
+                                    >
+                                        <TableCell sx={{ color: themeColors.textPrimary }}>{bicicleta.id}</TableCell>
+                                        <TableCell sx={{ color: themeColors.textPrimary }}>{bicicleta.nombre}</TableCell>
 
                                         {tipoBicicleta === 'venta' ? (
                                             <>
-                                                <TableCell align="right">
+                                                <TableCell align="right" sx={{ color: themeColors.textPrimary }}>
                                                     {formatCurrency(bicicleta.precio)}
                                                 </TableCell>
                                                 <TableCell align="right">
@@ -381,7 +470,8 @@ export default function GestionarBicicletas() {
                                                             py: 0.5,
                                                             borderRadius: 1,
                                                             bgcolor: bicicleta.stock < 3 ? '#ffebee' : '#e8f5e9',
-                                                            color: bicicleta.stock < 3 ? '#c62828' : '#2e7d32'
+                                                            color: bicicleta.stock < 3 ? themeColors.error : themeColors.success,
+                                                            fontWeight: 'bold'
                                                         }}
                                                     >
                                                         {bicicleta.stock}
@@ -390,17 +480,21 @@ export default function GestionarBicicletas() {
                                             </>
                                         ) : (
                                             <>
-                                                <TableCell align="right">
+                                                <TableCell align="right" sx={{ color: themeColors.textPrimary }}>
                                                     {formatCurrency(bicicleta.tarifaDiaria)}
                                                 </TableCell>
-                                                <TableCell align="right">
-                                                    {formatCurrency(bicicleta.valorGarantia)}  {/* Nueva columna */}
+                                                <TableCell align="right" sx={{ color: themeColors.textPrimary }}>
+                                                    {formatCurrency(bicicleta.valorGarantia)}
                                                 </TableCell>
                                                 <TableCell align="center">
                                                     <Chip
                                                         label={bicicleta.disponible ? 'Disponible' : 'No disponible'}
                                                         color={bicicleta.disponible ? 'success' : 'error'}
                                                         size="small"
+                                                        sx={{
+                                                            fontWeight: 'bold',
+                                                            minWidth: 100
+                                                        }}
                                                     />
                                                 </TableCell>
                                             </>
@@ -411,6 +505,12 @@ export default function GestionarBicicletas() {
                                                 <IconButton
                                                     size="small"
                                                     onClick={() => handleEditarBicicleta(bicicleta)}
+                                                    sx={{
+                                                        color: themeColors.primary,
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(10, 46, 90, 0.08)'
+                                                        }
+                                                    }}
                                                 >
                                                     <EditIcon fontSize="small" />
                                                 </IconButton>
@@ -419,7 +519,13 @@ export default function GestionarBicicletas() {
                                                 <IconButton
                                                     size="small"
                                                     onClick={() => setBicicletaEliminar(bicicleta)}
-                                                    sx={{ color: '#f44336' }}
+                                                    sx={{
+                                                        color: themeColors.error,
+                                                        ml: 1,
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(198, 40, 40, 0.08)'
+                                                        }
+                                                    }}
                                                 >
                                                     <DeleteIcon fontSize="small" />
                                                 </IconButton>
@@ -430,7 +536,7 @@ export default function GestionarBicicletas() {
                             ) : (
                                 <TableRow>
                                     <TableCell colSpan={tipoBicicleta === 'venta' ? 6 : 6} align="center" sx={{ py: 3 }}>
-                                        <Typography variant="body1" color="text.secondary">
+                                        <Typography variant="body1" sx={{ color: themeColors.textSecondary }}>
                                             No se encontraron bicicletas
                                         </Typography>
                                     </TableCell>
@@ -455,12 +561,13 @@ export default function GestionarBicicletas() {
                 }}
                 PaperProps={{
                     sx: {
-                        width: '600px',
+                        width: { xs: '100%', sm: '600px' },
                         p: 3,
                         display: 'flex',
                         flexDirection: 'column',
                         height: '100vh',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        backgroundColor: themeColors.background
                     }
                 }}
             >
@@ -470,12 +577,19 @@ export default function GestionarBicicletas() {
                     justifyContent: 'space-between',
                     alignItems: 'center',
                     mb: 3,
-                    flexShrink: 0
+                    flexShrink: 0,
+                    p: 2,
+                    backgroundColor: themeColors.primary,
+                    color: '#fff',
+                    borderRadius: '8px'
                 }}>
                     <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                         {nuevaBicicleta ? 'Nueva Bicicleta' : 'Editar Bicicleta'}
                     </Typography>
-                    <IconButton onClick={() => setOpenDrawer(false)}>
+                    <IconButton
+                        onClick={() => setOpenDrawer(false)}
+                        sx={{ color: '#fff' }}
+                    >
                         <CloseIcon />
                     </IconButton>
                 </Box>
@@ -486,32 +600,51 @@ export default function GestionarBicicletas() {
                     overflowY: 'auto',
                     mb: 4,
                     '& > div:not(:last-child)': {
-                        borderBottom: '1px solid #e0e0e0',
+                        borderBottom: `1px solid ${themeColors.border}`,
                         pb: 3,
                         mb: 3
                     }
                 }}>
                     {/* Sección 1: Tipo de bicicleta */}
-                    <Box>
-                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                    <Box sx={{
+                        backgroundColor: themeColors.paper,
+                        p: 2,
+                        borderRadius: '8px',
+                        border: `1px solid ${themeColors.border}`
+                    }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{
+                            mb: 2,
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             Tipo de bicicleta
                         </Typography>
                         <FormControl fullWidth size="small">
-                            <InputLabel>Tipo de bicicleta</InputLabel>
+                            <InputLabel sx={{ color: themeColors.textSecondary }}>Tipo de bicicleta</InputLabel>
                             <Select
                                 value={formTipoBicicleta}
                                 onChange={(e) => setFormTipoBicicleta(e.target.value)}
                                 label="Tipo de bicicleta"
                                 disabled={!nuevaBicicleta}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                             >
                                 <MenuItem value="venta">
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <SellIcon fontSize="small" /> Venta
+                                        <SellIcon fontSize="small" color="primary" /> Venta
                                     </Box>
                                 </MenuItem>
                                 <MenuItem value="arriendo">
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <RentIcon fontSize="small" /> Arriendo
+                                        <RentIcon fontSize="small" color="primary" /> Arriendo
                                     </Box>
                                 </MenuItem>
                             </Select>
@@ -519,8 +652,17 @@ export default function GestionarBicicletas() {
                     </Box>
 
                     {/* Sección 2: ID y Nombre */}
-                    <Box>
-                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                    <Box sx={{
+                        backgroundColor: themeColors.paper,
+                        p: 2,
+                        borderRadius: '8px',
+                        border: `1px solid ${themeColors.border}`
+                    }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{
+                            mb: 2,
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             Información básica
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 2 }}>
@@ -535,6 +677,16 @@ export default function GestionarBicicletas() {
                                         verificarDisponibilidadId(e.target.value);
                                     }}
                                     disabled={!nuevaBicicleta}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                                 {idDisponible !== null && (
                                     <Typography
@@ -543,7 +695,7 @@ export default function GestionarBicicletas() {
                                             display: 'flex',
                                             alignItems: 'center',
                                             mt: 0.5,
-                                            color: idDisponible ? 'success.main' : 'error.main'
+                                            color: idDisponible ? themeColors.success : themeColors.error
                                         }}
                                     >
                                         {validandoId ? (
@@ -575,15 +727,33 @@ export default function GestionarBicicletas() {
                                     onChange={e => setBicicletaEditar({ ...bicicletaEditar, nombre: e.target.value })}
                                     error={!!formErrors.nombre}
                                     helperText={formErrors.nombre}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Box>
                         </Box>
                     </Box>
 
-
                     {/* Sección 3: Descripción */}
-                    <Box>
-                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                    <Box sx={{
+                        backgroundColor: themeColors.paper,
+                        p: 2,
+                        borderRadius: '8px',
+                        border: `1px solid ${themeColors.border}`
+                    }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{
+                            mb: 2,
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             Descripción
                         </Typography>
                         <TextField
@@ -594,13 +764,32 @@ export default function GestionarBicicletas() {
                             size="small"
                             value={bicicletaEditar?.descripcion || ''}
                             onChange={e => setBicicletaEditar({ ...bicicletaEditar, descripcion: e.target.value })}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                     </Box>
 
                     {/* Sección 4: Campos específicos */}
                     {formTipoBicicleta === 'venta' ? (
-                        <Box>
-                            <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                        <Box sx={{
+                            backgroundColor: themeColors.paper,
+                            p: 2,
+                            borderRadius: '8px',
+                            border: `1px solid ${themeColors.border}`
+                        }}>
+                            <Typography variant="subtitle2" gutterBottom sx={{
+                                mb: 2,
+                                color: themeColors.primary,
+                                fontWeight: 'bold'
+                            }}>
                                 Detalles de venta
                             </Typography>
                             <Grid container spacing={2}>
@@ -617,6 +806,16 @@ export default function GestionarBicicletas() {
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                         }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: themeColors.border,
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: themeColors.primary,
+                                                },
+                                            }
+                                        }}
                                     />
                                 </Grid>
                                 <Grid item xs={6}>
@@ -629,17 +828,35 @@ export default function GestionarBicicletas() {
                                         onChange={e => setBicicletaEditar({ ...bicicletaEditar, stock: parseInt(e.target.value) || 0 })}
                                         error={!!formErrors.stock}
                                         helperText={formErrors.stock}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: themeColors.border,
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: themeColors.primary,
+                                                },
+                                            }
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
                         </Box>
                     ) : (
-                        <Box>
-                            <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                        <Box sx={{
+                            backgroundColor: themeColors.paper,
+                            p: 2,
+                            borderRadius: '8px',
+                            border: `1px solid ${themeColors.border}`
+                        }}>
+                            <Typography variant="subtitle2" gutterBottom sx={{
+                                mb: 2,
+                                color: themeColors.primary,
+                                fontWeight: 'bold'
+                            }}>
                                 Detalles de arriendo
                             </Typography>
                             <Grid container spacing={2}>
-                                {/* Campo existente: Tarifa Diaria */}
                                 <Grid item xs={6}>
                                     <TextField
                                         label="Tarifa Diaria"
@@ -656,13 +873,22 @@ export default function GestionarBicicletas() {
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                         }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: themeColors.border,
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: themeColors.primary,
+                                                },
+                                            }
+                                        }}
                                     />
                                 </Grid>
 
-                                {/* Campo existente: Disponibilidad */}
                                 <Grid item xs={6}>
                                     <FormControl fullWidth size="small">
-                                        <InputLabel>Disponibilidad</InputLabel>
+                                        <InputLabel sx={{ color: themeColors.textSecondary }}>Disponibilidad</InputLabel>
                                         <Select
                                             value={bicicletaEditar?.disponible ? 'true' : 'false'}
                                             onChange={e => setBicicletaEditar({
@@ -670,6 +896,16 @@ export default function GestionarBicicletas() {
                                                 disponible: e.target.value === 'true'
                                             })}
                                             label="Disponibilidad"
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: themeColors.border,
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: themeColors.primary,
+                                                    },
+                                                }
+                                            }}
                                         >
                                             <MenuItem value="true">Disponible</MenuItem>
                                             <MenuItem value="false">No disponible</MenuItem>
@@ -677,7 +913,6 @@ export default function GestionarBicicletas() {
                                     </FormControl>
                                 </Grid>
 
-                                {/* Nuevo campo: Valor Garantía */}
                                 <Grid item xs={6}>
                                     <TextField
                                         label="Valor Garantía (CLP)"
@@ -694,6 +929,16 @@ export default function GestionarBicicletas() {
                                         InputProps={{
                                             startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                         }}
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: themeColors.border,
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: themeColors.primary,
+                                                },
+                                            }
+                                        }}
                                     />
                                 </Grid>
                             </Grid>
@@ -702,8 +947,17 @@ export default function GestionarBicicletas() {
 
                     {/* Sección 5: Imágenes (solo para venta) */}
                     {formTipoBicicleta === 'venta' && (
-                        <Box>
-                            <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                        <Box sx={{
+                            backgroundColor: themeColors.paper,
+                            p: 2,
+                            borderRadius: '8px',
+                            border: `1px solid ${themeColors.border}`
+                        }}>
+                            <Typography variant="subtitle2" gutterBottom sx={{
+                                mb: 2,
+                                color: themeColors.primary,
+                                fontWeight: 'bold'
+                            }}>
                                 Imágenes
                             </Typography>
 
@@ -712,7 +966,14 @@ export default function GestionarBicicletas() {
                                 component="label"
                                 startIcon={<UploadIcon />}
                                 fullWidth
-                                sx={{ mb: 3 }}
+                                sx={{
+                                    mb: 3,
+                                    borderColor: themeColors.border,
+                                    color: themeColors.textPrimary,
+                                    '&:hover': {
+                                        borderColor: themeColors.primary,
+                                    }
+                                }}
                             >
                                 Subir imágenes
                                 <input
@@ -724,15 +985,18 @@ export default function GestionarBicicletas() {
                                 />
                             </Button>
 
-                            {/* Preview de imágenes mejorado */}
+                            {/* Preview de imágenes */}
                             {imagenesPreview.length > 0 && (
                                 <Box sx={{
-                                    border: '1px dashed #e0e0e0',
+                                    border: `1px dashed ${themeColors.border}`,
                                     borderRadius: 1,
                                     p: 2,
                                     mb: 2
                                 }}>
-                                    <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                    <Typography variant="body2" sx={{
+                                        mb: 1,
+                                        color: themeColors.textSecondary
+                                    }}>
                                         Vista previa de imágenes ({imagenesPreview.length})
                                     </Typography>
                                     <Grid container spacing={1}>
@@ -785,7 +1049,7 @@ export default function GestionarBicicletas() {
                     justifyContent: 'flex-end',
                     gap: 2,
                     pt: 2,
-                    borderTop: '1px solid #e0e0e0',
+                    borderTop: `1px solid ${themeColors.border}`,
                     pb: 4,
                     flexShrink: 0
                 }}>
@@ -797,14 +1061,29 @@ export default function GestionarBicicletas() {
                             setImagenesPreview([]);
                             setImagenesSubir([]);
                         }}
-                        sx={{ width: '120px' }}
+                        sx={{
+                            width: '120px',
+                            color: themeColors.textSecondary,
+                            borderColor: themeColors.border,
+                            '&:hover': {
+                                borderColor: themeColors.primary,
+                                backgroundColor: 'rgba(10, 46, 90, 0.04)'
+                            }
+                        }}
                     >
                         Cancelar
                     </Button>
                     <Button
                         variant="contained"
                         onClick={handleGuardarEdicion}
-                        sx={{ width: '120px' }}
+                        sx={{
+                            width: '120px',
+                            backgroundColor: themeColors.success,
+                            '&:hover': {
+                                backgroundColor: '#1B5E20',
+                            },
+                            fontWeight: 'bold'
+                        }}
                     >
                         {nuevaBicicleta ? 'Crear' : 'Guardar'}
                     </Button>
@@ -813,30 +1092,55 @@ export default function GestionarBicicletas() {
 
             {/* Modal Eliminación */}
             <Dialog open={!!bicicletaEliminar} onClose={() => setBicicletaEliminar(null)}>
-                <DialogTitle sx={{ borderBottom: '1px solid #e0e0e0' }}>
+                <DialogTitle sx={{
+                    borderBottom: `1px solid ${themeColors.border}`,
+                    backgroundColor: themeColors.primary,
+                    color: '#fff',
+                    fontWeight: 'bold'
+                }}>
                     Confirmar eliminación
                 </DialogTitle>
                 <DialogContent sx={{ pt: 3 }}>
                     <Alert severity="warning" sx={{ mb: 2 }}>
                         Esta acción no se puede deshacer
                     </Alert>
-                    <Typography variant="body1" sx={{ mb: 1 }}>
+                    <Typography variant="body1" sx={{ mb: 1, color: themeColors.textPrimary }}>
                         <strong>Bicicleta:</strong> {bicicletaEliminar?.nombre}
                     </Typography>
-                    <Typography variant="body1" sx={{ mb: 1 }}>
+                    <Typography variant="body1" sx={{ mb: 1, color: themeColors.textPrimary }}>
                         <strong>ID:</strong> {bicicletaEliminar?.id}
                     </Typography>
-                    <Typography variant="body1">
+                    <Typography variant="body1" sx={{ color: themeColors.textPrimary }}>
                         <strong>Tipo:</strong> {bicicletaEliminar?.tarifaDiaria ? 'Arriendo' : 'Venta'}
                     </Typography>
                 </DialogContent>
-                <DialogActions sx={{ borderTop: '1px solid #e0e0e0', p: 2 }}>
-                    <Button onClick={() => setBicicletaEliminar(null)}>Cancelar</Button>
+                <DialogActions sx={{
+                    borderTop: `1px solid ${themeColors.border}`,
+                    p: 2,
+                    backgroundColor: themeColors.background
+                }}>
+                    <Button
+                        onClick={() => setBicicletaEliminar(null)}
+                        sx={{
+                            color: themeColors.textSecondary,
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                            }
+                        }}
+                    >
+                        Cancelar
+                    </Button>
                     <Button
                         variant="contained"
                         color="error"
                         onClick={handleEliminar}
                         startIcon={<DeleteIcon />}
+                        sx={{
+                            backgroundColor: themeColors.error,
+                            '&:hover': {
+                                backgroundColor: '#B71C1C',
+                            }
+                        }}
                     >
                         Eliminar
                     </Button>
@@ -854,6 +1158,7 @@ export default function GestionarBicicletas() {
                     onClose={handleCloseSnackbar}
                     severity={snackbar.severity}
                     sx={{ width: '100%' }}
+                    variant="filled"
                 >
                     {snackbar.message}
                 </Alert>

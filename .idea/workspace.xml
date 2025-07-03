@@ -4,13 +4,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="Rutas">
+    <list default="true" id="646fe683-1088-4ab7-bd7a-946391387f2b" name="Changes" comment="Mejora visualmente con su respectiva paleta de colores">
+      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Arriendo/ArriendoForm.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Reparacion/ReparacionForm.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/Reparacion/ReparacionesList.jsx" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Navbar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/GestionCuenta.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/GestionCuenta.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/HistorialView.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/HistorialView.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/Reparaciones.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/Reparaciones.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Tecnico/ReparacionesList.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -28,23 +34,26 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPEN",
-    "assignee": "carlitroxxx"
+  <component name="GitHubPullRequestSearchHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPEN&quot;,
+    &quot;assignee&quot;: &quot;carlitroxxx&quot;
   }
-}]]></component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/carlitroxxx/MasterBikes.git",
-    "accountId": "2ae0765a-5d76-4924-968c-700ded49a578"
+}</component>
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/carlitroxxx/MasterBikes.git&quot;,
+    &quot;accountId&quot;: &quot;2ae0765a-5d76-4924-968c-700ded49a578&quot;
   }
-}]]></component>
-  <component name="ProjectColorInfo"><![CDATA[{
-  "customColor": "",
-  "associatedIndex": 0
-}]]></component>
+}</component>
+  <component name="ProjectColorInfo">{
+  &quot;customColor&quot;: &quot;&quot;,
+  &quot;associatedIndex&quot;: 0
+}</component>
   <component name="ProjectId" id="2zM5ID6CdbKGrPN1ztmKPY5QKVb" />
+  <component name="ProjectLevelVcsManager">
+    <ConfirmationsSetting value="2" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -52,9 +61,14 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RequestMappingsPanelOrder0": "0",
+    "RequestMappingsPanelOrder1": "1",
+    "RequestMappingsPanelWidth0": "75",
+    "RequestMappingsPanelWidth1": "75",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Spring Boot.VentasServiceApplication.executor": "Run",
     "git-widget-placeholder": "master",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
@@ -62,6 +76,7 @@
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
     "run.configurations.included.in.services": "true",
+    "ts.external.directory.path": "C:\\Program Files\\JetBrains\\IntelliJ IDEA 2025.1.1.1\\plugins\\javascript-plugin\\jsLanguageServicesImpl\\external",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
@@ -165,7 +180,19 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="FILTERS">
+                <map>
+                  <entry key="branch">
+                    <value>
+                      <list>
+                        <option value="origin/master" />
+                      </list>
+                    </value>
+                  </entry>
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>

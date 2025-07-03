@@ -7,7 +7,6 @@ import {
     FormControl, InputLabel, Select, MenuItem, Chip, Avatar,
     Stack, InputAdornment
 } from '@mui/material';
-// Agrega estas importaciones al inicio del archivo
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import {
@@ -20,6 +19,23 @@ import {
     CloudUpload as UploadIcon
 } from '@mui/icons-material';
 import axios from 'axios';
+
+// Definir la misma paleta de colores que en VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
 
 const API_URL = 'http://localhost:8080/api/inventario';
 
@@ -266,19 +282,33 @@ export default function GestionarComponentes() {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{
+            mt: 4,
+            mb: 4,
+            backgroundColor: themeColors.background,
+            minHeight: '100vh',
+            p: 3
+        }}>
             {/* Header */}
             <Box sx={{
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                mb: 3
+                mb: 3,
+                p: 2,
+                backgroundColor: themeColors.paper,
+                borderRadius: '12px',
+                border: `1px solid ${themeColors.border}`
             }}>
                 <Box>
-                    <Typography variant="h5" fontWeight="bold" sx={{ display: 'flex', alignItems: 'center' }}>
-                        <InventoryIcon sx={{ mr: 1 }} /> Gestión de Componentes
+                    <Typography variant="h5" fontWeight="bold" sx={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        color: themeColors.primary
+                    }}>
+                        <InventoryIcon sx={{ mr: 1, color: themeColors.primary }} /> Gestión de Componentes
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" sx={{ color: themeColors.textSecondary }}>
                         Total: {productos.length} componentes | Mostrando: {productosFiltrados.length}
                     </Typography>
                 </Box>
@@ -287,14 +317,27 @@ export default function GestionarComponentes() {
                     variant="contained"
                     startIcon={<AddIcon />}
                     onClick={handleNuevoProducto}
-                    sx={{ height: '40px' }}
+                    sx={{
+                        height: '40px',
+                        backgroundColor: themeColors.secondary,
+                        '&:hover': {
+                            backgroundColor: '#E65100',
+                        },
+                        fontWeight: 'bold'
+                    }}
                 >
                     Nuevo Componente
                 </Button>
             </Box>
 
             {/* Barra de búsqueda */}
-            <Paper elevation={0} sx={{ p: 2, mb: 3, border: '1px solid #e0e0e0' }}>
+            <Paper elevation={0} sx={{
+                p: 2,
+                mb: 3,
+                border: `1px solid ${themeColors.border}`,
+                backgroundColor: themeColors.paper,
+                borderRadius: '12px'
+            }}>
                 <TextField
                     fullWidth
                     variant="outlined"
@@ -302,29 +345,60 @@ export default function GestionarComponentes() {
                     value={busqueda}
                     onChange={(e) => setBusqueda(e.target.value)}
                     InputProps={{
-                        startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
+                        startAdornment: <SearchIcon sx={{
+                            mr: 1,
+                            color: themeColors.textSecondary
+                        }} />,
+                        sx: {
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: themeColors.border,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: themeColors.primary,
+                                },
+                            }
+                        }
                     }}
                     size="small"
                 />
             </Paper>
 
             {/* Tabla de productos */}
-            <Paper elevation={0} sx={{ border: '1px solid #e0e0e0' }}>
+            <Paper elevation={0} sx={{
+                border: `1px solid ${themeColors.border}`,
+                backgroundColor: themeColors.paper,
+                borderRadius: '12px'
+            }}>
                 <TableContainer>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-                                <TableCell sx={{ fontWeight: 'bold' }}>ID</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right">Stock</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="right">Precio</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }} align="center">Acciones</TableCell>
+                            <TableRow sx={{
+                                bgcolor: themeColors.primary,
+                                '& th': {
+                                    color: '#fff',
+                                    fontWeight: 'bold'
+                                }
+                            }}>
+                                <TableCell>ID</TableCell>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell align="right">Stock</TableCell>
+                                <TableCell align="right">Precio</TableCell>
+                                <TableCell align="center">Acciones</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {productosFiltrados.length > 0 ? (
                                 productosFiltrados.map((producto) => (
-                                    <TableRow key={producto.id} hover>
+                                    <TableRow
+                                        key={producto.id}
+                                        hover
+                                        sx={{
+                                            '&:nth-of-type(odd)': {
+                                                backgroundColor: themeColors.highlight
+                                            }
+                                        }}
+                                    >
                                         <TableCell>{producto.id}</TableCell>
                                         <TableCell>{producto.nombre}</TableCell>
                                         <TableCell align="right">
@@ -334,8 +408,12 @@ export default function GestionarComponentes() {
                                                     px: 1,
                                                     py: 0.5,
                                                     borderRadius: 1,
-                                                    bgcolor: producto.stock < 5 ? '#ffebee' : '#e8f5e9',
-                                                    color: producto.stock < 5 ? '#c62828' : '#2e7d32'
+                                                    bgcolor: producto.stock < 5 ?
+                                                        'rgba(198, 40, 40, 0.1)' :
+                                                        'rgba(46, 125, 50, 0.1)',
+                                                    color: producto.stock < 5 ?
+                                                        themeColors.error :
+                                                        themeColors.success
                                                 }}
                                             >
                                                 {producto.stock}
@@ -349,6 +427,12 @@ export default function GestionarComponentes() {
                                                 <IconButton
                                                     size="small"
                                                     onClick={() => handleEditarProducto(producto)}
+                                                    sx={{
+                                                        color: themeColors.primary,
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(10, 46, 90, 0.08)'
+                                                        }
+                                                    }}
                                                 >
                                                     <EditIcon fontSize="small" />
                                                 </IconButton>
@@ -357,7 +441,12 @@ export default function GestionarComponentes() {
                                                 <IconButton
                                                     size="small"
                                                     onClick={() => setProductoEliminar(producto)}
-                                                    sx={{ color: '#f44336' }}
+                                                    sx={{
+                                                        color: themeColors.error,
+                                                        '&:hover': {
+                                                            backgroundColor: 'rgba(198, 40, 40, 0.08)'
+                                                        }
+                                                    }}
                                                 >
                                                     <DeleteIcon fontSize="small" />
                                                 </IconButton>
@@ -368,7 +457,7 @@ export default function GestionarComponentes() {
                             ) : (
                                 <TableRow>
                                     <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
-                                        <Typography variant="body1" color="text.secondary">
+                                        <Typography variant="body1" sx={{ color: themeColors.textSecondary }}>
                                             No se encontraron componentes
                                         </Typography>
                                     </TableCell>
@@ -403,7 +492,8 @@ export default function GestionarComponentes() {
                         display: 'flex',
                         flexDirection: 'column',
                         height: '100vh',
-                        overflow: 'hidden'
+                        overflow: 'hidden',
+                        backgroundColor: themeColors.background
                     }
                 }}
             >
@@ -415,10 +505,18 @@ export default function GestionarComponentes() {
                     mb: 3,
                     flexShrink: 0
                 }}>
-                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                    <Typography variant="h6" sx={{
+                        fontWeight: 'bold',
+                        color: themeColors.primary
+                    }}>
                         {nuevoProducto ? 'Nuevo Componente' : 'Editar Componente'}
                     </Typography>
-                    <IconButton onClick={() => setOpenDrawer(false)}>
+                    <IconButton
+                        onClick={() => setOpenDrawer(false)}
+                        sx={{
+                            color: themeColors.textSecondary
+                        }}
+                    >
                         <CloseIcon />
                     </IconButton>
                 </Box>
@@ -429,14 +527,18 @@ export default function GestionarComponentes() {
                     overflowY: 'auto',
                     mb: 4,
                     '& > div:not(:last-child)': {
-                        borderBottom: '1px solid #e0e0e0',
+                        borderBottom: `1px solid ${themeColors.border}`,
                         pb: 3,
                         mb: 3
                     }
                 }}>
                     {/* Sección 1: ID y Nombre */}
                     <Box>
-                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{
+                            mb: 2,
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             Información básica
                         </Typography>
                         <Box sx={{ display: 'flex', gap: 2 }}>
@@ -453,6 +555,16 @@ export default function GestionarComponentes() {
                                         }
                                     }}
                                     disabled={!nuevoProducto}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                                 {nuevoProducto && idDisponible !== null && !validandoId && (
                                     <Typography
@@ -461,7 +573,7 @@ export default function GestionarComponentes() {
                                             display: 'flex',
                                             alignItems: 'center',
                                             mt: 0.5,
-                                            color: idDisponible ? 'success.main' : 'error.main'
+                                            color: idDisponible ? themeColors.success : themeColors.error
                                         }}
                                     >
                                         {idDisponible ? (
@@ -478,7 +590,10 @@ export default function GestionarComponentes() {
                                     </Typography>
                                 )}
                                 {nuevoProducto && validandoId && (
-                                    <Typography variant="caption" sx={{ mt: 0.5 }}>
+                                    <Typography variant="caption" sx={{
+                                        mt: 0.5,
+                                        color: themeColors.textSecondary
+                                    }}>
                                         Validando ID...
                                     </Typography>
                                 )}
@@ -492,6 +607,16 @@ export default function GestionarComponentes() {
                                     onChange={e => setProductoEditar({ ...productoEditar, nombre: e.target.value })}
                                     error={!!formErrors.nombre}
                                     helperText={formErrors.nombre}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Box>
                         </Box>
@@ -499,7 +624,11 @@ export default function GestionarComponentes() {
 
                     {/* Sección 2: Descripción */}
                     <Box>
-                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{
+                            mb: 2,
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             Descripción
                         </Typography>
                         <TextField
@@ -510,14 +639,26 @@ export default function GestionarComponentes() {
                             size="small"
                             value={productoEditar?.descripcion || ''}
                             onChange={e => setProductoEditar({ ...productoEditar, descripcion: e.target.value })}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                     </Box>
 
-
-
                     {/* Sección 4: Precio y Stock */}
                     <Box>
-                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{
+                            mb: 2,
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             Detalles de inventario
                         </Typography>
                         <Grid container spacing={2}>
@@ -534,6 +675,16 @@ export default function GestionarComponentes() {
                                     InputProps={{
                                         startAdornment: <InputAdornment position="start">$</InputAdornment>,
                                     }}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Grid>
                             <Grid item xs={6}>
@@ -546,6 +697,16 @@ export default function GestionarComponentes() {
                                     onChange={e => setProductoEditar({ ...productoEditar, stock: parseInt(e.target.value) || 0 })}
                                     error={!!formErrors.stock}
                                     helperText={formErrors.stock}
+                                    sx={{
+                                        '& .MuiOutlinedInput-root': {
+                                            '& fieldset': {
+                                                borderColor: themeColors.border,
+                                            },
+                                            '&:hover fieldset': {
+                                                borderColor: themeColors.primary,
+                                            },
+                                        }
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -553,7 +714,11 @@ export default function GestionarComponentes() {
 
                     {/* Sección 5: Imágenes */}
                     <Box>
-                        <Typography variant="subtitle2" gutterBottom sx={{ mb: 2 }}>
+                        <Typography variant="subtitle2" gutterBottom sx={{
+                            mb: 2,
+                            color: themeColors.primary,
+                            fontWeight: 'bold'
+                        }}>
                             Imágenes
                         </Typography>
 
@@ -562,7 +727,15 @@ export default function GestionarComponentes() {
                             component="label"
                             startIcon={<UploadIcon />}
                             fullWidth
-                            sx={{ mb: 3 }}
+                            sx={{
+                                mb: 3,
+                                borderColor: themeColors.border,
+                                color: themeColors.textPrimary,
+                                '&:hover': {
+                                    borderColor: themeColors.primary,
+                                    backgroundColor: 'rgba(10, 46, 90, 0.04)'
+                                }
+                            }}
                         >
                             Subir imágenes
                             <input
@@ -577,12 +750,16 @@ export default function GestionarComponentes() {
                         {/* Preview de imágenes */}
                         {imagenesPreview.length > 0 && (
                             <Box sx={{
-                                border: '1px dashed #e0e0e0',
+                                border: `1px dashed ${themeColors.border}`,
                                 borderRadius: 1,
                                 p: 2,
-                                mb: 2
+                                mb: 2,
+                                backgroundColor: themeColors.paper
                             }}>
-                                <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                                <Typography variant="body2" sx={{
+                                    mb: 1,
+                                    color: themeColors.textSecondary
+                                }}>
                                     Vista previa de imágenes ({imagenesPreview.length})
                                 </Typography>
                                 <Grid container spacing={1}>
@@ -634,7 +811,7 @@ export default function GestionarComponentes() {
                     justifyContent: 'flex-end',
                     gap: 2,
                     pt: 2,
-                    borderTop: '1px solid #e0e0e0',
+                    borderTop: `1px solid ${themeColors.border}`,
                     pb: 4,
                     flexShrink: 0
                 }}>
@@ -646,14 +823,29 @@ export default function GestionarComponentes() {
                             setImagenesPreview([]);
                             setImagenesSubir([]);
                         }}
-                        sx={{ width: '120px' }}
+                        sx={{
+                            width: '120px',
+                            borderColor: themeColors.border,
+                            color: themeColors.textPrimary,
+                            '&:hover': {
+                                borderColor: themeColors.primary,
+                                backgroundColor: 'rgba(10, 46, 90, 0.04)'
+                            }
+                        }}
                     >
                         Cancelar
                     </Button>
                     <Button
                         variant="contained"
                         onClick={handleGuardarEdicion}
-                        sx={{ width: '120px' }}
+                        sx={{
+                            width: '120px',
+                            backgroundColor: themeColors.success,
+                            '&:hover': {
+                                backgroundColor: '#1B5E20',
+                            },
+                            fontWeight: 'bold'
+                        }}
                     >
                         {nuevoProducto ? 'Crear' : 'Guardar'}
                     </Button>
@@ -662,28 +854,53 @@ export default function GestionarComponentes() {
 
             {/* Modal Eliminación */}
             <Dialog open={!!productoEliminar} onClose={() => setProductoEliminar(null)}>
-                <DialogTitle sx={{ borderBottom: '1px solid #e0e0e0' }}>
+                <DialogTitle sx={{
+                    borderBottom: `1px solid ${themeColors.border}`,
+                    backgroundColor: themeColors.primary,
+                    color: '#fff',
+                    fontWeight: 'bold'
+                }}>
                     Confirmar eliminación
                 </DialogTitle>
-                <DialogContent sx={{ pt: 3 }}>
+                <DialogContent sx={{ pt: 3, backgroundColor: themeColors.paper }}>
                     <Alert severity="warning" sx={{ mb: 2 }}>
                         Esta acción no se puede deshacer
                     </Alert>
-                    <Typography variant="body1" sx={{ mb: 1 }}>
+                    <Typography variant="body1" sx={{ mb: 1, color: themeColors.textPrimary }}>
                         <strong>Componente:</strong> {productoEliminar?.nombre}
                     </Typography>
-                    <Typography variant="body1" sx={{ mb: 1 }}>
+                    <Typography variant="body1" sx={{ mb: 1, color: themeColors.textPrimary }}>
                         <strong>ID:</strong> {productoEliminar?.id}
                     </Typography>
-
                 </DialogContent>
-                <DialogActions sx={{ borderTop: '1px solid #e0e0e0', p: 2 }}>
-                    <Button onClick={() => setProductoEliminar(null)}>Cancelar</Button>
+                <DialogActions sx={{
+                    borderTop: `1px solid ${themeColors.border}`,
+                    p: 2,
+                    backgroundColor: themeColors.paper
+                }}>
+                    <Button
+                        onClick={() => setProductoEliminar(null)}
+                        sx={{
+                            color: themeColors.textSecondary,
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                            }
+                        }}
+                    >
+                        Cancelar
+                    </Button>
                     <Button
                         variant="contained"
                         color="error"
                         onClick={handleEliminar}
                         startIcon={<DeleteIcon />}
+                        sx={{
+                            backgroundColor: themeColors.error,
+                            '&:hover': {
+                                backgroundColor: '#B71C1C',
+                            },
+                            fontWeight: 'bold'
+                        }}
                     >
                         Eliminar
                     </Button>

@@ -18,6 +18,23 @@ import dayjs from 'dayjs';
 
 const API_URL = 'http://localhost:8081/api/auth';
 
+// Paleta de colores de VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 export default function PanelUsuarios() {
     const [usuarios, setUsuarios] = useState([]);
     const [usuariosFiltrados, setUsuariosFiltrados] = useState([]);
@@ -132,7 +149,13 @@ export default function PanelUsuarios() {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+        <Container maxWidth="lg" sx={{
+            mt: 4,
+            mb: 4,
+            backgroundColor: themeColors.background,
+            p: 3,
+            borderRadius: '12px'
+        }}>
             {/* Header */}
             <Box sx={{
                 display: 'flex',
@@ -141,10 +164,10 @@ export default function PanelUsuarios() {
                 mb: 3
             }}>
                 <Box>
-                    <Typography variant="h5" fontWeight="bold">
+                    <Typography variant="h5" fontWeight="bold" color={themeColors.primary}>
                         Supervisión de Usuarios
                     </Typography>
-                    <Typography variant="body2" color="text.secondary">
+                    <Typography variant="body2" color={themeColors.textSecondary}>
                         Total: {usuarios.length} usuarios | Mostrando: {usuariosFiltrados.length}
                     </Typography>
                 </Box>
@@ -153,13 +176,27 @@ export default function PanelUsuarios() {
                     variant="outlined"
                     startIcon={<RefreshIcon />}
                     onClick={cargarUsuarios}
+                    sx={{
+                        borderColor: themeColors.primary,
+                        color: themeColors.primary,
+                        '&:hover': {
+                            backgroundColor: themeColors.highlight,
+                            borderColor: themeColors.primary
+                        }
+                    }}
                 >
                     Actualizar
                 </Button>
             </Box>
 
             {/* Filtros */}
-            <Paper elevation={0} sx={{ p: 2, mb: 3, border: '1px solid #e0e0e0' }}>
+            <Paper elevation={0} sx={{
+                p: 2,
+                mb: 3,
+                border: `1px solid ${themeColors.border}`,
+                backgroundColor: themeColors.paper,
+                borderRadius: '8px'
+            }}>
                 <Grid container spacing={2} alignItems="center">
                     <Grid item xs={12} md={8} width={'35%'}>
                         <TextField
@@ -172,6 +209,16 @@ export default function PanelUsuarios() {
                                 startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
                             }}
                             size="small"
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                     </Grid>
                     <Grid item xs={12} md={4}>
@@ -186,6 +233,16 @@ export default function PanelUsuarios() {
                                         <FilterIcon color="action" />
                                     </InputAdornment>
                                 }
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                             >
                                 {roles.map((rol) => (
                                     <MenuItem key={rol} value={rol}>
@@ -199,23 +256,41 @@ export default function PanelUsuarios() {
             </Paper>
 
             {/* Tabla de usuarios */}
-            <Paper elevation={0} sx={{ border: '1px solid #e0e0e0' }}>
+            <Paper elevation={0} sx={{
+                border: `1px solid ${themeColors.border}`,
+                backgroundColor: themeColors.paper,
+                borderRadius: '8px'
+            }}>
                 <TableContainer>
                     <Table size="small">
                         <TableHead>
-                            <TableRow sx={{ bgcolor: '#f5f5f5' }}>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Rol</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>RUT</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Nombre</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Email</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Fecha Creación</TableCell>
-                                <TableCell sx={{ fontWeight: 'bold' }}>Estado</TableCell>
+                            <TableRow sx={{
+                                backgroundColor: themeColors.primary,
+                                '& th': {
+                                    color: '#fff',
+                                    fontWeight: 'bold'
+                                }
+                            }}>
+                                <TableCell>Rol</TableCell>
+                                <TableCell>RUT</TableCell>
+                                <TableCell>Nombre</TableCell>
+                                <TableCell>Email</TableCell>
+                                <TableCell>Fecha Creación</TableCell>
+                                <TableCell>Estado</TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
                             {usuariosFiltrados.length > 0 ? (
                                 usuariosFiltrados.map((usuario) => (
-                                    <TableRow key={usuario.id} hover>
+                                    <TableRow
+                                        key={usuario.id}
+                                        hover
+                                        sx={{
+                                            '&:nth-of-type(odd)': {
+                                                backgroundColor: themeColors.highlight
+                                            }
+                                        }}
+                                    >
                                         <TableCell>
                                             <Chip
                                                 label={usuario.role}
@@ -241,7 +316,7 @@ export default function PanelUsuarios() {
                             ) : (
                                 <TableRow>
                                     <TableCell colSpan={6} align="center" sx={{ py: 3 }}>
-                                        <Typography variant="body1" color="text.secondary">
+                                        <Typography variant="body1" color={themeColors.textSecondary}>
                                             No se encontraron usuarios
                                         </Typography>
                                     </TableCell>
@@ -259,21 +334,43 @@ export default function PanelUsuarios() {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">
+                <DialogTitle
+                    id="alert-dialog-title"
+                    sx={{
+                        backgroundColor: themeColors.primary,
+                        color: '#fff',
+                        fontWeight: 'bold'
+                    }}
+                >
                     Confirmar cambio de estado
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                    <DialogContentText id="alert-dialog-description" sx={{ mt: 2 }}>
                         ¿Estás seguro que deseas {nuevoEstado ? 'activar' : 'desactivar'} la cuenta de {usuarioSeleccionado?.nombre} ({usuarioSeleccionado?.email})?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={() => setDialogAbierto(false)} color="primary">
+                    <Button
+                        onClick={() => setDialogAbierto(false)}
+                        sx={{
+                            color: themeColors.textSecondary,
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                            }
+                        }}
+                    >
                         Cancelar
                     </Button>
                     <Button
                         onClick={confirmarCambioEstado}
-                        color={nuevoEstado ? "success" : "error"}
+                        variant="contained"
+                        sx={{
+                            backgroundColor: nuevoEstado ? themeColors.success : themeColors.error,
+                            '&:hover': {
+                                backgroundColor: nuevoEstado ? '#1B5E20' : '#B71C1C'
+                            },
+                            fontWeight: 'bold'
+                        }}
                         autoFocus
                     >
                         {nuevoEstado ? 'Activar' : 'Desactivar'}
@@ -292,6 +389,7 @@ export default function PanelUsuarios() {
                     onClose={handleCloseSnackbar}
                     severity={snackbar.severity}
                     sx={{ width: '100%' }}
+                    variant="filled"
                 >
                     {snackbar.message}
                 </Alert>

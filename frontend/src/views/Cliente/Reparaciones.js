@@ -26,10 +26,28 @@ import {
 } from '@mui/icons-material';
 import { styled } from '@mui/material/styles';
 
+// Definir la misma paleta de colores que en VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 const StyledPaper = styled(Paper)(({ theme }) => ({
     padding: theme.spacing(4),
     borderRadius: '12px',
     boxShadow: '0px 4px 12px rgba(0, 0, 0, 0.1)',
+    backgroundColor: themeColors.paper,
     [theme.breakpoints.down('sm')]: {
         padding: theme.spacing(2)
     }
@@ -96,11 +114,21 @@ export default function Reparaciones() {
     };
 
     return (
-        <Container maxWidth="lg" sx={{ py: 4, mx: 'none' }}>
+        <Container maxWidth="lg" sx={{
+            py: 4,
+            mx: 'none',
+            backgroundColor: themeColors.background,
+            minHeight: '100vh'
+        }}>
             <StyledPaper elevation={3}>
                 <Box display="flex" alignItems="center" mb={3} flexDirection={isSmallScreen ? 'column' : 'row'} textAlign={isSmallScreen ? 'center' : 'left'}>
-                    <DirectionsBike color="primary" sx={{ fontSize: 40, mr: isSmallScreen ? 0 : 2, mb: isSmallScreen ? 1 : 0 }} />
-                    <Typography variant="h4" component="h1" color="primary">
+                    <DirectionsBike sx={{
+                        fontSize: 40,
+                        mr: isSmallScreen ? 0 : 2,
+                        mb: isSmallScreen ? 1 : 0,
+                        color: themeColors.primary
+                    }} />
+                    <Typography variant="h4" component="h1" sx={{ color: themeColors.primary }}>
                         Agendar Reparación de Bicicleta
                     </Typography>
                 </Box>
@@ -118,10 +146,20 @@ export default function Reparaciones() {
                                 value={form.fecha}
                                 onChange={handleChange}
                                 required
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <DateRange color="action" />
+                                            <DateRange sx={{ color: themeColors.textSecondary }} />
                                         </InputAdornment>
                                     ),
                                 }}
@@ -141,10 +179,20 @@ export default function Reparaciones() {
                                 value={form.hora}
                                 onChange={handleChange}
                                 required
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <AccessTime color="action" />
+                                            <AccessTime sx={{ color: themeColors.textSecondary }} />
                                         </InputAdornment>
                                     ),
                                 }}
@@ -163,10 +211,20 @@ export default function Reparaciones() {
                                 value={form.tipoReparacion}
                                 onChange={handleChange}
                                 required
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <Build color="action" />
+                                            <Build sx={{ color: themeColors.textSecondary }} />
                                         </InputAdornment>
                                     ),
                                 }}
@@ -190,18 +248,31 @@ export default function Reparaciones() {
                         value={form.descripcion}
                         onChange={handleChange}
                         required
+                        sx={{
+                            mb: 3,
+                            '& .MuiOutlinedInput-root': {
+                                '& fieldset': {
+                                    borderColor: themeColors.border,
+                                },
+                                '&:hover fieldset': {
+                                    borderColor: themeColors.primary,
+                                },
+                            }
+                        }}
                         InputProps={{
                             startAdornment: (
                                 <InputAdornment position="start">
-                                    <Description color="action" />
+                                    <Description sx={{ color: themeColors.textSecondary }} />
                                 </InputAdornment>
                             ),
                         }}
                         placeholder="Describa con detalle el problema que presenta su bicicleta..."
-                        sx={{ mb: 3 }}
                     />
 
-                    <Divider sx={{ my: 3 }} />
+                    <Divider sx={{
+                        my: 3,
+                        borderColor: themeColors.border
+                    }} />
 
                     {/* Segunda fila - Contacto y botón con posición final */}
                     <Grid container spacing={3} alignItems="flex-start" justifyContent={"space-between"}>
@@ -213,10 +284,20 @@ export default function Reparaciones() {
                                 type="tel"
                                 value={form.telefono}
                                 onChange={handleChange}
+                                sx={{
+                                    '& .MuiOutlinedInput-root': {
+                                        '& fieldset': {
+                                            borderColor: themeColors.border,
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: themeColors.primary,
+                                        },
+                                    }
+                                }}
                                 InputProps={{
                                     startAdornment: (
                                         <InputAdornment position="start">
-                                            <ContactPhone color="action" />
+                                            <ContactPhone sx={{ color: themeColors.textSecondary }} />
                                         </InputAdornment>
                                     ),
                                 }}
@@ -238,13 +319,13 @@ export default function Reparaciones() {
                                 sx={{
                                     height: '56px',
                                     minWidth: isSmallScreen ? '100%' : '200px',
+                                    backgroundColor: themeColors.success,
                                     '&:hover': {
+                                        backgroundColor: '#2E7D32',
                                         transform: 'translateY(-2px)',
                                         boxShadow: '0 4px 8px rgba(0,0,0,0.2)'
                                     },
                                     transition: 'all 0.3s ease'
-
-
                                 }}
                                 disabled={isLoading}
                                 startIcon={isLoading ? <CircularProgress size={20} /> : null}
@@ -262,7 +343,15 @@ export default function Reparaciones() {
                 onClose={handleCloseSnackbar}
                 anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
             >
-                <Alert onClose={handleCloseSnackbar} severity={snackbar.severity} sx={{ width: '100%' }}>
+                <Alert
+                    onClose={handleCloseSnackbar}
+                    severity={snackbar.severity}
+                    sx={{
+                        width: '100%',
+                        backgroundColor: snackbar.severity === 'error' ? themeColors.error : themeColors.success,
+                        color: '#fff'
+                    }}
+                >
                     {snackbar.message}
                 </Alert>
             </Snackbar>

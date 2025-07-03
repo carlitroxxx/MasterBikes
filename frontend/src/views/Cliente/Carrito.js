@@ -13,6 +13,23 @@ import { useAuth } from '../../context/AuthContext';
 import { useCart } from '../../context/CartContext';
 import axios from "axios";
 
+// Añadir la paleta de colores de VentaForm
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 export default function Carrito() {
     const { user } = useAuth();
     const {
@@ -164,16 +181,35 @@ export default function Carrito() {
     );
 
     return (
-        <Container maxWidth="xl" sx={{ py: 4, mx: 0}}>
-            <Box sx={{ display: 'flex', alignItems: 'center', mb: 4 }}>
+        <Container maxWidth="xl" sx={{
+            py: 4,
+            mx: 0,
+            backgroundColor: themeColors.background,
+            minHeight: '100vh'
+        }}>
+            <Box sx={{
+                display: 'flex',
+                alignItems: 'center',
+                mb: 4,
+                p: 2,
+                backgroundColor: themeColors.paper,
+                borderRadius: '12px',
+                boxShadow: 1
+            }}>
                 <Badge
                     badgeContent={itemCount}
                     color="primary"
-                    sx={{ mr: 2 }}
+                    sx={{
+                        mr: 2,
+                        '& .MuiBadge-badge': {
+                            backgroundColor: themeColors.primary,
+                            color: '#fff'
+                        }
+                    }}
                 >
-                    <ShoppingCartIcon fontSize="large" />
+                    <ShoppingCartIcon fontSize="large" sx={{ color: themeColors.primary }} />
                 </Badge>
-                <Typography variant="h4" component="h1">
+                <Typography variant="h4" component="h1" sx={{ color: themeColors.primary }}>
                     Tu Carrito de Compras
                 </Typography>
             </Box>
@@ -181,40 +217,58 @@ export default function Carrito() {
             <Grid container spacing={3}>
                 {/* Lista de productos */}
                 <Grid item xs={12} md={7}>
-                    <Paper elevation={3} sx={{ p: 3 }}>
-                        <Typography variant="h6" sx={{ mb: 2, fontWeight: 'bold' }}>
+                    <Paper elevation={3} sx={{
+                        p: 3,
+                        backgroundColor: themeColors.paper,
+                        border: `1px solid ${themeColors.border}`,
+                        borderRadius: '12px'
+                    }}>
+                        <Typography variant="h6" sx={{
+                            mb: 2,
+                            fontWeight: 'bold',
+                            color: themeColors.primary,
+                            borderBottom: `2px solid ${themeColors.primary}`,
+                            pb: 1
+                        }}>
                             Productos ({cart?.items?.length || 0})
                         </Typography>
-                        <Divider sx={{ mb: 3 }} />
+                        <Divider sx={{
+                            mb: 3,
+                            borderColor: themeColors.border
+                        }} />
 
                         {!cart?.items || cart.items.length === 0 ? (
                             <Typography
                                 variant="body1"
-                                color="text.secondary"
-                                sx={{ py: 4, textAlign: 'center' }}
+                                sx={{
+                                    py: 4,
+                                    textAlign: 'center',
+                                    color: themeColors.textSecondary
+                                }}
                             >
                                 No hay productos en tu carrito
                             </Typography>
                         ) : (
                             <Box sx={{ width: '100%', overflowX: 'auto' }}>
-                                {/* Headers con más espacio */}
+                                {/* Headers */}
                                 <Box sx={{
                                     display: 'grid',
                                     gridTemplateColumns: '120px minmax(200px, 1fr) 120px 150px 120px 80px',
                                     gap: 3,
-                                    py: 1, // Reducido de py: 2
+                                    py: 1,
                                     px: 1,
                                     mb: 1,
-                                    borderBottom: '2px solid',
-                                    borderColor: 'divider',
+                                    borderBottom: `2px solid ${themeColors.primary}`,
+                                    backgroundColor: themeColors.primary,
+                                    color: '#fff',
                                     minWidth: 900
                                 }}>
-                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>IMAGEN</Typography>
-                                    <Typography variant="caption" color="text.secondary" sx={{ fontSize: '0.75rem' }}>PRODUCTO</Typography>
-                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right', fontSize: '0.75rem' }}>PRECIO UNIT.</Typography>
-                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>CANTIDAD</Typography>
-                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'right', fontSize: '0.75rem' }}>SUBTOTAL</Typography>
-                                    <Typography variant="caption" color="text.secondary" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>ACCIÓN</Typography>
+                                    <Typography variant="caption" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>IMAGEN</Typography>
+                                    <Typography variant="caption" sx={{ fontSize: '0.75rem' }}>PRODUCTO</Typography>
+                                    <Typography variant="caption" sx={{ textAlign: 'right', fontSize: '0.75rem' }}>PRECIO UNIT.</Typography>
+                                    <Typography variant="caption" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>CANTIDAD</Typography>
+                                    <Typography variant="caption" sx={{ textAlign: 'right', fontSize: '0.75rem' }}>SUBTOTAL</Typography>
+                                    <Typography variant="caption" sx={{ textAlign: 'center', fontSize: '0.75rem' }}>ACCIÓN</Typography>
                                 </Box>
 
                                 {/* Productos */}
@@ -226,39 +280,49 @@ export default function Carrito() {
                                             gridTemplateColumns: '120px minmax(200px, 1fr) 120px 150px 120px 80px',
                                             gap: 3,
                                             alignItems: 'center',
-                                            py: 1, // Reducido de py: 2
+                                            py: 1,
                                             px: 1,
-                                            borderBottom: '1px solid',
-                                            borderColor: 'divider',
+                                            borderBottom: `1px solid ${themeColors.border}`,
                                             '&:hover': {
-                                                backgroundColor: 'action.hover',
+                                                backgroundColor: themeColors.highlight,
                                                 borderRadius: 1
                                             },
                                             transition: 'background-color 0.3s ease',
                                             minWidth: 900
                                         }}
                                     >
-                                        {/* Imagen (sin cambios) */}
+                                        {/* Imagen */}
                                         <Box
                                             component="img"
                                             src={item.imagenesUrls?.[0] || 'https://via.placeholder.com/100'}
                                             alt={item.nombre}
                                             sx={{
-                                                width: 80, // Reducido de 100
-                                                height: 80, // Reducido de 100
+                                                width: 80,
+                                                height: 80,
                                                 objectFit: 'cover',
                                                 borderRadius: 1,
-                                                margin: '0 auto'
+                                                margin: '0 auto',
+                                                border: `1px solid ${themeColors.border}`
                                             }}
                                         />
 
                                         {/* Nombre */}
-                                        <Typography variant="body2" sx={{ fontWeight: 'medium', pr: 2, fontSize: '0.875rem' }}>
+                                        <Typography variant="body2" sx={{
+                                            fontWeight: 'medium',
+                                            pr: 2,
+                                            fontSize: '0.875rem',
+                                            color: themeColors.textPrimary
+                                        }}>
                                             {item.nombre}
                                         </Typography>
 
                                         {/* Precio unitario */}
-                                        <Typography variant="body2" sx={{ textAlign: 'right', pr: 2, fontSize: '0.875rem' }}>
+                                        <Typography variant="body2" sx={{
+                                            textAlign: 'right',
+                                            pr: 2,
+                                            fontSize: '0.875rem',
+                                            color: themeColors.textPrimary
+                                        }}>
                                             ${item.precioUnitario.toLocaleString()}
                                         </Typography>
 
@@ -267,36 +331,43 @@ export default function Carrito() {
                                             display: 'flex',
                                             alignItems: 'center',
                                             justifyContent: 'center',
-                                            gap: 1, // Reducido de gap: 2
-                                            px: 1 // Reducido de px: 2
+                                            gap: 1,
+                                            px: 1
                                         }}>
                                             <IconButton
                                                 onClick={() => handleCambiarCantidad(item.productoId, item.cantidad - 1)}
                                                 disabled={item.cantidad <= 1}
-                                                size="small" // Cambiado de size="medium"
+                                                size="small"
                                                 sx={{
-                                                    p: 0.5, // Reducido de p: 1
-                                                    border: '1px solid',
-                                                    borderColor: 'divider'
+                                                    p: 0.5,
+                                                    border: `1px solid ${themeColors.border}`,
+                                                    color: themeColors.primary,
+                                                    '&:hover': {
+                                                        backgroundColor: themeColors.highlight
+                                                    }
                                                 }}
                                             >
                                                 <RemoveIcon fontSize="small" />
                                             </IconButton>
                                             <Typography variant="body2" sx={{
-                                                minWidth: 24, // Reducido de 30
+                                                minWidth: 24,
                                                 textAlign: 'center',
                                                 fontWeight: 'bold',
-                                                fontSize: '0.875rem'
+                                                fontSize: '0.875rem',
+                                                color: themeColors.textPrimary
                                             }}>
                                                 {item.cantidad}
                                             </Typography>
                                             <IconButton
                                                 onClick={() => handleCambiarCantidad(item.productoId, item.cantidad + 1)}
-                                                size="small" // Cambiado de size="medium"
+                                                size="small"
                                                 sx={{
-                                                    p: 0.5, // Reducido de p: 1
-                                                    border: '1px solid',
-                                                    borderColor: 'divider'
+                                                    p: 0.5,
+                                                    border: `1px solid ${themeColors.border}`,
+                                                    color: themeColors.primary,
+                                                    '&:hover': {
+                                                        backgroundColor: themeColors.highlight
+                                                    }
                                                 }}
                                             >
                                                 <AddIcon fontSize="small" />
@@ -307,18 +378,24 @@ export default function Carrito() {
                                         <Typography variant="body2" sx={{
                                             fontWeight: 'bold',
                                             textAlign: 'right',
-                                            pr: 2, // Reducido de pr: 3
-                                            fontSize: '0.875rem'
+                                            pr: 2,
+                                            fontSize: '0.875rem',
+                                            color: themeColors.textPrimary
                                         }}>
                                             ${(item.precioUnitario * item.cantidad).toLocaleString()}
                                         </Typography>
 
-                                        {/* Eliminar (sin cambios) */}
+                                        {/* Eliminar */}
                                         <Box sx={{ display: 'flex', justifyContent: 'center' }}>
                                             <IconButton
                                                 onClick={() => confirmarEliminar(item.productoId, item.nombre)}
-                                                color="error"
-                                                size="small" // Cambiado de size="medium"
+                                                size="small"
+                                                sx={{
+                                                    color: themeColors.error,
+                                                    '&:hover': {
+                                                        backgroundColor: 'rgba(198, 40, 40, 0.08)'
+                                                    }
+                                                }}
                                             >
                                                 <DeleteIcon fontSize="small" />
                                             </IconButton>
@@ -336,21 +413,24 @@ export default function Carrito() {
                         p: 3,
                         position: 'sticky',
                         top: 16,
-                        borderRadius: 3, // Bordes más redondeados
-                        minWidth: 300 // Ancho mínimo garantizado
+                        backgroundColor: themeColors.paper,
+                        border: `1px solid ${themeColors.border}`,
+                        borderRadius: '12px',
+                        minWidth: 300
                     }}>
                         <Typography variant="h5" sx={{
                             mb: 2,
                             fontWeight: 'bold',
-                            color: 'primary.main' // Color destacado
+                            color: themeColors.primary,
+                            borderBottom: `2px solid ${themeColors.primary}`,
+                            pb: 1
                         }}>
                             Resumen de Compra
                         </Typography>
 
                         <Divider sx={{
                             mb: 2,
-                            borderColor: 'divider',
-                            borderBottomWidth: 2 // Línea más gruesa
+                            borderColor: themeColors.border
                         }} />
 
                         {/* Lista de productos */}
@@ -358,7 +438,7 @@ export default function Carrito() {
                             mb: 2,
                             maxHeight: 300,
                             overflowY: 'auto',
-                            pr: 1 // Espacio para scroll
+                            pr: 1
                         }}>
                             {cart?.items?.map(item => (
                                 <Box
@@ -371,7 +451,7 @@ export default function Carrito() {
                                         py: 1,
                                         px: 1,
                                         '&:hover': {
-                                            bgcolor: 'action.hover',
+                                            bgcolor: themeColors.highlight,
                                             borderRadius: 1
                                         }
                                     }}
@@ -386,14 +466,18 @@ export default function Carrito() {
                                                 height: 40,
                                                 objectFit: 'cover',
                                                 borderRadius: 1,
-                                                mr: 1.5
+                                                mr: 1.5,
+                                                border: `1px solid ${themeColors.border}`
                                             }}
                                         />
-                                        <Typography variant="body2" sx={{ fontWeight: 500 }}>
+                                        <Typography variant="body2" sx={{
+                                            fontWeight: 500,
+                                            color: themeColors.textPrimary
+                                        }}>
                                             {item.nombre}
                                         </Typography>
                                     </Box>
-                                    <Typography variant="body2">
+                                    <Typography variant="body2" sx={{ color: themeColors.textPrimary }}>
                                         x{item.cantidad} • ${(item.precioUnitario * item.cantidad).toLocaleString()}
                                     </Typography>
                                 </Box>
@@ -402,8 +486,7 @@ export default function Carrito() {
 
                         <Divider sx={{
                             my: 2,
-                            borderColor: 'divider',
-                            borderBottomWidth: 2
+                            borderColor: themeColors.border
                         }} />
 
                         {/* Total */}
@@ -413,12 +496,15 @@ export default function Carrito() {
                             alignItems: 'center',
                             mb: 3,
                             py: 1,
-                            px: 1,
-                            bgcolor: 'background.paper',
-                            borderRadius: 1
+                            px: 2,
+                            backgroundColor: themeColors.highlight,
+                            borderRadius: '8px'
                         }}>
-                            <Typography variant="h6">Total</Typography>
-                            <Typography variant="h5" sx={{ fontWeight: 'bold', color: 'primary.main' }}>
+                            <Typography variant="h6" sx={{ fontWeight: 'bold' }}>Total</Typography>
+                            <Typography variant="h5" sx={{
+                                fontWeight: 'bold',
+                                color: themeColors.primary
+                            }}>
                                 ${total.toLocaleString()}
                             </Typography>
                         </Box>
@@ -426,7 +512,6 @@ export default function Carrito() {
                         {/* Botón de pago */}
                         <Button
                             variant="contained"
-                            color="primary"
                             fullWidth
                             size="large"
                             startIcon={<PaymentIcon />}
@@ -435,13 +520,15 @@ export default function Carrito() {
                                 py: 1.5,
                                 fontWeight: 'bold',
                                 fontSize: '1rem',
-                                borderRadius: 2, // Bordes más redondeados
-                                boxShadow: 2,
+                                borderRadius: '8px',
+                                backgroundColor: themeColors.success,
                                 '&:hover': {
-                                    boxShadow: 4,
-                                    transform: 'translateY(-2px)'
+                                    backgroundColor: '#2E7D32',
                                 },
-                                transition: 'all 0.3s ease'
+                                '&:disabled': {
+                                    backgroundColor: '#BDBDBD',
+                                    color: '#757575'
+                                }
                             }}
                         >
                             Proceder al Pago
@@ -457,20 +544,40 @@ export default function Carrito() {
                 aria-labelledby="alert-dialog-title"
                 aria-describedby="alert-dialog-description"
             >
-                <DialogTitle id="alert-dialog-title">
+                <DialogTitle id="alert-dialog-title" sx={{
+                    backgroundColor: themeColors.primary,
+                    color: '#fff',
+                    fontWeight: 'bold'
+                }}>
                     ¿Eliminar producto del carrito?
                 </DialogTitle>
                 <DialogContent>
-                    <DialogContentText id="alert-dialog-description">
+                    <DialogContentText id="alert-dialog-description" sx={{ mt: 2 }}>
                         ¿Estás seguro que deseas eliminar "{dialogEliminar.productoNombre}" de tu carrito?
                     </DialogContentText>
                 </DialogContent>
                 <DialogActions>
-                    <Button onClick={cerrarDialogoEliminar}>Cancelar</Button>
+                    <Button
+                        onClick={cerrarDialogoEliminar}
+                        sx={{
+                            color: themeColors.textSecondary,
+                            '&:hover': {
+                                backgroundColor: 'rgba(0, 0, 0, 0.04)'
+                            }
+                        }}
+                    >
+                        Cancelar
+                    </Button>
                     <Button
                         onClick={handleEliminarConfirmado}
-                        color="error"
-                        autoFocus
+                        sx={{
+                            backgroundColor: themeColors.error,
+                            color: '#fff',
+                            '&:hover': {
+                                backgroundColor: '#B71C1C',
+                            },
+                            fontWeight: 'bold'
+                        }}
                     >
                         Eliminar
                     </Button>
@@ -487,7 +594,14 @@ export default function Carrito() {
                 <Alert
                     onClose={handleCloseSnackbar}
                     severity={snackbar.severity}
-                    sx={{ width: '100%' }}
+                    sx={{
+                        width: '100%',
+                        backgroundColor: snackbar.severity === 'error' ? themeColors.error :
+                            snackbar.severity === 'success' ? themeColors.success :
+                                snackbar.severity === 'warning' ? themeColors.warning :
+                                    themeColors.info,
+                        color: '#fff'
+                    }}
                 >
                     {snackbar.message}
                 </Alert>
