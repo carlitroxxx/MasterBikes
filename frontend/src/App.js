@@ -69,7 +69,10 @@ function HomeRedirect() {
     if (user) {
         if (user.role === 'CLIENTE') {
             return <Navigate to="/cliente/shop" replace />;
-        } else {
+        }else if (user.role === 'TECNICO') {
+            return <Navigate to="/tecnico/reparaciones" replace />;
+
+        }else {
             return <Navigate to={`/${user.role.toLowerCase()}/dashboard`} replace />;
         }
     }

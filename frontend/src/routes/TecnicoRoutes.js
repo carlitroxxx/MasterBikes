@@ -8,6 +8,8 @@ import React from "react";
 import ArriendoForm from "../views/Vendedor/ArriendoForm";
 import VentaForm from "../views/Vendedor/VentaForm";
 import ReparacionesList from "../views/Tecnico/ReparacionesList";
+import GestionarBicicletas from "../views/Inventario/GestionarBicicletas";
+import GestionarComponentes from "../views/Inventario/GestionarComponentes";
 
 export default function TecnicoRoutes() {
     const { user } = useAuth();
@@ -20,6 +22,8 @@ export default function TecnicoRoutes() {
         <Container maxWidth="xl" sx={{ mt: 4 , mx: '10%'}}>
             <Routes>
                 <Route path="reparaciones" element={<ReparacionesList />} />
+                <Route path="recepcion" element={<GestionarBicicletas />} />
+                <Route path="ingresos" element={<GestionarComponentes />} />
             </Routes>
         </Container>
     );

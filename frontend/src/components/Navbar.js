@@ -338,12 +338,222 @@ export default function Navbar() {
             </AppBar>
         );
     }
+    if (user.role === 'VENDEDOR'){
+        return(
+            <AppBar position="static" sx={{ backgroundColor: themeColors.primary }}>
+                <Toolbar>
+                    <Box sx={{ flexGrow: 1 }} display="flex" gap={2}>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/vendedor/recepcion"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            BICICLETAS
+                        </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/vendedor/ingresos"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            COMPONENTES
+                        </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/vendedor/ventas"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            REGISTRAR VENTAS
+                        </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/vendedor/ventas/resumen"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            RESUMEN VENTAS
+                        </Button>
 
+                    </Box>
+                    <Box>
+                        <Button
+                            color="inherit"
+                            onClick={handleMenuClick}
+                            startIcon={<Avatar sx={{
+                                width: 24,
+                                height: 24,
+                                backgroundColor: themeColors.secondary,
+                                color: themeColors.textPrimary
+                            }}>{user.nombre.charAt(0)}</Avatar>}
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            {user.nombre}
+                        </Button>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                            PaperProps={{
+                                style: {
+                                    backgroundColor: themeColors.paper,
+                                    color: themeColors.textPrimary,
+                                    border: `1px solid ${themeColors.border}`
+                                }
+                            }}
+                        >
+                            <MenuItem
+                                onClick={handleLogout}
+                                sx={{
+                                    '&:hover': {
+                                        backgroundColor: themeColors.highlight
+                                    }
+                                }}
+                            >
+                                Cerrar sesión
+                            </MenuItem>
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+        );
+    }
+    if (user.role === 'TECNICO'){
+        return(
+            <AppBar position="static" sx={{ backgroundColor: themeColors.primary }}>
+                <Toolbar>
+                    <Box sx={{ flexGrow: 1 }} display="flex" gap={2}>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/tecnico/reparaciones"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            REPARACIONES
+                        </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/tecnico/recepcion"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            BICICLETAS
+                        </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/tecnico/ingresos"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            COMPONENTES
+                        </Button>
+                    </Box>
+                    <Box>
+                        <Button
+                            color="inherit"
+                            onClick={handleMenuClick}
+                            startIcon={<Avatar sx={{
+                                width: 24,
+                                height: 24,
+                                backgroundColor: themeColors.secondary,
+                                color: themeColors.textPrimary
+                            }}>{user.nombre.charAt(0)}</Avatar>}
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            {user.nombre}
+                        </Button>
+                        <Menu
+                            anchorEl={anchorEl}
+                            open={Boolean(anchorEl)}
+                            onClose={handleMenuClose}
+                            PaperProps={{
+                                style: {
+                                    backgroundColor: themeColors.paper,
+                                    color: themeColors.textPrimary,
+                                    border: `1px solid ${themeColors.border}`
+                                }
+                            }}
+                        >
+                            <MenuItem
+                                onClick={handleLogout}
+                                sx={{
+                                    '&:hover': {
+                                        backgroundColor: themeColors.highlight
+                                    }
+                                }}
+                            >
+                                Cerrar sesión
+                            </MenuItem>
+                        </Menu>
+                    </Box>
+                </Toolbar>
+            </AppBar>
+        );
+    }
     if(user.role === 'SUPERVISOR'){
         return(
             <AppBar position="static" sx={{ backgroundColor: themeColors.primary }}>
                 <Toolbar>
                     <Box sx={{ flexGrow: 1 }} display="flex" gap={2}>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/supervisor/panel"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            PANEL USUARIOS
+                        </Button>
                         <Button
                             color="inherit"
                             component={Link}
@@ -357,7 +567,23 @@ export default function Navbar() {
                         >
                             CREAR USUARIOS
                         </Button>
+
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/supervisor/ventas/resumen"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            RESUMEN VENTAS
+                        </Button>
+
                     </Box>
+
                     <Box>
                         <Button
                             color="inherit"

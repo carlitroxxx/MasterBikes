@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import {Navigate, useNavigate} from 'react-router-dom';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -69,7 +69,13 @@ export function AuthProvider({ children }) {
             if (role === 'CLIENTE') {
                 redirectPath = '/cliente/shop';
             } else if (role === 'SUPERVISOR') {
-                redirectPath = '/supervisor/panel';  // o la ruta que desees para el supervisor
+                redirectPath = '/supervisor/panel';
+            } else if (role === 'INVENTARIO') {
+                redirectPath = '/inventario/recepcion';
+            } else if (role === 'TECNICO') {
+                redirectPath = "/tecnico/reparaciones";
+            } else if (role === 'VENDEDOR') {
+                redirectPath = "/vendedor/ventas";
             } else {
                 redirectPath = `/${role.toLowerCase()}/dashboard`;
             }

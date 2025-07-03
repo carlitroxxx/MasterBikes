@@ -321,7 +321,8 @@ export default function VentaForm({ onVentaCreada }) {
                 minWidth: { md: '50%' },
                 backgroundColor: themeColors.paper,
                 border: `1px solid ${themeColors.border}`,
-                borderRadius: '12px'
+                borderRadius: '12px',
+                maxHeight: "fit-content"
             }}>
                 <Typography variant="h5" gutterBottom sx={{
                     fontWeight: 'bold',
@@ -463,7 +464,8 @@ export default function VentaForm({ onVentaCreada }) {
                 flexDirection: 'column',
                 backgroundColor: themeColors.paper,
                 border: `1px solid ${themeColors.border}`,
-                borderRadius: '12px'
+                borderRadius: '12px',
+                maxHeight: "fit-content"
             }}>
                 <Typography variant="h5" gutterBottom sx={{
                     fontWeight: 'bold',
