@@ -5,6 +5,22 @@ import { PersonAdd as PersonAddIcon } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 export default function RegisterPage() {
     const [nombre, setNombre] = useState('');
     const [email, setEmail] = useState('');
@@ -69,16 +85,50 @@ export default function RegisterPage() {
     };
 
     return (
-        <Container component="main" maxWidth="xs">
-            <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
+        <Container
+            component="main"
+            maxWidth="xs"
+            sx={{
+                backgroundColor: themeColors.background,
+                minHeight: '100vh',
+                display: 'flex',
+                alignItems: 'center',
+                py: 4
+            }}
+        >
+            <Paper
+                elevation={3}
+                sx={{
+                    p: 4,
+                    width: '100%',
+                    backgroundColor: themeColors.paper,
+                    border: `1px solid ${themeColors.border}`,
+                    borderRadius: '12px'
+                }}
+            >
                 <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Avatar sx={{ m: 1, bgcolor: 'primary.main' }}>
-                        <PersonAddIcon />
+                    <Avatar
+                        sx={{
+                            m: 1,
+                            bgcolor: themeColors.primary,
+                            width: 56,
+                            height: 56
+                        }}
+                    >
+                        <PersonAddIcon fontSize="large" />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
+                    <Typography
+                        component="h1"
+                        variant="h5"
+                        sx={{
+                            color: themeColors.primary,
+                            fontWeight: 'bold',
+                            mb: 2
+                        }}
+                    >
                         Registro de Cliente
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
                         <TextField
                             margin="normal"
                             required
@@ -88,6 +138,16 @@ export default function RegisterPage() {
                             autoFocus
                             value={nombre}
                             onChange={(e) => setNombre(e.target.value)}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -98,6 +158,16 @@ export default function RegisterPage() {
                             onChange={handleRutChange}
                             error={!!rutError}
                             helperText={rutError}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -109,6 +179,16 @@ export default function RegisterPage() {
                             onChange={(e) => setEmail(e.target.value)}
                             error={!!emailError}
                             helperText={emailError}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -119,9 +199,29 @@ export default function RegisterPage() {
                             autoComplete="new-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            sx={{
+                                '& .MuiOutlinedInput-root': {
+                                    '& fieldset': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    '&:hover fieldset': {
+                                        borderColor: themeColors.primary,
+                                    },
+                                }
+                            }}
                         />
                         {error && (
-                            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            <Typography
+                                color="error"
+                                variant="body2"
+                                sx={{
+                                    mt: 1,
+                                    color: themeColors.error,
+                                    backgroundColor: '#FFEBEE',
+                                    p: 1,
+                                    borderRadius: '4px'
+                                }}
+                            >
                                 {error}
                             </Typography>
                         )}
@@ -129,7 +229,22 @@ export default function RegisterPage() {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                py: 1.5,
+                                backgroundColor: themeColors.success,
+                                '&:hover': {
+                                    backgroundColor: '#2E7D32',
+                                },
+                                '&:disabled': {
+                                    backgroundColor: '#BDBDBD',
+                                    color: '#757575'
+                                },
+                                borderRadius: '8px',
+                                fontWeight: 'bold',
+                                fontSize: '1rem'
+                            }}
                             disabled={!!rutError}
                         >
                             Registrarse
@@ -138,7 +253,13 @@ export default function RegisterPage() {
                             <Button
                                 variant="text"
                                 onClick={() => navigate('/login')}
-                                sx={{ textTransform: 'none' }}
+                                sx={{
+                                    textTransform: 'none',
+                                    color: themeColors.primary,
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(10, 46, 90, 0.04)'
+                                    }
+                                }}
                             >
                                 ¿Ya tienes cuenta? Inicia sesión
                             </Button>

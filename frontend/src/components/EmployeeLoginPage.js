@@ -4,6 +4,22 @@ import { Lock as LockIcon } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
+const themeColors = {
+    primary: '#0A2E5A',      // Azul marino profundo
+    secondary: '#FFA000',    // Ámbar dorado
+    accent: '#26A69A',       // Verde turquesa
+    background: '#F5F7FA',   // Gris azulado claro
+    paper: '#FFFFFF',
+    textPrimary: '#212121',  // Negro suavizado
+    textSecondary: '#455A64',
+    success: '#2E7D32',      // Verde bosque
+    error: '#C62828',        // Rojo vino
+    warning: '#F57F17',      // Naranja mostaza
+    info: '#1565C0',         // Azul estándar
+    highlight: '#E8EAF6',    // Azul lavanda claro
+    border: '#90A4AE'        // Gris azulado
+};
+
 export default function EmployeeLoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -23,8 +39,6 @@ export default function EmployeeLoginPage() {
 
         try {
             await login(email, password);
-            // Si el login es exitoso, no necesitas hacer nada más aquí
-            // porque el AuthContext ya maneja la redirección
         } catch (error) {
             console.error('Login error:', error);
 
@@ -44,18 +58,46 @@ export default function EmployeeLoginPage() {
         }
     };
 
-
     return (
-        <Container component="main" maxWidth="xs">
-            <Paper elevation={3} sx={{ p: 4, mt: 8 }}>
-                <Box sx={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-                        <LockIcon />
+        <Container component="main" maxWidth="xs" sx={{ backgroundColor: themeColors.background, minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+            <Paper elevation={3} sx={{
+                p: 4,
+                width: '100%',
+                backgroundColor: themeColors.paper,
+                border: `1px solid ${themeColors.border}`,
+                borderRadius: '12px'
+            }}>
+                <Box sx={{
+                    display: 'flex',
+                    flexDirection: 'column',
+                    alignItems: 'center',
+                    '& .MuiTextField-root': {
+                        '& .MuiOutlinedInput-root': {
+                            '& fieldset': {
+                                borderColor: themeColors.border,
+                            },
+                            '&:hover fieldset': {
+                                borderColor: themeColors.primary,
+                            },
+                        }
+                    }
+                }}>
+                    <Avatar sx={{
+                        m: 1,
+                        bgcolor: themeColors.secondary,
+                        width: 56,
+                        height: 56
+                    }}>
+                        <LockIcon fontSize="large" />
                     </Avatar>
-                    <Typography component="h1" variant="h5">
+                    <Typography component="h1" variant="h5" sx={{
+                        color: themeColors.primary,
+                        fontWeight: 'bold',
+                        mb: 2
+                    }}>
                         Iniciar sesión como Empleado
                     </Typography>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 1, width: '100%' }}>
                         <TextField
                             margin="normal"
                             required
@@ -65,6 +107,11 @@ export default function EmployeeLoginPage() {
                             autoFocus
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
+                            sx={{
+                                '& .MuiInputLabel-root': {
+                                    color: themeColors.textSecondary,
+                                }
+                            }}
                         />
                         <TextField
                             margin="normal"
@@ -75,9 +122,14 @@ export default function EmployeeLoginPage() {
                             autoComplete="current-password"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            sx={{
+                                '& .MuiInputLabel-root': {
+                                    color: themeColors.textSecondary,
+                                }
+                            }}
                         />
                         {error && (
-                            <Typography color="error" variant="body2" sx={{ mt: 1 }}>
+                            <Typography color={themeColors.error} variant="body2" sx={{ mt: 1 }}>
                                 {error}
                             </Typography>
                         )}
@@ -85,8 +137,17 @@ export default function EmployeeLoginPage() {
                             type="submit"
                             fullWidth
                             variant="contained"
-                            color="secondary"
-                            sx={{ mt: 3, mb: 2 }}
+                            sx={{
+                                mt: 3,
+                                mb: 2,
+                                py: 1.5,
+                                backgroundColor: themeColors.secondary,
+                                '&:hover': {
+                                    backgroundColor: '#E65100',
+                                },
+                                fontWeight: 'bold',
+                                fontSize: '1rem'
+                            }}
                         >
                             Iniciar sesión
                         </Button>
