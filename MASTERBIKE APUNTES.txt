@@ -16,16 +16,16 @@ Funciones mínimas para el PMV:
 	Registro e inicio de sesión.
 	Solicitar arriendo de bicicleta (con fechas y tipo).
 	Solicitar reparación (con fecha, hora y descripción).
-	Ver estado de reparación.
+	Ver estado de reparación (NO FUNCIONAL).
 	
 - Técnico:
 	Ver solicitudes de reparación.
-	Cambiar estado de la reparación (en proceso, finalizada).
+	Cambiar estado de la reparación (recibida, en proceso, finalizada).
 - Vendedor:
-	Controlar stock de bicicletas y productos.
-	Registrar venta (productos y/o bicicletas).
+	Consultar stock de bicicletas y productos.
+	Registrar venta (productos y/o bicicletas), se excluye pagos.
 - Sistema:
-	Validación de stock para arriendos y ventas.
+	Validación de stock a la hora de realizar arriendos y ventas.
 	Gestión de usuarios.
 - Supervisor:
 	Consultar reporte diario simple (ventas y reparaciones).
@@ -34,11 +34,14 @@ Funcionalidades que quedan fuera del PMV:
 	- Recibir confirmación por correo.
 	- Seguimiento del despacho.
 	- Aplicación de descuentos o promociones.
-	- Reportes avanzados.
+	- Reportes avanzados (especificar).
 	- Integración real con pasarelas de pago (agregar api con métodos de pagos).
 	- Gestión de pagos (puede ser simulado).
+	- Confirmación de correo al crear cuenta.
+	- Correo recuperacion contraseña.
 	- Notificación automática por correo (mínimo: confirmaciones).
-
+	- Ingreso de ordenes de proveedores al inventario
+	- Interfaz para API de SHIMANO
 -------------------------------------------------------------------------------------------
 SpringBoot Config
 - Maven	
