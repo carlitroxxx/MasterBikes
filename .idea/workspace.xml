@@ -4,20 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="LOGINS SEPARADOS">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="CAMBIOS DEPLOY">
       <change beforePath="$PROJECT_DIR$/arriendo-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/arriendo-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/arriendo-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/arriendo-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/carrito-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/carrito-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/carrito-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/carrito-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/usuario-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/usuario-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/usuario-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/usuario-service/src/main/resources/application.properties" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ventas-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/ventas-service/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ventas-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ventas-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -139,7 +127,7 @@
       <workItem from="1752528614557" duration="1657000" />
       <workItem from="1752530665029" duration="49000" />
       <workItem from="1752530840186" duration="17000" />
-      <workItem from="1752533184759" duration="2661000" />
+      <workItem from="1752533184759" duration="2918000" />
     </task>
     <task id="LOCAL-00001" summary="CAMBIOS EN VISTA ARRIENDO VENDEDOR">
       <option name="closed" value="true" />
@@ -221,7 +209,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752530435659</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="CAMBIOS DEPLOY">
+      <option name="closed" value="true" />
+      <created>1752535932091</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1752535932091</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -256,6 +252,7 @@
     <MESSAGE value="LISTA DE ARRIENDOS" />
     <MESSAGE value="Filtro por estado Lista Arriendo" />
     <MESSAGE value="LOGINS SEPARADOS" />
-    <option name="LAST_COMMIT_MESSAGE" value="LOGINS SEPARADOS" />
+    <MESSAGE value="CAMBIOS DEPLOY" />
+    <option name="LAST_COMMIT_MESSAGE" value="CAMBIOS DEPLOY" />
   </component>
 </project>
