@@ -54,39 +54,19 @@ export default function GestionarBicicletas() {
     const [imagenesPreview, setImagenesPreview] = useState([]);
     const [imagenesSubir, setImagenesSubir] = useState([]);
     const [formTipoBicicleta, setFormTipoBicicleta] = useState('venta');
-    // Agregar esto junto con los otros estados al inicio del componente
     const [idDisponible, setIdDisponible] = useState(null);
     const [validandoId, setValidandoId] = useState(false);
+
+    // Sincronizar formTipoBicicleta con tipoBicicleta
+    useEffect(() => {
+        setFormTipoBicicleta(tipoBicicleta);
+    }, [tipoBicicleta]);
+
     // Cargar datos iniciales
     useEffect(() => {
         cargarBicicletas();
     }, []);
 
-    // Agregar esta función junto con las otras funciones del componente
-    const verificarDisponibilidadId = async (id) => {
-        if (!id) {
-            setIdDisponible(null);
-            return;
-        }
-        setValidandoId(true);
-        try {
-            if (formTipoBicicleta === 'venta') {
-                await axios.get(`${API_URL}/bicicletas/venta/${id}`);
-                setIdDisponible(false); // Si la petición no falla, el ID existe
-            } else {
-                await axios.get(`${API_URL}/bicicletas/arriendo/${id}`);
-                setIdDisponible(false); // Si la petición no falla, el ID existe
-            }
-        } catch (error) {
-            if (error.response && error.response.status === 404) {
-                setIdDisponible(true); // ID no encontrado, está disponible
-            } else {
-                setIdDisponible(null); // Error desconocido, no mostrar estado
-            }
-        } finally {
-            setValidandoId(false);
-        }
-    };
     const cargarBicicletas = async () => {
         try {
             const [ventaResponse, arriendoResponse] = await Promise.all([
@@ -102,20 +82,46 @@ export default function GestionarBicicletas() {
         }
     };
 
+    const verificarDisponibilidadId = async (id) => {
+        if (!id) {
+            setIdDisponible(null);
+            return;
+        }
+        setValidandoId(true);
+        try {
+            if (formTipoBicicleta === 'venta') {
+                await axios.get(`${API_URL}/bicicletas/venta/${id}`);
+                setIdDisponible(false);
+            } else {
+                await axios.get(`${API_URL}/bicicletas/arriendo/${id}`);
+                setIdDisponible(false);
+            }
+        } catch (error) {
+            if (error.response && error.response.status === 404) {
+                setIdDisponible(true);
+            } else {
+                setIdDisponible(null);
+            }
+        } finally {
+            setValidandoId(false);
+        }
+    };
+
     const handleGuardarEdicion = async () => {
         if (nuevaBicicleta && idDisponible === false) {
             showSnackbar('El ID ingresado ya está en uso', 'error');
             return;
         }
+
         const errors = {};
-        if (tipoBicicleta === 'arriendo') {
+        if (formTipoBicicleta === 'arriendo') {
             if (bicicletaEditar.valorGarantia < 0) {
                 errors.valorGarantia = 'Debe ser mayor o igual a 0';
             }
         }
         if (!bicicletaEditar.nombre) errors.nombre = 'Requerido';
 
-        if (tipoBicicleta === 'venta') {
+        if (formTipoBicicleta === 'venta') {
             if (bicicletaEditar.precio <= 0) errors.precio = 'Debe ser mayor a 0';
             if (bicicletaEditar.stock < 0) errors.stock = 'No puede ser negativo';
         } else {
@@ -128,9 +134,8 @@ export default function GestionarBicicletas() {
         }
 
         try {
-            if (tipoBicicleta === 'venta') {
+            if (formTipoBicicleta === 'venta') {
                 if (nuevaBicicleta) {
-                    // Crear nueva bicicleta de venta
                     const formData = new FormData();
                     formData.append('producto', JSON.stringify(bicicletaEditar));
                     imagenesSubir.forEach((file) => {
@@ -143,7 +148,6 @@ export default function GestionarBicicletas() {
                     });
                     setBicicletasVenta([...bicicletasVenta, response.data]);
                 } else {
-                    // Actualizar bicicleta de venta con imágenes
                     const formData = new FormData();
                     formData.append('producto', JSON.stringify(bicicletaEditar));
                     if (imagenesSubir.length > 0) {
@@ -159,13 +163,10 @@ export default function GestionarBicicletas() {
                     setBicicletasVenta(bicicletasVenta.map(b => b.id === bicicletaEditar.id ? response.data : b));
                 }
             } else {
-                // Código existente para arriendo...
                 if (nuevaBicicleta) {
-                    // Crear nueva bicicleta de arriendo
                     const response = await axios.post(`${API_URL}/arriendo`, bicicletaEditar);
                     setBicicletasArriendo([...bicicletasArriendo, response.data]);
                 } else {
-                    // Actualizar bicicleta de arriendo
                     const response = await axios.put(`${API_URL}/arriendo/${bicicletaEditar.id}`, bicicletaEditar);
                     setBicicletasArriendo(prev => prev.map(b =>
                         b.id === bicicletaEditar.id ? { ...response.data } : b
@@ -186,7 +187,6 @@ export default function GestionarBicicletas() {
         }
     };
 
-
     const handleNuevaBicicleta = () => {
         setFormTipoBicicleta(tipoBicicleta);
         setBicicletaEditar(formTipoBicicleta === 'venta' ? {
@@ -203,10 +203,18 @@ export default function GestionarBicicletas() {
             descripcion: '',
             tarifaDiaria: 0,
             disponible: true,
-            valorGarantia: 0  // Nuevo campo
+            valorGarantia: 0
         });
         setNuevaBicicleta(true);
         setOpenDrawer(true);
+    };
+
+    const handleEditarBicicleta = (bicicleta) => {
+        setFormTipoBicicleta(tipoBicicleta); // Asegura que el tipo sea correcto
+        setBicicletaEditar({ ...bicicleta });
+        setNuevaBicicleta(false);
+        setOpenDrawer(true);
+        setImagenesPreview(bicicleta.imagenesUrls || []);
     };
 
     const handleEliminar = async () => {
@@ -226,13 +234,6 @@ export default function GestionarBicicletas() {
         }
     };
 
-    const handleEditarBicicleta = (bicicleta) => {
-        setBicicletaEditar({ ...bicicleta });
-        setNuevaBicicleta(false);
-        setOpenDrawer(true);
-        setImagenesPreview(bicicleta.imagenesUrls || []);
-    };
-
     const handleImagenChange = (e) => {
         const files = Array.from(e.target.files);
         const previews = files.map(file => URL.createObjectURL(file));
@@ -243,8 +244,6 @@ export default function GestionarBicicletas() {
     const eliminarImagenPreview = async (index) => {
         try {
             const url = imagenesPreview[index];
-
-            // Si es una URL existente (no una preview local)
             if (url.startsWith('http')) {
                 await axios.delete(`${API_URL}/venta/${bicicletaEditar.id}/imagenes`, {
                     params: { urlImagen: url }
@@ -621,11 +620,12 @@ export default function GestionarBicicletas() {
                         </Typography>
                         <FormControl fullWidth size="small">
                             <InputLabel sx={{ color: themeColors.textSecondary }}>Tipo de bicicleta</InputLabel>
+
                             <Select
                                 value={formTipoBicicleta}
                                 onChange={(e) => setFormTipoBicicleta(e.target.value)}
                                 label="Tipo de bicicleta"
-                                disabled={!nuevaBicicleta}
+                                disabled
                                 sx={{
                                     '& .MuiOutlinedInput-root': {
                                         '& fieldset': {
@@ -634,17 +634,38 @@ export default function GestionarBicicletas() {
                                         '&:hover fieldset': {
                                             borderColor: themeColors.primary,
                                         },
+                                    },
+                                    '& .MuiSelect-select': {
+                                        color: themeColors.textPrimary,
+                                        '-webkit-text-fill-color': themeColors.textPrimary,
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        gap: '8px'
+                                    },
+                                    '& .Mui-disabled': {
+                                        color: themeColors.textPrimary,
+                                        opacity: 1 // Mantiene la opacidad completa
+                                    },
+                                    '& .MuiOutlinedInput-notchedOutline': {
+                                        borderColor: themeColors.border,
+                                    },
+                                    // Esto oculta SOLO la flecha del dropdown, no los iconos internos
+                                    '& .MuiSelect-icon': {
+                                        display: 'none'
                                     }
                                 }}
+                                IconComponent={null} // Elimina completamente el componente del icono
                             >
                                 <MenuItem value="venta">
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <SellIcon fontSize="small" color="primary" /> Venta
+                                        <SellIcon fontSize="small" color="primary" />
+                                        Venta
                                     </Box>
                                 </MenuItem>
                                 <MenuItem value="arriendo">
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                                        <RentIcon fontSize="small" color="primary" /> Arriendo
+                                        <RentIcon fontSize="small" color="primary" />
+                                        Arriendo
                                     </Box>
                                 </MenuItem>
                             </Select>
