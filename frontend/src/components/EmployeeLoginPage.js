@@ -5,40 +5,72 @@ import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
 const themeColors = {
-    primary: '#0A2E5A',      // Azul marino profundo
-    secondary: '#FFA000',    // Ámbar dorado
-    accent: '#26A69A',       // Verde turquesa
-    background: '#F5F7FA',   // Gris azulado claro
+    primary: '#0A2E5A',
+    secondary: '#FFA000',
+    accent: '#26A69A',
+    background: '#F5F7FA',
     paper: '#FFFFFF',
-    textPrimary: '#212121',  // Negro suavizado
+    textPrimary: '#212121',
     textSecondary: '#455A64',
-    success: '#2E7D32',      // Verde bosque
-    error: '#C62828',        // Rojo vino
-    warning: '#F57F17',      // Naranja mostaza
-    info: '#1565C0',         // Azul estándar
-    highlight: '#E8EAF6',    // Azul lavanda claro
-    border: '#90A4AE'        // Gris azulado
+    success: '#2E7D32',
+    error: '#C62828',
+    warning: '#F57F17',
+    info: '#1565C0',
+    highlight: '#E8EAF6',
+    border: '#90A4AE'
 };
 
 export default function EmployeeLoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const { login, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        // Validación básica del email
         if (!email.includes('@') || !email.includes('.')) {
             setError('Ingrese un correo electrónico válido');
             return;
         }
 
         try {
-            await login(email, password);
+            const result = await login(email, password);
+
+            if (!result.success) {
+                setError('Error al iniciar sesión');
+                return;
+            }
+
+            // Definir roles de empleado permitidos
+            const employeeRoles = ['SUPERVISOR', 'INVENTARIO', 'TECNICO', 'VENDEDOR'];
+
+            // Verificar si el usuario tiene un rol de empleado
+            if (!employeeRoles.includes(result.user.role)) {
+                setError('Acceso restringido. Solo empleados pueden iniciar sesión aquí.');
+                logout(); // Limpiamos la sesión
+                return;
+            }
+
+            // Redirigir según el rol específico
+            switch(result.user.role) {
+                case 'SUPERVISOR':
+                    navigate('/supervisor/panel');
+                    break;
+                case 'INVENTARIO':
+                    navigate('/inventario/recepcion');
+                    break;
+                case 'TECNICO':
+                    navigate('/tecnico/reparaciones');
+                    break;
+                case 'VENDEDOR':
+                    navigate('/vendedor/ventas');
+                    break;
+                default:
+                    navigate('/empleado/dashboard');
+            }
         } catch (error) {
             console.error('Login error:', error);
 
@@ -52,6 +84,9 @@ export default function EmployeeLoginPage() {
                 case 'No se pudo conectar al servidor':
                     setError('Error de conexión. Por favor, verifica tu conexión a internet.');
                     break;
+                case 'EMAIL_INVALID':
+                    setError('Ingrese un correo electrónico válido');
+                    break;
                 default:
                     setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
             }
@@ -59,7 +94,13 @@ export default function EmployeeLoginPage() {
     };
 
     return (
-        <Container component="main" maxWidth="xs" sx={{ backgroundColor: themeColors.background, minHeight: '100vh', display: 'flex', alignItems: 'center' }}>
+        <Container component="main" maxWidth="xs" sx={{
+            backgroundColor: themeColors.background,
+            minHeight: '100vh',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center'
+        }}>
             <Paper elevation={3} sx={{
                 p: 4,
                 width: '100%',

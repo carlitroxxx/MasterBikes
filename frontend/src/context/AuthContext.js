@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react';
-import {Navigate, useNavigate} from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -9,6 +9,7 @@ export function AuthProvider({ children }) {
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
 
+    // Cargar datos de usuario al iniciar
     useEffect(() => {
         const storedUser = localStorage.getItem('user');
         const token = localStorage.getItem('token');
@@ -20,101 +21,95 @@ export function AuthProvider({ children }) {
         setLoading(false);
     }, []);
 
+    // Función de login modificada
     const login = async (email, password) => {
         try {
-            // 1. Validación básica de entrada
+            // Validación básica
             if (!email || !password) {
                 throw new Error('Email y contraseña son requeridos');
             }
 
-            // 2. Petición al backend con manejo de errores mejorado
+            if (!email.includes('@') || !email.includes('.')) {
+                throw new Error('EMAIL_INVALID');
+            }
+
             const response = await axios.post('http://localhost:8081/api/auth/login', {
                 email,
                 password
             }, {
-                timeout: 10000, // 10 segundos de timeout
+                timeout: 10000,
                 headers: {
                     'Content-Type': 'application/json'
                 }
             });
 
-            // 3. Validación de la respuesta
             if (!response.data || !response.data.token) {
                 throw new Error('Respuesta inválida del servidor');
             }
 
             const { token, nombre, role, email: userEmail, rut, enabled } = response.data;
-            console.log("Datos recibidos: ",{ token, nombre, role, email: userEmail, rut, enabled });
-            // 4. Validación de datos mínimos
+
             if (!nombre || !role || !userEmail) {
                 throw new Error('Datos de usuario incompletos');
             }
 
-            // 5. Almacenamiento seguro (considera usar cookies seguras en producción)
+            if (!enabled) {
+                throw new Error('USER_DISABLED');
+            }
+
             const userData = {
                 nombre,
                 role,
                 email: userEmail,
-                rut: rut || null // Asegurarse de incluir el RUT aquí
+                rut: rut || null,
+                token // Incluimos el token en el objeto usuario
             };
 
-            // 6. Usar un servicio de almacenamiento seguro en lugar de localStorage directo
+            // Almacenamiento seguro
             localStorage.setItem('user', JSON.stringify(userData));
             localStorage.setItem('token', token);
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-            setUser(userData); // Esto debe incluir el RUT
+            setUser(userData);
 
-            // 8. Redirección mejorada
-            let redirectPath;
-            if (role === 'CLIENTE') {
-                redirectPath = '/cliente/shop';
-            } else if (role === 'SUPERVISOR') {
-                redirectPath = '/supervisor/panel';
-            } else if (role === 'INVENTARIO') {
-                redirectPath = '/inventario/recepcion';
-            } else if (role === 'TECNICO') {
-                redirectPath = "/tecnico/reparaciones";
-            } else if (role === 'VENDEDOR') {
-                redirectPath = "/vendedor/ventas";
-            } else {
-                redirectPath = `/${role.toLowerCase()}/dashboard`;
-            }
-
-            navigate(redirectPath);
-            return true;
+            return {
+                success: true,
+                user: userData
+            };
 
         } catch (error) {
-            console.error('Login error:', error.response);
+            console.error('Login error:', error);
 
-            // Manejo específico de errores
             if (error.response) {
-                const errorCode = error.response.data?.code;
-                if (errorCode === 'USER_DISABLED') {
+                const errorCode = error.response.data?.code || error.response.data?.message;
+                if (errorCode === 'USER_DISABLED' || errorCode.includes('deshabilitada')) {
                     throw new Error('USER_DISABLED');
-                } else {
+                } else if (errorCode === 'LOGIN_FAILED' || errorCode.includes('credenciales')) {
                     throw new Error('LOGIN_FAILED');
+                } else {
+                    throw new Error(error.response.data?.message || 'Error al iniciar sesión');
                 }
             } else if (error.request) {
                 throw new Error('No se pudo conectar al servidor');
             } else {
                 throw error;
             }
-
-            // Mostrar feedback al usuario (podrías usar un estado para esto)
-            return false;
         }
     };
 
+    // Función de registro
     const register = async (nombre, email, password, rut) => {
-        if (!email.includes('@') || !email.includes('.')) {
-            throw new Error('EMAIL_INVALID');
-        }
         try {
+            if (!email.includes('@') || !email.includes('.')) {
+                throw new Error('EMAIL_INVALID');
+            }
+
             const response = await axios.post('http://localhost:8081/api/auth/register', {
                 nombre,
                 email,
                 password,
                 rut
+            }, {
+                timeout: 10000
             });
 
             const { token, nombre: userName, role, email: userEmail, rut: userRut } = response.data;
@@ -123,7 +118,8 @@ export function AuthProvider({ children }) {
                 nombre: userName,
                 role,
                 email: userEmail,
-                rut: userRut
+                rut: userRut,
+                token
             };
 
             localStorage.setItem('user', JSON.stringify(userData));
@@ -131,13 +127,15 @@ export function AuthProvider({ children }) {
             axios.defaults.headers.common['Authorization'] = `Bearer ${token}`;
             setUser(userData);
 
-            navigate('/cliente/shop');
-            return true;
+            return {
+                success: true,
+                user: userData
+            };
+
         } catch (error) {
-            console.error('Login error:', error.response);
+            console.error('Register error:', error);
 
             if (error.response) {
-                // Verificamos el código de error específico
                 const errorCode = error.response.data?.code;
                 if (errorCode === 'EMAIL_EXISTS') {
                     throw new Error('EMAIL_EXISTS');
@@ -145,8 +143,6 @@ export function AuthProvider({ children }) {
                     throw new Error('RUT_EXISTS');
                 } else if (errorCode === 'RUT_REQUIRED') {
                     throw new Error('RUT_REQUIRED');
-                } else if (errorCode === 'EMAIL_INVALID'){
-                    throw new Error('EMAIL_INVALID');
                 } else {
                     throw new Error(error.response.data?.message || 'Error al registrarse');
                 }
@@ -158,7 +154,7 @@ export function AuthProvider({ children }) {
         }
     };
 
-
+    // Función de logout
     const logout = () => {
         localStorage.removeItem('user');
         localStorage.removeItem('token');
@@ -167,6 +163,7 @@ export function AuthProvider({ children }) {
         navigate('/login');
     };
 
+    // Actualizar perfil
     const updateProfile = async (nombre) => {
         try {
             const response = await axios.put(
@@ -175,7 +172,8 @@ export function AuthProvider({ children }) {
                 {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
+                    },
+                    timeout: 10000
                 }
             );
 
@@ -189,6 +187,7 @@ export function AuthProvider({ children }) {
         }
     };
 
+    // Cambiar contraseña
     const changePassword = async (currentPassword, newPassword, confirmPassword) => {
         try {
             await axios.put(
@@ -197,7 +196,8 @@ export function AuthProvider({ children }) {
                 {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`
-                    }
+                    },
+                    timeout: 10000
                 }
             );
             return true;
@@ -206,11 +206,12 @@ export function AuthProvider({ children }) {
             let errorMessage = 'Error al cambiar la contraseña';
 
             if (error.response) {
-                // Si el backend devuelve un mensaje específico
                 if (error.response.data.message.includes('contraseña actual')) {
                     errorMessage = 'La contraseña actual es incorrecta';
                 } else if (error.response.data.message.includes('coinciden')) {
                     errorMessage = 'Las nuevas contraseñas no coinciden';
+                } else if (error.response.data.message) {
+                    errorMessage = error.response.data.message;
                 }
             }
 
@@ -218,10 +219,30 @@ export function AuthProvider({ children }) {
         }
     };
 
+    // Verificar autenticación
+    const isAuthenticated = () => {
+        return !!user && !!localStorage.getItem('token');
+    };
+
+    // Verificar roles
+    const hasRole = (requiredRole) => {
+        if (!user) return false;
+        return user.role === requiredRole;
+    };
+
+    // Verificar cualquier rol de una lista
+    const hasAnyRole = (requiredRoles) => {
+        if (!user) return false;
+        return requiredRoles.includes(user.role);
+    };
+
     return (
         <AuthContext.Provider value={{
             user,
             loading,
+            isAuthenticated,
+            hasRole,
+            hasAnyRole,
             login,
             register,
             logout,

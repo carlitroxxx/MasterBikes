@@ -4,42 +4,55 @@ import { Lock as LockIcon } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
-// Definir la misma paleta de colores que en VentaForm
 const themeColors = {
-    primary: '#0A2E5A',      // Azul marino profundo
-    secondary: '#FFA000',    // Ámbar dorado
-    accent: '#26A69A',       // Verde turquesa
-    background: '#F5F7FA',   // Gris azulado claro
+    primary: '#0A2E5A',
+    secondary: '#FFA000',
+    accent: '#26A69A',
+    background: '#F5F7FA',
     paper: '#FFFFFF',
-    textPrimary: '#212121',  // Negro suavizado
+    textPrimary: '#212121',
     textSecondary: '#455A64',
-    success: '#2E7D32',      // Verde bosque
-    error: '#C62828',        // Rojo vino
-    warning: '#F57F17',      // Naranja mostaza
-    info: '#1565C0',         // Azul estándar
-    highlight: '#E8EAF6',    // Azul lavanda claro
-    border: '#90A4AE'        // Gris azulado
+    success: '#2E7D32',
+    error: '#C62828',
+    warning: '#F57F17',
+    info: '#1565C0',
+    highlight: '#E8EAF6',
+    border: '#90A4AE'
 };
 
 export default function LoginPage() {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
-    const { login } = useAuth();
+    const { login, logout } = useAuth();
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
 
-        // Validación básica del email
         if (!email.includes('@') || !email.includes('.')) {
             setError('Ingrese un correo electrónico válido');
             return;
         }
 
         try {
-            await login(email, password);
+            const result = await login(email, password);
+
+            if (!result.success) {
+                setError('Error al iniciar sesión');
+                return;
+            }
+
+            // Verificar si el usuario es un cliente
+            if (result.user.role !== 'CLIENTE') {
+                setError('Acceso restringido. Esta área es solo para clientes.');
+                logout(); // Limpiamos la sesión
+                return;
+            }
+
+            // Redirigir a la página de clientes
+            navigate('/cliente/shop');
         } catch (error) {
             console.error('Login error:', error);
 
@@ -52,6 +65,9 @@ export default function LoginPage() {
                     break;
                 case 'No se pudo conectar al servidor':
                     setError('Error de conexión. Por favor, verifica tu conexión a internet.');
+                    break;
+                case 'EMAIL_INVALID':
+                    setError('Ingrese un correo electrónico válido');
                     break;
                 default:
                     setError('Error al iniciar sesión. Por favor, inténtalo de nuevo.');
