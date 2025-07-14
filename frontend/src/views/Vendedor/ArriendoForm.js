@@ -338,11 +338,24 @@ const ArriendoForm = () => {
                 esClienteRegistrado: isExistingUser
             };
 
+            // Primero registrar el arriendo
             await axios.post('http://localhost:8084/api/arriendos', dataToSend);
+
+            // Luego actualizar el estado de la bicicleta a no disponible
+            await axios.put(`http://localhost:8080/api/inventario/arriendo/${form.bicicleta.id}`, {
+                ...form.bicicleta,
+                disponible: false
+            });
+
+            // Actualizar el estado local de las bicicletas
+            setBicicletas(prevBicicletas =>
+                prevBicicletas.filter(bici => bici.id !== form.bicicleta.id)
+            );
+
             setAlert({
                 open: true,
                 success: true,
-                message: 'Arriendo registrado correctamente.'
+                message: 'Arriendo registrado correctamente y bicicleta marcada como no disponible.'
             });
             resetForm();
         } catch (error) {
