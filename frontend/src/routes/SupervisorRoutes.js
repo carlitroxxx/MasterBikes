@@ -4,7 +4,6 @@ import { useAuth } from '../context/AuthContext';
 import PanelUsuarios from "../views/Supervisor/PanelUsuarios";
 import EmployeeRegisterPage from "../components/EmployeeRegisterPage";
 import React from "react";
-import EmployeeLoginPage from "../components/EmployeeLoginPage";
 import ListaVentas from "../views/Vendedor/ListaVentas";
 import ListaArriendos from "../views/Vendedor/ListaArriendos";
 
