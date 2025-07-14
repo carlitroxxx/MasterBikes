@@ -92,7 +92,9 @@ const ArriendoForm = () => {
         const fetchBicicletas = async () => {
             try {
                 const response = await axios.get('http://localhost:8080/api/inventario/arriendo');
-                setBicicletas(response.data);
+                // Filtra solo las bicicletas disponibles
+                const bicicletasDisponibles = response.data.filter(bici => bici.disponible === true);
+                setBicicletas(bicicletasDisponibles);
             } catch (error) {
                 setAlert({
                     open: true,
@@ -120,7 +122,17 @@ const ArriendoForm = () => {
 
     // Buscar usuario por RUT (versión básica)
     const buscarUsuarioPorRut = async (rut) => {
-        if (!rut || rut.length < 4) return;
+        if (!rut || rut.length < 4) {
+            // Limpiar campos si el RUT está vacío o es muy corto
+            setForm({
+                ...form,
+                clienteNombre: '',
+                clienteEmail: '',
+                clienteTelefono: ''
+            });
+            setIsExistingUser(false);
+            return;
+        }
 
         // Validar RUT antes de buscar
         const isValid = validateRut(rut);
@@ -132,6 +144,14 @@ const ArriendoForm = () => {
                 success: false,
                 message: 'El RUT ingresado no es válido'
             });
+            // Limpiar campos si el RUT no es válido
+            setForm({
+                ...form,
+                clienteNombre: '',
+                clienteEmail: '',
+                clienteTelefono: ''
+            });
+            setIsExistingUser(false);
             return;
         }
 
@@ -151,9 +171,25 @@ const ArriendoForm = () => {
                     success: true,
                     message: 'Usuario encontrado. Datos cargados automáticamente.'
                 });
+            } else {
+                // Limpiar campos si no se encuentra el usuario
+                setForm({
+                    ...form,
+                    clienteNombre: '',
+                    clienteEmail: '',
+                    clienteTelefono: ''
+                });
+                setIsExistingUser(false);
             }
         } catch (error) {
             setIsExistingUser(false);
+            // Limpiar campos si hay un error (excepto 404 que ya se maneja)
+            setForm({
+                ...form,
+                clienteNombre: '',
+                clienteEmail: '',
+                clienteTelefono: ''
+            });
             if (error.response?.status !== 404) {
                 setAlert({
                     open: true,
@@ -176,7 +212,19 @@ const ArriendoForm = () => {
     };
 
     const handleClearField = (fieldName) => {
-        setForm({ ...form, [fieldName]: '' });
+        if (fieldName === 'clienteRut') {
+            // Limpiar todos los campos relacionados cuando se borra el RUT
+            setForm({
+                ...form,
+                clienteRut: '',
+                clienteNombre: '',
+                clienteEmail: '',
+                clienteTelefono: ''
+            });
+            setIsExistingUser(false);
+        } else {
+            setForm({ ...form, [fieldName]: '' });
+        }
     };
 
     const handleBicicletaChange = (event, newValue) => {
@@ -196,6 +244,18 @@ const ArriendoForm = () => {
         setForm({ ...form, clienteRut: formattedValue });
         setRutValid(true); // Resetear validación al cambiar
         setErrors(prev => ({ ...prev, clienteRut: '' })); // Limpiar error específico
+
+        // Si el RUT está vacío, limpiar los demás campos
+        if (!cleanValue) {
+            setForm({
+                ...form,
+                clienteRut: formattedValue,
+                clienteNombre: '',
+                clienteEmail: '',
+                clienteTelefono: ''
+            });
+            setIsExistingUser(false);
+        }
     };
 
     const calcularTotal = () => {
@@ -343,7 +403,7 @@ const ArriendoForm = () => {
                                         {form.clienteRut && (
                                             <InputAdornment position="end">
                                                 <IconButton
-                                                    onClick={() => handleClearField('clienteRut')}
+                                                    onClick={() => handleClearField('clienteRut')} // ← Esto ya está correcto
                                                     edge="end"
                                                     sx={{ color: themeColors.textSecondary }}
                                                 >
@@ -622,13 +682,14 @@ const ArriendoForm = () => {
                                     precioDia: newValue?.tarifaDiaria || ''
                                 });
                             }}
+                            noOptionsText="No hay bicicletas disponibles"
                             sx={{ minWidth: '516px' }}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
                                     label="Bicicleta"
                                     error={!!errors.bicicleta}
-                                    helperText={errors.bicicleta}
+                                    helperText={errors.bicicleta || (bicicletas.length === 0 ? "No hay bicicletas disponibles" : "")}
                                     size="medium"
                                     InputProps={{
                                         ...params.InputProps,
