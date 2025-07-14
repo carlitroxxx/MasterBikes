@@ -71,6 +71,7 @@ export default function VentaForm({ onVentaCreada }) {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
 
+    // Modificar el efecto para actualizar productos disponibles cuando cambia productosSeleccionados
     useEffect(() => {
         const fetchProductos = async () => {
             try {
@@ -94,8 +95,7 @@ export default function VentaForm({ onVentaCreada }) {
         };
 
         fetchProductos();
-    }, []);
-
+    }, [productosSeleccionados]); // Añadir productosSeleccionados como dependencia
     const handleProductoChange = (event, newValue) => {
         if (newValue) {
             if (newValue.stock <= 0) {
@@ -146,15 +146,22 @@ export default function VentaForm({ onVentaCreada }) {
         }));
     };
 
+    // Modificar la función agregarProducto para incluir validación de stock acumulado
     const agregarProducto = () => {
         if (!productoActual.id || productoActual.cantidad <= 0) {
             setError('Selecciona un producto y una cantidad válida');
             return;
         }
 
+        // Calcular el total de unidades ya agregadas para este producto
+        const unidadesYaAgregadas = productosSeleccionados.reduce((total, p) =>
+            p.id === productoActual.id ? total + p.cantidad : total, 0);
 
-        if (productoActual.cantidad > productoActual.stockDisponible) {
-            setError(`No hay suficiente stock. Disponible: ${productoActual.stockDisponible}`);
+        // Calcular el total que tendríamos después de agregar
+        const totalUnidades = unidadesYaAgregadas + productoActual.cantidad;
+
+        if (totalUnidades > productoActual.stockDisponible) {
+            setError(`No hay suficiente stock. Disponible: ${productoActual.stockDisponible} (Ya agregaste ${unidadesYaAgregadas})`);
             return;
         }
 
@@ -164,7 +171,11 @@ export default function VentaForm({ onVentaCreada }) {
             setProductosSeleccionados(prev =>
                 prev.map(p =>
                     p.id === productoActual.id
-                        ? { ...p, cantidad: p.cantidad + productoActual.cantidad, precioTotal: (p.cantidad + productoActual.cantidad) * p.precioUnitario }
+                        ? {
+                            ...p,
+                            cantidad: p.cantidad + productoActual.cantidad,
+                            precioTotal: (p.cantidad + productoActual.cantidad) * p.precioUnitario
+                        }
                         : p
                 )
             );
@@ -190,10 +201,10 @@ export default function VentaForm({ onVentaCreada }) {
         });
     };
 
+// Modificar la función eliminarProducto para actualizar el stock disponible
     const eliminarProducto = (id) => {
         setProductosSeleccionados(prev => prev.filter(p => p.id !== id));
     };
-
     const calcularTotal = () => {
         return productosSeleccionados.reduce((total, producto) => total + producto.precioTotal, 0);
     };
@@ -256,6 +267,17 @@ export default function VentaForm({ onVentaCreada }) {
         setError('');
 
         try {
+            const stockErrors = productosSeleccionados.map(p => {
+                const productoOriginal = productosDisponibles.find(prod => prod.id === p.id);
+                if (!productoOriginal || p.cantidad > productoOriginal.stock) {
+                    return `No hay suficiente stock para ${p.nombre} (Solicitado: ${p.cantidad}, Disponible: ${productoOriginal?.stock || 0})`;
+                }
+                return null;
+            }).filter(Boolean);
+
+            if (stockErrors.length > 0) {
+                throw new Error(stockErrors.join('\n'));
+            }
             if (!clienteGuardado) {
                 throw new Error('Debes ingresar los datos del cliente');
             }
@@ -373,7 +395,7 @@ export default function VentaForm({ onVentaCreada }) {
                 <Box component="form" sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
                     <Autocomplete
                         options={productosFiltrados}
-                        getOptionLabel={(option) => `${option.id} - ${option.nombre}`}
+                        getOptionLabel={(option) => `${option.id} - ${option.nombre} (Stock: ${option.stock})`}
                         value={productosDisponibles.find(p => p.id === productoActual.id) || null}
                         onChange={handleProductoChange}
                         onInputChange={handleFilterChange}
