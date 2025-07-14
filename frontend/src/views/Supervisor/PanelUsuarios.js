@@ -96,12 +96,24 @@ export default function PanelUsuarios() {
     };
 
     const handleClickEstado = (usuario) => {
+        // Verificar si el usuario es un supervisor
+        if (usuario.role === 'SUPERVISOR') {
+            showSnackbar('No puedes cambiar el estado de una cuenta de supervisor', 'warning');
+            return;
+        }
+
         setUsuarioSeleccionado(usuario);
         setNuevoEstado(!usuario.enabled);
         setDialogAbierto(true);
     };
-
     const confirmarCambioEstado = async () => {
+        // Verificación adicional por seguridad
+        if (usuarioSeleccionado?.role === 'SUPERVISOR') {
+            showSnackbar('Operación no permitida para cuentas de supervisor', 'error');
+            setDialogAbierto(false);
+            return;
+        }
+
         try {
             await axios.patch(`${API_URL}/users/${usuarioSeleccionado.id}/status`, {
                 enabled: nuevoEstado
@@ -128,6 +140,8 @@ export default function PanelUsuarios() {
     };
 
     const renderEstado = (usuario) => {
+        const esSupervisor = usuario.role === 'SUPERVISOR';
+
         return (
             <Chip
                 icon={usuario.enabled ?
@@ -136,13 +150,14 @@ export default function PanelUsuarios() {
                 label={usuario.enabled ? "Activo" : "Inactivo"}
                 color={usuario.enabled ? "success" : "error"}
                 size="small"
-                clickable
-                onClick={() => handleClickEstado(usuario)}
+                clickable={!esSupervisor}
+                onClick={!esSupervisor ? () => handleClickEstado(usuario) : undefined}
                 sx={{
                     '&:hover': {
-                        opacity: 0.8,
-                        cursor: 'pointer'
-                    }
+                        opacity: esSupervisor ? 1 : 0.8,
+                        cursor: esSupervisor ? 'default' : 'pointer'
+                    },
+                    opacity: esSupervisor ? 0.7 : 1
                 }}
             />
         );
