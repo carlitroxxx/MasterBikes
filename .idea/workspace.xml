@@ -4,11 +4,20 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="Filtro por estado Lista Arriendo">
+    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="LOGINS SEPARADOS">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/EmployeeLoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/EmployeeLoginPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/LoginPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/LoginPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arriendo-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/arriendo-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arriendo-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/arriendo-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/carrito-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/carrito-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/carrito-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/carrito-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventario-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usuario-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/usuario-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usuario-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/usuario-service/src/main/resources/application.properties" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ventas-service/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/ventas-service/Dockerfile" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ventas-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/ventas-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -50,23 +59,23 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found": "Database connection parameters found",
-    "Notification.DoNotAsk-DatabaseConfigFileWatcher.found": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "git-widget-placeholder": "master",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "run.configurations.included.in.services": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;Notification.DisplayName-DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;Database connection parameters found&quot;,
+    &quot;Notification.DoNotAsk-DatabaseConfigFileWatcher.found&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;run.configurations.included.in.services&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunDashboard">
     <option name="configurationTypes">
       <set>
@@ -127,7 +136,10 @@
       <updated>1752450598839</updated>
       <workItem from="1752450601001" duration="3859000" />
       <workItem from="1752504731999" duration="17523000" />
-      <workItem from="1752528614557" duration="1516000" />
+      <workItem from="1752528614557" duration="1657000" />
+      <workItem from="1752530665029" duration="49000" />
+      <workItem from="1752530840186" duration="17000" />
+      <workItem from="1752533184759" duration="2661000" />
     </task>
     <task id="LOCAL-00001" summary="CAMBIOS EN VISTA ARRIENDO VENDEDOR">
       <option name="closed" value="true" />
@@ -201,7 +213,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752528748024</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="LOGINS SEPARADOS">
+      <option name="closed" value="true" />
+      <created>1752530435659</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1752530435659</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -212,7 +232,15 @@
       <map>
         <entry key="MAIN">
           <value>
-            <State />
+            <State>
+              <option name="COLUMN_ID_WIDTH">
+                <map>
+                  <entry key="Table.Default.Author.ColumnIdWidth" value="110" />
+                  <entry key="Table.Default.Date.ColumnIdWidth" value="103" />
+                  <entry key="Table.GitHub.CommitStatus.ColumnIdWidth" value="102" />
+                </map>
+              </option>
+            </State>
           </value>
         </entry>
       </map>
@@ -227,6 +255,7 @@
     <MESSAGE value="FIX SUPERVISOR GESTION CUENTAS" />
     <MESSAGE value="LISTA DE ARRIENDOS" />
     <MESSAGE value="Filtro por estado Lista Arriendo" />
-    <option name="LAST_COMMIT_MESSAGE" value="Filtro por estado Lista Arriendo" />
+    <MESSAGE value="LOGINS SEPARADOS" />
+    <option name="LAST_COMMIT_MESSAGE" value="LOGINS SEPARADOS" />
   </component>
 </project>

@@ -1,63 +1,47 @@
 version: '3.8'
 
 services:
-  mongo:
-    image: mongo:latest
-    container_name: mongo
-    ports:
-      - "27017:27017"
-    volumes:
-      - mongo_data:/data/db
-
   inventario-service:
     build: ./inventario-service
     container_name: inventario-service
     ports:
       - "8080:8080"
-    depends_on:
-      - mongo
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes_inventario
+      - SPRING_DATA_MONGODB_URI=${MONGO_URI_INVENTARIO}
+      - APP_INVENTARIO_SERVICE_URL=http://inventario-service:8080/api/inventario
+
   usuario-service:
     build: ./usuario-service
     container_name: usuario-service
     ports:
       - "8081:8081"
-    depends_on:
-      - mongo
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes_usuario
+      - SPRING_DATA_MONGODB_URI=${MONGO_URI_USUARIO}
 
   ventas-service:
     build: ./ventas-service
     container_name: ventas-service
     ports:
       - "8082:8082"
-    depends_on:
-      - mongo
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes_ventas
+      - SPRING_DATA_MONGODB_URI=${MONGO_URI_VENTAS}
 
   arriendo-service:
     build: ./arriendo-service
     container_name: arriendo-service
     ports:
       - "8084:8084"
-    depends_on:
-      - mongo
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes_arriendo
+      - SPRING_DATA_MONGODB_URI=${MONGO_URI_ARRIENDO}
       - APP_INVENTARIO_SERVICE_URL=http://inventario-service:8080/api/inventario
+
   carrito-service:
     build: ./carrito-service
     container_name: carrito-service
     ports:
       - "8083:8083"
-    depends_on:
-      - mongo
-      - inventario-service
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://mongo:27017/masterbikes_carrito
+      - SPRING_DATA_MONGODB_URI=${MONGO_URI_CARRITO}
       - APP_INVENTARIO_SERVICE_URL=http://inventario-service:8080/api/inventario
 
   frontend:
@@ -67,17 +51,8 @@ services:
     container_name: react-frontend
     ports:
       - "3000:3000"
-    volumes:
-      - ./frontend:/app
-      - /app/node_modules
     environment:
-      - CHOKIDAR_USEPOLLING=true
-      - WATCHPACK_POLLING=true
-      - NODE_ENV=development
-    command: npm start
+      - REACT_APP_API_URL=${REACT_APP_API_URL}
     depends_on:
       - inventario-service
       - carrito-service
-
-volumes:
-  mongo_data:
