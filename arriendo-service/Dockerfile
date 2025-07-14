@@ -3,8 +3,7 @@ FROM maven:3.9.6-eclipse-temurin-17 AS build
 WORKDIR /app
 COPY arriendo-service/pom.xml .
 COPY arriendo-service/src ./src
-RUN mvn clean package -DskipTests
-
+RUN mvn clean package -DskipTests -Dresource.delimiter=@ -DskipResourceFiltering=true
 # Etapa 2: Imagen final
 FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
