@@ -21,7 +21,6 @@ function App() {
                 <CartProvider>
                 <Navbar />
                 <Routes>
-
                     <Route path="/login" element={<LoginPage />} />
                     <Route path="/registro" element={<RegisterPage />} />
                     <Route path="login/emp" element={<EmployeeLoginPage />} />

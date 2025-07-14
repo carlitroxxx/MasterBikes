@@ -10,5 +10,6 @@ public interface ArriendoRepository extends MongoRepository<Arriendo, String> {
     Optional<Arriendo> findTopByOrderByNumeroArriendoDesc();
     List<Arriendo> findByClienteRut(String rut); // Nuevo método
     List<Arriendo> findByEstado(String estado);
+    List<Arriendo> findAll();
 }
 

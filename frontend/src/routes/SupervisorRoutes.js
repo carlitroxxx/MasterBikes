@@ -6,6 +6,7 @@ import EmployeeRegisterPage from "../components/EmployeeRegisterPage";
 import React from "react";
 import EmployeeLoginPage from "../components/EmployeeLoginPage";
 import ListaVentas from "../views/Vendedor/ListaVentas";
+import ListaArriendos from "../views/Vendedor/ListaArriendos";
 
 
 
@@ -21,7 +22,9 @@ export default function SupervisorRoutes() {
             <Routes>
                 <Route path="panel" element={<PanelUsuarios />} />
                 <Route path="registro" element={<EmployeeRegisterPage />} />
-                <Route path="/ventas/resumen" element={<ListaVentas />} />
+                <Route path="ventas/resumen" element={<ListaVentas />} />
+                <Route path="arriendos/list" element={<ListaArriendos />} />
+
 
             </Routes>
         </Container>

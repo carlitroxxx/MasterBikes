@@ -33,6 +33,11 @@ public class ArriendoController {
             return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
+    @GetMapping
+    public ResponseEntity<List<Arriendo>> obtenerTodosArriendos() {
+        List<Arriendo> arriendos = arriendoService.obtenerTodosArriendos();
+        return ResponseEntity.ok(arriendos);
+    }
 
 
     @GetMapping("/{id}")

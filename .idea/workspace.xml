@@ -4,14 +4,27 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="BUSCADOR Y FILTRO EN RESUMEN DE VENTAS">
+    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="FIX SUPERVISOR GESTION CUENTAS">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arriendo-service/src/main/java/com/masterbikes/arriendo_service/controller/ArriendoController.java" beforeDir="false" afterPath="$PROJECT_DIR$/arriendo-service/src/main/java/com/masterbikes/arriendo_service/controller/ArriendoController.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arriendo-service/src/main/java/com/masterbikes/arriendo_service/repository/ArriendoRepository.java" beforeDir="false" afterPath="$PROJECT_DIR$/arriendo-service/src/main/java/com/masterbikes/arriendo_service/repository/ArriendoRepository.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/arriendo-service/src/main/java/com/masterbikes/arriendo_service/service/ArriendoService.java" beforeDir="false" afterPath="$PROJECT_DIR$/arriendo-service/src/main/java/com/masterbikes/arriendo_service/service/ArriendoService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/App.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/App.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/components/Navbar.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/Navbar.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/routes/SupervisorRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/SupervisorRoutes.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/routes/VendedorRoutes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/routes/VendedorRoutes.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="JavaScript File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -115,7 +128,7 @@
       <option name="presentableId" value="Default" />
       <updated>1752450598839</updated>
       <workItem from="1752450601001" duration="3859000" />
-      <workItem from="1752504731999" duration="11389000" />
+      <workItem from="1752504731999" duration="16028000" />
     </task>
     <task id="LOCAL-00001" summary="CAMBIOS EN VISTA ARRIENDO VENDEDOR">
       <option name="closed" value="true" />
@@ -157,7 +170,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752522232887</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="FIX SUPERVISOR GESTION CUENTAS">
+      <option name="closed" value="true" />
+      <created>1752522381881</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1752522381881</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -169,6 +190,7 @@
     <MESSAGE value="CAMBIOS EN VISTA ArriendoForm.js" />
     <MESSAGE value="VALIDACION EN VENTA FORM" />
     <MESSAGE value="BUSCADOR Y FILTRO EN RESUMEN DE VENTAS" />
-    <option name="LAST_COMMIT_MESSAGE" value="BUSCADOR Y FILTRO EN RESUMEN DE VENTAS" />
+    <MESSAGE value="FIX SUPERVISOR GESTION CUENTAS" />
+    <option name="LAST_COMMIT_MESSAGE" value="FIX SUPERVISOR GESTION CUENTAS" />
   </component>
 </project>

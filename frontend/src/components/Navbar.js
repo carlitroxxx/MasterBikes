@@ -408,6 +408,19 @@ export default function Navbar() {
                         >
                             ARRIENDO
                         </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/vendedor/arriendos/list"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            LISTA ARRIENDOS
+                        </Button>
 
                     </Box>
                     <Box>
@@ -594,6 +607,19 @@ export default function Navbar() {
                             }}
                         >
                             RESUMEN VENTAS
+                        </Button>
+                        <Button
+                            color="inherit"
+                            component={Link}
+                            to="/supervisor/arriendos/list"
+                            sx={{
+                                '&:hover': {
+                                    backgroundColor: themeColors.secondary,
+                                    color: themeColors.textPrimary
+                                }
+                            }}
+                        >
+                            LISTA ARRIENDOS
                         </Button>
 
                     </Box>

@@ -9,6 +9,7 @@ import ArriendoForm from "../views/Vendedor/ArriendoForm";
 import VentaForm from "../views/Vendedor/VentaForm";
 import GestionarBicicletas from "../views/Inventario/GestionarBicicletas";
 import GestionarComponentes from "../views/Inventario/GestionarComponentes";
+import ListaArriendos from "../views/Vendedor/ListaArriendos";
 
 export default function VendedorRoutes() {
     const { user } = useAuth();
@@ -25,6 +26,8 @@ export default function VendedorRoutes() {
                 <Route path="ventas/resumen" element={<ListaVentas />} />
                 <Route path="recepcion" element={<GestionarBicicletas />} />
                 <Route path="ingresos" element={<GestionarComponentes />} />
+                <Route path="arriendos/list" element={<ListaArriendos />} />
+                
             </Routes>
         </Container>
     );

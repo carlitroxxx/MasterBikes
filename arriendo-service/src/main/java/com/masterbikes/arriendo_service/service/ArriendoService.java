@@ -5,6 +5,7 @@ import com.masterbikes.arriendo_service.model.Arriendo;
 import com.masterbikes.arriendo_service.repository.ArriendoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.ResourceAccessException;
@@ -31,6 +32,9 @@ public class ArriendoService {
         this.restTemplate = restTemplate;
     }
 
+    public List<Arriendo> obtenerTodosArriendos() {
+        return arriendoRepository.findAll(Sort.by(Sort.Direction.DESC, "fechaCreacion"));
+    }
     public Arriendo crearArriendo(ArriendoRequest request) {
         // Validaciones básicas
         if (request.getClienteRut() == null || request.getClienteRut().isEmpty()) {
