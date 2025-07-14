@@ -4,9 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="CAMBIOS EN VISTA ArriendoForm.js">
+    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="VALIDACION EN VENTA FORM">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ListaVentas.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ListaVentas.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -115,7 +115,7 @@
       <option name="presentableId" value="Default" />
       <updated>1752450598839</updated>
       <workItem from="1752450601001" duration="3859000" />
-      <workItem from="1752504731999" duration="9882000" />
+      <workItem from="1752504731999" duration="11039000" />
     </task>
     <task id="LOCAL-00001" summary="CAMBIOS EN VISTA ARRIENDO VENDEDOR">
       <option name="closed" value="true" />
@@ -141,7 +141,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752519919406</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="VALIDACION EN VENTA FORM">
+      <option name="closed" value="true" />
+      <created>1752520697399</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1752520697399</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -151,6 +159,7 @@
     <MESSAGE value="CAMBIOS EN VISTA ARRIENDO VENDEDOR" />
     <MESSAGE value="CAMBIOS EN VISTA inventario" />
     <MESSAGE value="CAMBIOS EN VISTA ArriendoForm.js" />
-    <option name="LAST_COMMIT_MESSAGE" value="CAMBIOS EN VISTA ArriendoForm.js" />
+    <MESSAGE value="VALIDACION EN VENTA FORM" />
+    <option name="LAST_COMMIT_MESSAGE" value="VALIDACION EN VENTA FORM" />
   </component>
 </project>
