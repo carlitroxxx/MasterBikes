@@ -1,16 +1,25 @@
-FROM node:20-alpine
+FROM node:18-alpine
 
+# Establece el directorio de trabajo
 WORKDIR /app
-COPY frontend/package*.json ./
+
+# 1. Copia SOLO los archivos necesarios para instalar dependencias
+COPY package.json package-lock.json ./
+
+# 2. Instala dependencias
 RUN npm install
+
+# 3. Copia el resto de los archivos
 COPY . .
 
-# Build de producción
+# 4. Verifica que package.json existe
+RUN ls -la && cat package.json
+
+# 5. Ejecuta el build
 RUN npm run build
 
-# Servir los archivos estáticos (usando 'serve')
+# 6. Instala serve para producción
 RUN npm install -g serve
-#ENV NODE_ENV=production
+
 EXPOSE 3000
-#CMD ["npx", "serve", "-s", "build", "-l", "3000"]
 CMD ["serve", "-s", "build", "-l", "3000"]
