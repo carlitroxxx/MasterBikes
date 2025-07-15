@@ -4,10 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="CAMBIOS DE ENDPOINT FRONT DEPLOY">
+    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="CAMBIOS DE cors FRONT DEPLOY">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/usuario-service/src/main/java/com/masterbikes/usuario_service/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/usuario-service/src/main/java/com/masterbikes/usuario_service/config/SecurityConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ventas-service/src/main/java/com/masterbikes/ventas_service/config/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/ventas-service/src/main/java/com/masterbikes/ventas_service/config/CorsConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" beforeDir="false" afterPath="$PROJECT_DIR$/inventario-service/src/main/resources/application.properties" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -141,7 +140,7 @@
       <workItem from="1752530665029" duration="49000" />
       <workItem from="1752530840186" duration="17000" />
       <workItem from="1752533184759" duration="7888000" />
-      <workItem from="1752541624125" duration="3325000" />
+      <workItem from="1752541624125" duration="4656000" />
     </task>
     <task id="LOCAL-00001" summary="CAMBIOS EN VISTA ARRIENDO VENDEDOR">
       <option name="closed" value="true" />
@@ -367,7 +366,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752543809515</updated>
     </task>
-    <option name="localTasksCounter" value="29" />
+    <task id="LOCAL-00029" summary="CAMBIOS DE cors FRONT DEPLOY">
+      <option name="closed" value="true" />
+      <created>1752545246775</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1752545246775</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -405,6 +412,7 @@
     <MESSAGE value="CAMBIOS DEPLOY" />
     <MESSAGE value="test" />
     <MESSAGE value="CAMBIOS DE ENDPOINT FRONT DEPLOY" />
-    <option name="LAST_COMMIT_MESSAGE" value="CAMBIOS DE ENDPOINT FRONT DEPLOY" />
+    <MESSAGE value="CAMBIOS DE cors FRONT DEPLOY" />
+    <option name="LAST_COMMIT_MESSAGE" value="CAMBIOS DE cors FRONT DEPLOY" />
   </component>
 </project>
