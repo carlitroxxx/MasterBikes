@@ -37,7 +37,7 @@ const themeColors = {
     border: '#90A4AE'        // Gris azulado
 };
 
-const API_URL = 'http://localhost:8080/api/inventario';
+const API_URL = 'http://mb-inventario.onrender.com/api/inventario';
 
 export default function GestionarComponentes() {
     const [productos, setProductos] = useState([]);

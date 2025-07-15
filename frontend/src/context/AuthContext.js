@@ -33,7 +33,7 @@ export function AuthProvider({ children }) {
                 throw new Error('EMAIL_INVALID');
             }
 
-            const response = await axios.post('http://localhost:8081/api/auth/login', {
+            const response = await axios.post('https://mb-usuario.onrender.com/api/auth/login', {
                 email,
                 password
             }, {
@@ -103,7 +103,7 @@ export function AuthProvider({ children }) {
                 throw new Error('EMAIL_INVALID');
             }
 
-            const response = await axios.post('http://localhost:8081/api/auth/register', {
+            const response = await axios.post('https://mb-usuario.onrender.com/api/auth/register', {
                 nombre,
                 email,
                 password,
@@ -167,7 +167,7 @@ export function AuthProvider({ children }) {
     const updateProfile = async (nombre) => {
         try {
             const response = await axios.put(
-                'http://localhost:8081/api/auth/update-profile',
+                'https://mb-usuario.onrender.com/api/auth/update-profile',
                 { nombre },
                 {
                     headers: {
@@ -191,7 +191,7 @@ export function AuthProvider({ children }) {
     const changePassword = async (currentPassword, newPassword, confirmPassword) => {
         try {
             await axios.put(
-                'http://localhost:8081/api/auth/change-password',
+                'https://mb-usuario.onrender.com/api/auth/change-password',
                 { currentPassword, newPassword, confirmPassword },
                 {
                     headers: {

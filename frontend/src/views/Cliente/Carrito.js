@@ -46,7 +46,7 @@ export default function Carrito() {
     const getProductStock = async (productoId) => {
         try {
             const response = await axios.get(
-                `http://localhost:8080/api/inventario/venta/producto/${productoId}`,
+                `http://mb-inventario.onrender.com/api/inventario/venta/producto/${productoId}`,
                 {
                     headers: {
                         'Authorization': `Bearer ${localStorage.getItem('token')}`

@@ -50,7 +50,7 @@ export default function VentaForm({ onVentaCreada }) {
     const [productosFiltrados, setProductosFiltrados] = useState([]);
     const [productosSeleccionados, setProductosSeleccionados] = useState([]);
     const [openBoletaModal, setOpenBoletaModal] = useState(false);
-    const API_BASE_URL = "http://localhost:8082/api/ventas";
+    const API_BASE_URL = "http://mb-ventas.onrender.com/api/ventas";
     const [productoActual, setProductoActual] = useState({
         id: '',
         nombre: '',
@@ -76,7 +76,7 @@ export default function VentaForm({ onVentaCreada }) {
         const fetchProductos = async () => {
             try {
                 setLoading(true);
-                const response = await axios.get("http://localhost:8080/api/inventario/venta");
+                const response = await axios.get("http://mb-inventario.onrender.com/api/inventario/venta");
                 const productos = response.data.map(p => ({
                     id: p.id,
                     nombre: p.nombre,

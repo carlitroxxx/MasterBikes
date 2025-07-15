@@ -25,7 +25,7 @@ import { Visibility, Search, ArrowUpward, ArrowDownward } from '@mui/icons-mater
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-const API_BASE_URL = "http://localhost:8082/api/ventas";
+const API_BASE_URL = "http://mb-ventas.onrender.com/api/ventas";
 
 // Paleta de colores idéntica a VentaForm.js
 const themeColors = {

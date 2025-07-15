@@ -65,7 +65,7 @@ export default function EmployeeRegisterPage() {
             return;
         }
         try {
-            const response = await axios.post('http://localhost:8081/api/auth/register/employee', {
+            const response = await axios.post('https://mb-usuario.onrender.com/api/auth/register/employee', {
                 nombre,
                 email,
                 password,

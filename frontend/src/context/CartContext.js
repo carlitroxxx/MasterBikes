@@ -10,7 +10,7 @@ export function CartProvider({ children }) {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
 
-    const API_BASE_URL = 'http://localhost:8083/api/carrito';
+    const API_BASE_URL = 'https://mb-carrito.onrender.com/api/carrito';
 
     const fetchCart = useCallback(async () => {
         if (!user) {
@@ -99,7 +99,7 @@ export function CartProvider({ children }) {
     const getProductStock = async (productoId) => {
         try {
             const response = await axios.get(
-                `http://localhost:8080/api/inventario/venta/producto/${productoId}`
+                `https://mb-inventario.onrender.com/api/inventario/venta/producto/${productoId}`
             );
             return response.data.stock;
         } catch (err) {
