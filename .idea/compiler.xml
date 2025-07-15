@@ -8,26 +8,18 @@
         <outputRelativeToContentRoot value="true" />
         <module name="carrito-service" />
       </profile>
-      <profile name="Annotation profile for inventario-service" enabled="true">
+      <profile name="Annotation profile for usuario-service" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
           <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
         </processorPath>
         <module name="usuario-service" />
-        <module name="inventario-service" />
-      </profile>
-      <profile name="Annotation profile for arriendo-service" enabled="true">
-        <sourceOutputDir name="target/generated-sources/annotations" />
-        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
-        <outputRelativeToContentRoot value="true" />
-        <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.38/lombok-1.18.38.jar" />
-        </processorPath>
-        <module name="arriendo-service" />
         <module name="ventas-service" />
+        <module name="inventario-service" />
+        <module name="arriendo-service" />
       </profile>
     </annotationProcessing>
   </component>
