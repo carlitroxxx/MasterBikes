@@ -68,7 +68,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of(
                 "http://localhost:3000",  // React development server
                 "http://127.0.0.1:3000",
-                "https://tudominio.com"   // Cambia esto por tu dominio en producción
+                "https://mb-frontend-y1ps.onrender.com"   // Cambia esto por tu dominio en producción
         ));
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS", "PATCH"));
         configuration.setAllowedHeaders(Arrays.asList(

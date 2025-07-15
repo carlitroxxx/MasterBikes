@@ -4,20 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="test">
+    <list default="true" id="e8c7a73d-70b9-4962-addc-a9852fab3ea7" name="Changes" comment="CAMBIOS DE ENDPOINT FRONT DEPLOY">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/components/EmployeeRegisterPage.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/components/EmployeeRegisterPage.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/context/AuthContext.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/context/CartContext.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/context/CartContext.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/Carrito.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/Carrito.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Cliente/Catalogo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarBicicletas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Inventario/GestionarComponentes.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Supervisor/PanelUsuarios.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ArriendoForm.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ListaArriendos.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ListaArriendos.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/ListaVentas.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/ListaVentas.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" beforeDir="false" afterPath="$PROJECT_DIR$/frontend/src/views/Vendedor/VentaForm.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/usuario-service/src/main/java/com/masterbikes/usuario_service/config/SecurityConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/usuario-service/src/main/java/com/masterbikes/usuario_service/config/SecurityConfig.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ventas-service/src/main/java/com/masterbikes/ventas_service/config/CorsConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/ventas-service/src/main/java/com/masterbikes/ventas_service/config/CorsConfig.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -151,7 +141,7 @@
       <workItem from="1752530665029" duration="49000" />
       <workItem from="1752530840186" duration="17000" />
       <workItem from="1752533184759" duration="7888000" />
-      <workItem from="1752541624125" duration="2112000" />
+      <workItem from="1752541624125" duration="3325000" />
     </task>
     <task id="LOCAL-00001" summary="CAMBIOS EN VISTA ARRIENDO VENDEDOR">
       <option name="closed" value="true" />
@@ -369,7 +359,15 @@
       <option name="project" value="LOCAL" />
       <updated>1752542341628</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="CAMBIOS DE ENDPOINT FRONT DEPLOY">
+      <option name="closed" value="true" />
+      <created>1752543809515</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1752543809515</updated>
+    </task>
+    <option name="localTasksCounter" value="29" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -406,6 +404,7 @@
     <MESSAGE value="LOGINS SEPARADOS" />
     <MESSAGE value="CAMBIOS DEPLOY" />
     <MESSAGE value="test" />
-    <option name="LAST_COMMIT_MESSAGE" value="test" />
+    <MESSAGE value="CAMBIOS DE ENDPOINT FRONT DEPLOY" />
+    <option name="LAST_COMMIT_MESSAGE" value="CAMBIOS DE ENDPOINT FRONT DEPLOY" />
   </component>
 </project>

@@ -14,7 +14,7 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/api/**") // Aplica a todas las rutas bajo /api
-                        .allowedOrigins("http://localhost:3000") // Reemplaza con la URL de tu frontend
+                        .allowedOrigins("https://mb-frontend-y1ps.onrender.com") // Reemplaza con la URL de tu frontend
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "PATCH", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true)
