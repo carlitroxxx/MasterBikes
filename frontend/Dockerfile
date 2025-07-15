@@ -1,18 +1,8 @@
-FROM node:20-alpine as builder
-
+FROM node:20-alpine
 WORKDIR /app
-
-# 1. Copia solo los archivos esenciales primero
-COPY package.json package-lock.json ./
-
-# 2. Verifica explícitamente el package.json
-RUN cat package.json && npm install
-
-# 3. Copia el resto de los archivos
+COPY package.json .
+RUN npm install
 COPY . .
-
-# 4. Verifica la estructura del proyecto
-RUN ls -la
-
-# 5. Ejecuta el build con modo verbose
-RUN npm run build --verbose
+RUN npx react-scripts build
+RUN npm install -g serve
+CMD ["serve", "-s", "build"]
