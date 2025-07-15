@@ -91,7 +91,7 @@ const ArriendoForm = () => {
     useEffect(() => {
         const fetchBicicletas = async () => {
             try {
-                const response = await axios.get('http://mb-inventario.onrender.com/api/inventario/arriendo');
+                const response = await axios.get('https://mb-inventario.onrender.com/api/inventario/arriendo');
                 // Filtra solo las bicicletas disponibles
                 const bicicletasDisponibles = response.data.filter(bici => bici.disponible === true);
                 setBicicletas(bicicletasDisponibles);
@@ -157,7 +157,7 @@ const ArriendoForm = () => {
 
         setUserSearchLoading(true);
         try {
-            const response = await axios.get(`http://mb-usuario.onrender.com/api/auth/buscar-por-rut?rut=${rut}`);
+            const response = await axios.get(`https://mb-usuario.onrender.com/api/auth/buscar-por-rut?rut=${rut}`);
             if (response.data) {
                 setForm({
                     ...form,
@@ -339,10 +339,10 @@ const ArriendoForm = () => {
             };
 
             // Primero registrar el arriendo
-            await axios.post('http://mb-arriendo.onrender.com/api/arriendos', dataToSend);
+            await axios.post('https://mb-arriendo.onrender.com/api/arriendos', dataToSend);
 
             // Luego actualizar el estado de la bicicleta a no disponible
-            await axios.put(`http://mb-inventario.onrender.com/api/inventario/arriendo/${form.bicicleta.id}`, {
+            await axios.put(`https://mb-inventario.onrender.com/api/inventario/arriendo/${form.bicicleta.id}`, {
                 ...form.bicicleta,
                 disponible: false
             });

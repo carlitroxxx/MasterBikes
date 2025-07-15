@@ -29,7 +29,7 @@ import { Search, ArrowUpward, ArrowDownward } from '@mui/icons-material';
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-const API_BASE_URL = "http://mb-arriendo.onrender.com/api/arriendos";
+const API_BASE_URL = "https://mb-arriendo.onrender.com/api/arriendos";
 
 // Paleta de colores idéntica a VentaForm.js
 const themeColors = {

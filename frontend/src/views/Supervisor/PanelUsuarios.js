@@ -16,7 +16,7 @@ import {
 import axios from 'axios';
 import dayjs from 'dayjs';
 
-const API_URL = 'http://mb-usuario.onrender.com/api/auth';
+const API_URL = 'https://mb-usuario.onrender.com/api/auth';
 
 // Paleta de colores de VentaForm
 const themeColors = {
