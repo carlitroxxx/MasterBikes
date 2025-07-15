@@ -61,7 +61,8 @@ export function CartProvider({ children }) {
             // Verificar si el producto ya existe en el carrito
             const productoExistente = cart?.items?.find(item => item.productoId === productoId);
             const nuevaCantidad = productoExistente ? productoExistente.cantidad + cantidad : cantidad;
-
+            console.log('Token:', localStorage.getItem('token'));
+            console.log('Adding product:', { productoId, cantidad, user: user.email });
             const response = await axios.post(
                 `${API_BASE_URL}/${user.email}/items`,
                 { productoId, cantidad: nuevaCantidad },
